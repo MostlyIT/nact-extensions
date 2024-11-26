@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    // Module settings
+    "target": "es2020",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+
+    // Source code checking
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "strict": true,
+
+    // Output settings
+    "noEmit": true
+  },
+  "include": ["source/**/*"],
+  "exclude": ["node_modules", "**/*.test.ts"]
+}

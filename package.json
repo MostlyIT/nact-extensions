@@ -1,0 +1,30 @@
+{
+  "name": "@mostly-it/nact-extensions",
+  "version": "0.0.2",
+  "description": "A library with reusable logic for the actor system library @nact/core.",
+  "type": "module",
+  "author": "MostlyIT",
+  "homepage": "https://github.com/MostlyIT/nact-extensions#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MostlyIT/nact-extensions.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MostlyIT/nact-extensions/issues"
+  },
+  "license": "MIT-0",
+  "exports": "./source/index.ts",
+  "files": [
+    "source"
+  ],
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "scripts": {
+    "test": "tsc && vitest --run"
+  },
+  "devDependencies": {
+    "typescript": "5.7.2",
+    "vitest": "2.1.6"
+  }
+}
