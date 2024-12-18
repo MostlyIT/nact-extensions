@@ -2,7 +2,7 @@ import {
   MessageHandler,
   MessageOfMessageHandler,
   StateOfMessageHandler,
-} from "../../interfaces/MessageHandler";
+} from "../../message-handlers/MessageHandler";
 import { combineTypeGuards } from "../types/combineTypeGuards";
 
 export const combineMessageHandlers = <

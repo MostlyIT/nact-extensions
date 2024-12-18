@@ -1,5 +1,5 @@
 import { assertType, describe, expect, expectTypeOf, test } from "vitest";
-import { MessageHandler } from "../../interfaces/MessageHandler";
+import { MessageHandler } from "../../message-handlers/MessageHandler";
 import { combineMessageHandlers } from "./combineMessageHandlers";
 
 describe("combineMessageHandlers", () => {

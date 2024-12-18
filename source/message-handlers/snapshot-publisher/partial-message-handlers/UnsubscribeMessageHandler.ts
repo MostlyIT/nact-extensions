@@ -1,4 +1,4 @@
-import { MessageHandler } from "../../../interfaces/MessageHandler";
+import { MessageHandler } from "../../MessageHandler";
 import { SnapshotPublisherState } from "../SnapshotPublisherState";
 import {
   isUnsubscribeMessage__unsafe,

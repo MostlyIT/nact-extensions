@@ -1,5 +1,5 @@
 import { dispatch } from "@nact/core";
-import { MessageHandler } from "../../../interfaces/MessageHandler";
+import { MessageHandler } from "../../MessageHandler";
 import {
   isPublishSnapshotMessage__unsafe,
   PublishSnapshotMessage,
