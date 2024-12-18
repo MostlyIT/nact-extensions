@@ -30,5 +30,5 @@ export const createPublishSnapshotMessageHandler = <
 
     return state;
   },
-  isMessage: isPublishSnapshotMessage__unsafe,
+  messageTypeGuard: isPublishSnapshotMessage__unsafe,
 });

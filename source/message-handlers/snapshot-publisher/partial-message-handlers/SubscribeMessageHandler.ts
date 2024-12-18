@@ -18,5 +18,5 @@ export const createSubscribeMessageHandler = <
       subscribers: state.subscribers.add(message.subscriber),
     };
   },
-  isMessage: isSubscribeMessage__unsafe,
+  messageTypeGuard: isSubscribeMessage__unsafe,
 });

@@ -1,6 +1,6 @@
 export type MessageHandler<TMessage, TState> = {
   readonly handleMessage: (state: TState, message: TMessage) => TState;
-  readonly isMessage: (message: any) => message is TMessage;
+  readonly messageTypeGuard: (message: any) => message is TMessage;
 };
 
 export type MessageOfMessageHandler<

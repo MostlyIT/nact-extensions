@@ -18,5 +18,5 @@ export const createUnsubscribeMessageHandler = <
       subscribers: state.subscribers.remove(message.subscriber),
     };
   },
-  isMessage: isUnsubscribeMessage__unsafe,
+  messageTypeGuard: isUnsubscribeMessage__unsafe,
 });
