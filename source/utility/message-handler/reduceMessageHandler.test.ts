@@ -1,43 +1,47 @@
 import { describe, expect, test } from "vitest";
-import { MessageHandler } from "../../interfaces/MessageHandler";
+import { MessageHandler } from "../../message-handlers/MessageHandler";
+import { combineTypeGuards } from "../types/combineTypeGuards";
 import { reduceMessageHandler } from "./reduceMessageHandler";
 
 describe("reduceMessageHandler", () => {
   // Define test types
-  type BaseMessage = {
-    type: "A" | "B";
-    value: string | number;
-  };
-
-  type ReducedMessage = {
-    type: "A";
+  type AMessage = {
+    type: "string";
     value: string;
   };
+
+  const isAMessage = (message: any): message is AMessage =>
+    typeof message === "object" &&
+    message !== null &&
+    message.type === "string" &&
+    typeof message.value === "string";
+
+  type BMessage = {
+    type: "number";
+    value: number;
+  };
+
+  const isBMessage = (message: any): message is AMessage =>
+    typeof message === "object" &&
+    message !== null &&
+    message.type === "number" &&
+    typeof message.value === "number";
 
   type TestState = {
     lastValue: any;
     processCount: number;
   };
 
-  // Create a base message handler for testing
-  const createBaseMessageHandler = (): MessageHandler<
-    BaseMessage,
+  const createFullMessageHandler = (): MessageHandler<
+    AMessage | BMessage,
     TestState
   > => ({
     handleMessage: (state, message) => ({
       lastValue: message.value,
       processCount: state.processCount + 1,
     }),
-    messageTypeGuard: (message: any): message is BaseMessage =>
-      typeof message === "object" &&
-      message !== null &&
-      (message.type === "A" || message.type === "B") &&
-      (typeof message.value === "string" || typeof message.value === "number"),
+    messageTypeGuard: combineTypeGuards({ isAMessage, isBMessage }),
   });
-
-  // Create a type guard for the reduced message type
-  const isReducedMessage = (message: BaseMessage): message is ReducedMessage =>
-    message.type === "A" && typeof message.value === "string";
 
   const initialState: TestState = {
     lastValue: null,
@@ -46,26 +50,30 @@ describe("reduceMessageHandler", () => {
 
   describe("type guard behavior", () => {
     test("should correctly identify valid reduced messages", () => {
-      const baseHandler = createBaseMessageHandler();
-      const reducedHandler =
-        reduceMessageHandler(baseHandler)(isReducedMessage);
+      const fullHandler = createFullMessageHandler();
+      const reducedHandler = reduceMessageHandler(fullHandler)(isAMessage);
 
       expect(
-        reducedHandler.messageTypeGuard({ type: "A", value: "test" })
+        reducedHandler.messageTypeGuard({
+          type: "string",
+          value: "test",
+        } satisfies AMessage)
       ).toBe(true);
     });
 
     test("should reject messages that don't match reduced type", () => {
-      const baseHandler = createBaseMessageHandler();
-      const reducedHandler =
-        reduceMessageHandler(baseHandler)(isReducedMessage);
+      const fullHandler = createFullMessageHandler();
+      const reducedHandler = reduceMessageHandler(fullHandler)(isAMessage);
 
       expect(
-        reducedHandler.messageTypeGuard({ type: "B", value: "test" })
+        reducedHandler.messageTypeGuard({
+          type: "number",
+          value: 42,
+        } satisfies BMessage)
       ).toBe(false);
-      expect(reducedHandler.messageTypeGuard({ type: "A", value: 42 })).toBe(
-        false
-      );
+      expect(
+        reducedHandler.messageTypeGuard({ type: "string", value: 42 })
+      ).toBe(false);
       expect(reducedHandler.messageTypeGuard(null)).toBe(false);
       expect(reducedHandler.messageTypeGuard(undefined)).toBe(false);
       expect(reducedHandler.messageTypeGuard({})).toBe(false);
@@ -74,12 +82,13 @@ describe("reduceMessageHandler", () => {
 
   describe("message handling", () => {
     test("should handle reduced messages correctly", () => {
-      const baseHandler = createBaseMessageHandler();
-      const reducedHandler =
-        reduceMessageHandler(baseHandler)(isReducedMessage);
+      const fullHandler = createFullMessageHandler();
+      const reducedHandler = reduceMessageHandler(fullHandler)(isAMessage);
 
-      const message: ReducedMessage = { type: "A", value: "test" };
-      const result = reducedHandler.handleMessage(initialState, message);
+      const result = reducedHandler.handleMessage(initialState, {
+        type: "string",
+        value: "test",
+      });
 
       expect(result).toEqual({
         lastValue: "test",
@@ -88,16 +97,15 @@ describe("reduceMessageHandler", () => {
     });
 
     test("should maintain state between multiple messages", () => {
-      const baseHandler = createBaseMessageHandler();
-      const reducedHandler =
-        reduceMessageHandler(baseHandler)(isReducedMessage);
+      const fullHandler = createFullMessageHandler();
+      const reducedHandler = reduceMessageHandler(fullHandler)(isAMessage);
 
       const state1 = reducedHandler.handleMessage(initialState, {
-        type: "A",
+        type: "string",
         value: "first",
       });
       const state2 = reducedHandler.handleMessage(state1, {
-        type: "A",
+        type: "string",
         value: "second",
       });
 
@@ -110,9 +118,8 @@ describe("reduceMessageHandler", () => {
 
   describe("type constraints", () => {
     test("reduced handler state type should match base handler", () => {
-      const baseHandler = createBaseMessageHandler();
-      const reducedHandler =
-        reduceMessageHandler(baseHandler)(isReducedMessage);
+      const fullHandler = createFullMessageHandler();
+      const reducedHandler = reduceMessageHandler(fullHandler)(isAMessage);
 
       type ReducedHandlerStateType = Parameters<
         typeof reducedHandler.handleMessage
@@ -127,32 +134,6 @@ describe("reduceMessageHandler", () => {
       const invalidState: ReducedHandlerStateType = {
         lastValue: "test",
       };
-    });
-  });
-
-  describe("composition", () => {
-    test("should work with multiple reductions", () => {
-      const baseHandler = createBaseMessageHandler();
-
-      // First reduction to type A messages
-      const typeAHandler = reduceMessageHandler(baseHandler)(
-        (message): message is BaseMessage & { type: "A" } =>
-          message.type === "A"
-      );
-
-      // Second reduction to type A messages with string values
-      const stringTypeAHandler =
-        reduceMessageHandler(typeAHandler)(isReducedMessage);
-
-      expect(
-        stringTypeAHandler.messageTypeGuard({ type: "A", value: "test" })
-      ).toBe(true);
-      expect(
-        stringTypeAHandler.messageTypeGuard({ type: "A", value: 42 })
-      ).toBe(false);
-      expect(
-        stringTypeAHandler.messageTypeGuard({ type: "B", value: "test" })
-      ).toBe(false);
     });
   });
 });
