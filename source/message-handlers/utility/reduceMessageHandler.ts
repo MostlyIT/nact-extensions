@@ -1,4 +1,4 @@
-import { MessageHandler } from "../../message-handlers/MessageHandler";
+import { MessageHandler } from "../MessageHandler";
 
 export const reduceMessageHandler =
   <TMessage, TState>(messageHandler: MessageHandler<TMessage, TState>) =>

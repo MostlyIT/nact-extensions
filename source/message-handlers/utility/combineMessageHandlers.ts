@@ -1,9 +1,9 @@
+import { combineTypeGuards } from "../../type-guards/utility/combineTypeGuards";
 import {
   MessageHandler,
   MessageOfMessageHandler,
   StateOfMessageHandler,
-} from "../../message-handlers/MessageHandler";
-import { combineTypeGuards } from "../types/combineTypeGuards";
+} from "../MessageHandler";
 
 export const combineMessageHandlers = <
   TMessageHandlerObject extends {

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { MessageHandler } from "../../message-handlers/MessageHandler";
-import { combineTypeGuards } from "../types/combineTypeGuards";
+import { combineTypeGuards } from "../../type-guards/utility/combineTypeGuards";
+import { MessageHandler } from "../MessageHandler";
 import { reduceMessageHandler } from "./reduceMessageHandler";
 
 describe("reduceMessageHandler", () => {

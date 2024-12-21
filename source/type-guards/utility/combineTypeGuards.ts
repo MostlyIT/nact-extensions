@@ -1,4 +1,4 @@
-import { TypeGuard, TypeOfTypeGuard } from "./TypeGuard";
+import { TypeGuard, TypeOfTypeGuard } from "../TypeGuard";
 
 export const combineTypeGuards =
   <

@@ -1,7 +1,4 @@
-import { combineMessageHandlers } from "../../utility/message-handler/combineMessageHandlers";
-import { reduceMessageHandler } from "../../utility/message-handler/reduceMessageHandler";
-import { scopeMessageHandler } from "../../utility/message-handler/scopeMessageHandler";
-import { combineTypeGuards } from "../../utility/types/combineTypeGuards";
+import { combineTypeGuards } from "../../type-guards/utility/combineTypeGuards";
 import { createSnapshotPublisher } from "../snapshot-publisher/SnapshotPublisher";
 import {
   isSubscribeMessage__unsafe,
@@ -11,6 +8,9 @@ import {
   isUnsubscribeMessage__unsafe,
   UnsubscribeMessage,
 } from "../snapshot-publisher/messages/UnsubscribeMessage";
+import { combineMessageHandlers } from "../utility/combineMessageHandlers";
+import { reduceMessageHandler } from "../utility/reduceMessageHandler";
+import { scopeMessageHandler } from "../utility/scopeMessageHandler";
 import { createSetStateMessageHandler } from "./partial-message-handlers/SetStateMessageHandler";
 
 export const createStateContainer = <TState, TSnapshot>(

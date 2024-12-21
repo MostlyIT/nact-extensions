@@ -1,6 +1,8 @@
+import { TypeGuard } from "../type-guards/TypeGuard";
+
 export type MessageHandler<TMessage, TState> = {
   readonly handleMessage: (state: TState, message: TMessage) => TState;
-  readonly messageTypeGuard: (message: any) => message is TMessage;
+  readonly messageTypeGuard: TypeGuard<TMessage>;
 };
 
 export type MessageOfMessageHandler<
