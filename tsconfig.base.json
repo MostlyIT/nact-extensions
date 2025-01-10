@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    // Module and library settings
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+
+    // Source code checking
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "strict": true,
+
+    // Output settings
+    "noEmit": true
+  }
+}
