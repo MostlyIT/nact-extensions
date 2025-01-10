@@ -18,7 +18,7 @@
     "source"
   ],
   "dependencies": {
-    "@nact/core": "0.5.0",
+    "@nact/core": "^0.5.0",
     "immutable": "^5.0.3"
   },
   "peerDependencies": {
@@ -28,7 +28,7 @@
     "test": "tsc && vitest --run"
   },
   "devDependencies": {
-    "typescript": "5.7.2",
+    "typescript": "5.7.3",
     "vitest": "2.1.8"
   }
 }
