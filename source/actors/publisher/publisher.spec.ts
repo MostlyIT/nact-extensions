@@ -5,7 +5,7 @@ import { delay } from "../../utility/testing/delay.test";
 import { spawnPublisher } from "./spawnPublisher";
 
 describe("publisher", () => {
-  it("should publish on PublishMessage", async () => {
+  it("should publish on PublishSnapshotMessage", async () => {
     const system = start();
 
     const publisher = spawnPublisher<number>(system);

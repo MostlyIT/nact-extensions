@@ -6,7 +6,7 @@ import {
   spawn,
 } from "@nact/core";
 import { Set } from "immutable";
-import { PublishSnapshotMessage } from "../../messages/PublishMessage";
+import { PublishSnapshotMessage } from "../../messages/PublishSnapshotMessage";
 import { SnapshotMessage } from "../../messages/SnapshotMessage";
 import { SubscribeMessage } from "../../messages/SubscribeMessage";
 import { UnsubscribeMessage } from "../../messages/UnsubscribeMessage";
