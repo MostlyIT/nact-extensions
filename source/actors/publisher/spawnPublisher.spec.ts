@@ -4,7 +4,7 @@ import { SnapshotMessage } from "../../messages/SnapshotMessage";
 import { delay } from "../../utility/testing/delay.test";
 import { spawnPublisher } from "./spawnPublisher";
 
-describe("publisher", () => {
+describe("spawnPublisher", () => {
   it("should publish on PublishSnapshotMessage", async () => {
     const system = start();
 
