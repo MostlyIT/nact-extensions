@@ -1,6 +1,7 @@
 import { start } from "@nact/core";
 import { describe, it } from "vitest";
 import { shouldPublishToConsumersEveryTimeTestCase } from "../publisher/__testing__/shouldPublishToConsumersEveryTimeTestCase";
+import { shouldSupportInitialSubscribersSet } from "../publisher/__testing__/shouldSupportInitialSubscribersSet";
 import { shouldSupportMultipleSubscribersTestCase } from "../publisher/__testing__/shouldSupportMultipleSubscribersTestCase";
 import { shouldSupportPublishingTestCase } from "../publisher/__testing__/shouldSupportPublishingTestCase";
 import { shouldSupportSubscribingConsumerTestCase } from "../publisher/__testing__/shouldSupportSubscribingConsumerTestCase";
@@ -46,6 +47,12 @@ describe("spawnReplayPublisher", () => {
       const system = start();
       const replayPublisher = spawnReplayPublisher<number>(system, 3);
       await shouldSupportMultipleSubscribersTestCase(system, replayPublisher);
+    });
+
+    it("should support initial subscribers set", async () => {
+      await shouldSupportInitialSubscribersSet((parent, options) =>
+        spawnReplayPublisher(parent, 2, options)
+      );
     });
   });
 

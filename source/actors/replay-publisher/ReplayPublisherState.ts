@@ -2,17 +2,20 @@ import { List } from "immutable";
 import { SnapshotMessage } from "../../messages/SnapshotMessage";
 import { Publisher } from "../publisher/Publisher";
 
-type ReplayPublisherStateWithPublisher<TSnapshot> = {
+type BaseReplayPublisherState<TSnapshot> = {
   readonly history: List<SnapshotMessage<TSnapshot>>;
-  readonly maxHistoryLength: number;
-  readonly publisher: Publisher<TSnapshot>;
 };
 
-type ReplayPublisherStateWithoutPublisher<TSnapshot> = {
-  readonly history: List<SnapshotMessage<TSnapshot>>;
-  readonly maxHistoryLength: number;
-  readonly publisher: "uninitialized";
-};
+type ReplayPublisherStateWithPublisher<TSnapshot> =
+  BaseReplayPublisherState<TSnapshot> & {
+    readonly isPublisherInitialized: true;
+    readonly publisher: Publisher<TSnapshot>;
+  };
+
+type ReplayPublisherStateWithoutPublisher<TSnapshot> =
+  BaseReplayPublisherState<TSnapshot> & {
+    readonly isPublisherInitialized: false;
+  };
 
 export type ReplayPublisherState<TSnapshot> =
   | ReplayPublisherStateWithPublisher<TSnapshot>

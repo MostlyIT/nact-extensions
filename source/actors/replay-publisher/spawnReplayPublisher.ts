@@ -1,10 +1,11 @@
 import {
   dispatch,
+  Dispatchable,
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
 } from "@nact/core";
-import { List } from "immutable";
+import { List, Set } from "immutable";
 import { SnapshotMessage } from "../../messages/SnapshotMessage";
 import { spawnPublisher } from "../publisher/spawnPublisher";
 import { ReplayPublisher } from "./ReplayPublisher";
@@ -13,7 +14,12 @@ import { ReplayPublisherState } from "./ReplayPublisherState";
 
 export const spawnReplayPublisher = <TSnapshot>(
   parent: LocalActorSystemRef | LocalActorRef<any>,
-  replayCount: number
+  replayCount: number,
+  options?: {
+    readonly initialSubscribersSet?: Set<
+      Dispatchable<SnapshotMessage<TSnapshot>>
+    >;
+  }
 ): ReplayPublisher<TSnapshot> =>
   spawn(
     parent,
@@ -22,13 +28,15 @@ export const spawnReplayPublisher = <TSnapshot>(
       message: ReplayPublisherMessage<TSnapshot>,
       context
     ): ReplayPublisherState<TSnapshot> => {
-      const stateWithEnsuredPublisher =
-        state.publisher === "uninitialized"
-          ? {
-              ...state,
-              publisher: spawnPublisher<TSnapshot>(context.self),
-            }
-          : state;
+      const stateWithEnsuredPublisher = state.isPublisherInitialized
+        ? state
+        : ({
+            ...state,
+            isPublisherInitialized: true,
+            publisher: spawnPublisher<TSnapshot>(context.self, {
+              initialSubscribersSet: options?.initialSubscribersSet,
+            }),
+          } satisfies ReplayPublisherState<TSnapshot>);
 
       switch (message.type) {
         case "snapshot":
@@ -39,7 +47,7 @@ export const spawnReplayPublisher = <TSnapshot>(
             history: stateWithEnsuredPublisher.history.withMutations((list) => {
               list.push(message);
 
-              if (stateWithEnsuredPublisher.maxHistoryLength < list.count()) {
+              if (replayCount < list.count()) {
                 list.shift();
               }
             }),
@@ -57,8 +65,7 @@ export const spawnReplayPublisher = <TSnapshot>(
     {
       initialState: {
         history: List<SnapshotMessage<TSnapshot>>(),
-        maxHistoryLength: replayCount,
-        publisher: "uninitialized",
+        isPublisherInitialized: false,
       } satisfies ReplayPublisherState<TSnapshot>,
     }
   ) as ReplayPublisher<TSnapshot>;

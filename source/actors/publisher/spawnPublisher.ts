@@ -12,7 +12,12 @@ import { PublisherMessage } from "./PublisherMessage";
 import { PublisherState } from "./PublisherState";
 
 export const spawnPublisher = <TSnapshot>(
-  parent: LocalActorSystemRef | LocalActorRef<any>
+  parent: LocalActorSystemRef | LocalActorRef<any>,
+  options?: {
+    readonly initialSubscribersSet?: Set<
+      Dispatchable<SnapshotMessage<TSnapshot>>
+    >;
+  }
 ): Publisher<TSnapshot> =>
   spawn(
     parent,
@@ -38,7 +43,9 @@ export const spawnPublisher = <TSnapshot>(
     },
     {
       initialState: {
-        subscribers: Set<Dispatchable<SnapshotMessage<TSnapshot>>>(),
+        subscribers:
+          options?.initialSubscribersSet ??
+          Set<Dispatchable<SnapshotMessage<TSnapshot>>>(),
       } satisfies PublisherState<TSnapshot>,
     }
   ) as Publisher<TSnapshot>;
