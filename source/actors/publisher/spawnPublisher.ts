@@ -6,23 +6,19 @@ import {
   spawn,
 } from "@nact/core";
 import { Set } from "immutable";
-import { PublishSnapshotMessage } from "../../messages/PublishSnapshotMessage";
-import { SnapshotMessage } from "../../messages/SnapshotMessage";
-import { SubscribeMessage } from "../../messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../messages/UnsubscribeMessage";
+import { SnapshotMessage } from "../../messages";
+import { Publisher } from "./Publisher";
+import { PublisherMessage } from "./PublisherMessage";
 import { PublisherState } from "./PublisherState";
 
 export const spawnPublisher = <TSnapshot>(
   parent: LocalActorSystemRef | LocalActorRef<any>
-) =>
+): Publisher<TSnapshot> =>
   spawn(
     parent,
     (
       state: PublisherState<TSnapshot>,
-      message:
-        | PublishSnapshotMessage<TSnapshot>
-        | SubscribeMessage<TSnapshot>
-        | UnsubscribeMessage<TSnapshot>
+      message: PublisherMessage<TSnapshot>
     ): PublisherState<TSnapshot> => {
       switch (message.type) {
         case "publish snapshot":
@@ -49,4 +45,4 @@ export const spawnPublisher = <TSnapshot>(
         subscribers: Set<Dispatchable<SnapshotMessage<TSnapshot>>>(),
       } satisfies PublisherState<TSnapshot>,
     }
-  );
+  ) as Publisher<TSnapshot>;
