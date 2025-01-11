@@ -1,8 +1,8 @@
-import { PublishSnapshotMessage } from "../../messages/PublishSnapshotMessage";
+import { SnapshotMessage } from "../../messages/SnapshotMessage";
 import { SubscribeMessage } from "../../messages/SubscribeMessage";
 import { UnsubscribeMessage } from "../../messages/UnsubscribeMessage";
 
 export type PublisherMessage<TSnapshot> =
-  | PublishSnapshotMessage<TSnapshot>
+  | SnapshotMessage<TSnapshot>
   | SubscribeMessage<TSnapshot>
   | UnsubscribeMessage<TSnapshot>;

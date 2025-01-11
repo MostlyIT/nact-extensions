@@ -21,13 +21,9 @@ export const spawnPublisher = <TSnapshot>(
       message: PublisherMessage<TSnapshot>
     ): PublisherState<TSnapshot> => {
       switch (message.type) {
-        case "publish snapshot":
-          const snapshotMessage: SnapshotMessage<TSnapshot> = {
-            type: "snapshot",
-            snapshot: message.snapshot,
-          };
+        case "snapshot":
           for (const subscriber of state.subscribers) {
-            dispatch(subscriber, snapshotMessage);
+            dispatch(subscriber, message);
           }
           return state;
         case "subscribe":

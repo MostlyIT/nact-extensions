@@ -25,7 +25,7 @@ describe("spawnPublisher", () => {
       expect(consumerFunction).not.toHaveBeenCalled();
 
       dispatch(publisher, {
-        type: "publish snapshot",
+        type: "snapshot",
         snapshot: 1000,
       });
 
@@ -57,7 +57,7 @@ describe("spawnPublisher", () => {
       expect(consumerFunction).not.toHaveBeenCalled();
 
       dispatch(publisher, {
-        type: "publish snapshot",
+        type: "snapshot",
         snapshot: 1000,
       });
 
@@ -69,7 +69,7 @@ describe("spawnPublisher", () => {
       } satisfies SnapshotMessage<number>);
 
       dispatch(publisher, {
-        type: "publish snapshot",
+        type: "snapshot",
         snapshot: 314,
       });
 
@@ -94,7 +94,7 @@ describe("spawnPublisher", () => {
       );
 
       dispatch(publisher, {
-        type: "publish snapshot",
+        type: "snapshot",
         snapshot: 1000,
       });
 
@@ -110,7 +110,7 @@ describe("spawnPublisher", () => {
       expect(consumerFunction).not.toHaveBeenCalled();
 
       dispatch(publisher, {
-        type: "publish snapshot",
+        type: "snapshot",
         snapshot: 1000,
       });
 
@@ -151,7 +151,7 @@ describe("spawnPublisher", () => {
       expect(consumerFunction2).not.toHaveBeenCalled();
 
       dispatch(publisher, {
-        type: "publish snapshot",
+        type: "snapshot",
         snapshot: 1000,
       });
 
@@ -187,7 +187,7 @@ describe("spawnPublisher", () => {
 
       await delay(10);
       dispatch(publisher, {
-        type: "publish snapshot",
+        type: "snapshot",
         snapshot: 1000,
       });
 
@@ -205,7 +205,7 @@ describe("spawnPublisher", () => {
 
       await delay(10);
       dispatch(publisher, {
-        type: "publish snapshot",
+        type: "snapshot",
         snapshot: 314,
       });
 
@@ -242,7 +242,7 @@ describe("spawnPublisher", () => {
       expect(consumerFunction2).not.toHaveBeenCalled();
 
       dispatch(publisher, {
-        type: "publish snapshot",
+        type: "snapshot",
         snapshot: 1000,
       });
 
@@ -265,7 +265,7 @@ describe("spawnPublisher", () => {
 
       await delay(10);
       dispatch(publisher, {
-        type: "publish snapshot",
+        type: "snapshot",
         snapshot: 314,
       });
 
