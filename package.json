@@ -16,8 +16,8 @@
   "exports": "./source/index.ts",
   "files": [
     "/source",
-    "!**/*.spec.ts",
-    "!**/*.test.ts"
+    "!/**/*.spec.ts",
+    "!__testing__"
   ],
   "dependencies": {
     "@nact/core": "^0.5.0",
