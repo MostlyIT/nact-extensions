@@ -15,7 +15,7 @@ describe("spawnMapper", () => {
       );
 
       const mapper = spawnMapper(system, (input: number) => 2 * input, {
-        destination: consumer,
+        initialDestination: consumer,
       });
 
       await delay(10);
@@ -120,7 +120,7 @@ describe("spawnMapper", () => {
       );
 
       const mapper = spawnMapper(system, (input: number) => 2 * input, {
-        destination: consumer,
+        initialDestination: consumer,
       });
 
       await delay(10);

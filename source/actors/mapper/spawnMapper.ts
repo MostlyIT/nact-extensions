@@ -14,7 +14,9 @@ export const spawnMapper = <TInputSnapshot, TOutputSnapshot>(
   parent: LocalActorSystemRef | LocalActorRef<any>,
   mappingFunction: (input: TInputSnapshot) => TOutputSnapshot,
   options?: {
-    readonly destination?: Dispatchable<SnapshotMessage<TOutputSnapshot>>;
+    readonly initialDestination?: Dispatchable<
+      SnapshotMessage<TOutputSnapshot>
+    >;
   }
 ): Mapper<TInputSnapshot, TOutputSnapshot> =>
   spawn(
@@ -43,9 +45,9 @@ export const spawnMapper = <TInputSnapshot, TOutputSnapshot>(
       }
     },
     {
-      initialState: options?.destination
+      initialState: options?.initialDestination
         ? {
-            destination: options?.destination,
+            destination: options?.initialDestination,
             isDestinationSet: true,
           }
         : {
