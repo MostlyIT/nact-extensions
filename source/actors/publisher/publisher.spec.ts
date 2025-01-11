@@ -1,7 +1,7 @@
 import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, it, vi } from "vitest";
+import { SnapshotMessage } from "../../messages/SnapshotMessage";
 import { delay } from "../../utility/testing/delay.test";
-import { SnapshotMessage } from "./SnapshotMessage";
 import { spawnPublisher } from "./spawnPublisher";
 
 describe("publisher", () => {

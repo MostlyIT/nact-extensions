@@ -6,11 +6,11 @@ import {
   spawn,
 } from "@nact/core";
 import { Set } from "immutable";
+import { PublishSnapshotMessage } from "../../messages/PublishMessage";
+import { SnapshotMessage } from "../../messages/SnapshotMessage";
+import { SubscribeMessage } from "../../messages/SubscribeMessage";
+import { UnsubscribeMessage } from "../../messages/UnsubscribeMessage";
 import { PublisherState } from "./PublisherState";
-import { PublishSnapshotMessage } from "./PublishMessage";
-import { SnapshotMessage } from "./SnapshotMessage";
-import { SubscribeMessage } from "./SubscribeMessage";
-import { UnsubscribeMessage } from "./UnsubscribeMessage";
 
 export const spawnPublisher = <TSnapshot>(
   parent: LocalActorSystemRef | LocalActorRef<any>
