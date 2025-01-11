@@ -15,7 +15,7 @@
   "license": "MIT-0",
   "exports": "./source/index.ts",
   "files": [
-    "source"
+    "/source",
   ],
   "dependencies": {
     "@nact/core": "^0.5.0",
