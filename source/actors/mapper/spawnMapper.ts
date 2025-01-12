@@ -42,6 +42,10 @@ export const spawnMapper = <TInputSnapshot, TOutputSnapshot>(
           });
 
           return state;
+        case "unset destination":
+          return {
+            isDestinationSet: false,
+          };
       }
     },
     {

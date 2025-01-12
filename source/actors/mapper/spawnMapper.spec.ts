@@ -108,6 +108,44 @@ describe("spawnMapper", () => {
         snapshot: 628,
       } satisfies SnapshotMessage<number>);
     });
+
+    it("should support unsetting destination", async () => {
+      const system = start();
+
+      const consumerFunction = vi.fn();
+      const consumer = spawn(system, (_state, message) =>
+        consumerFunction(message)
+      );
+
+      const mapper = spawnMapper(system, (input: number) => 2 * input);
+
+      dispatch(mapper, {
+        type: "set destination",
+        destination: consumer,
+      });
+      dispatch(mapper, {
+        type: "snapshot",
+        snapshot: 1000,
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+      expect(consumerFunction).toHaveBeenCalledWith({
+        type: "snapshot",
+        snapshot: 2000,
+      } satisfies SnapshotMessage<number>);
+
+      dispatch(mapper, {
+        type: "unset destination",
+      });
+      dispatch(mapper, {
+        type: "snapshot",
+        snapshot: 314,
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe("mapping", () => {

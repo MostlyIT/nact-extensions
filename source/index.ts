@@ -13,4 +13,5 @@ export * from "./actors/replay-publisher/spawnReplayPublisher";
 export * from "./messages/SetDestinationMessage";
 export * from "./messages/SnapshotMessage";
 export * from "./messages/SubscribeMessage";
+export * from "./messages/UnsetDestinationMessage";
 export * from "./messages/UnsubscribeMessage";
