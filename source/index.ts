@@ -1,5 +1,6 @@
 export * from "./actors/mapper/Mapper";
 export * from "./actors/mapper/MapperMessage";
+export * from "./actors/mapper/MapperOptions";
 export * from "./actors/mapper/spawnMapper";
 
 export * from "./actors/publisher/Publisher";

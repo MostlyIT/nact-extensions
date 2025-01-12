@@ -1,23 +1,19 @@
 import {
   dispatch,
-  Dispatchable,
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
 } from "@nact/core";
-import { SnapshotMessage } from "../../messages/SnapshotMessage";
+import { spawnRelay } from "../relay/spawnRelay";
 import { Mapper } from "./Mapper";
 import { MapperMessage } from "./MapperMessage";
+import { MapperOptions } from "./MapperOptions";
 import { MapperState } from "./MapperState";
 
 export const spawnMapper = <TInputSnapshot, TOutputSnapshot>(
   parent: LocalActorSystemRef | LocalActorRef<any>,
   mappingFunction: (input: TInputSnapshot) => TOutputSnapshot,
-  options?: {
-    readonly initialDestination?: Dispatchable<
-      SnapshotMessage<TOutputSnapshot>
-    >;
-  }
+  options?: MapperOptions<TOutputSnapshot>
 ): Mapper<TInputSnapshot, TOutputSnapshot> =>
   spawn(
     parent,
@@ -26,36 +22,23 @@ export const spawnMapper = <TInputSnapshot, TOutputSnapshot>(
       message: MapperMessage<TInputSnapshot, TOutputSnapshot>
     ): MapperState<TOutputSnapshot> => {
       switch (message.type) {
-        case "set destination":
-          return {
-            destination: message.destination,
-            isDestinationSet: true,
-          };
         case "snapshot":
-          if (state.isDestinationSet === false) {
-            return state;
-          }
-
-          dispatch(state.destination, {
+          dispatch(state.relay, {
             type: "snapshot",
             snapshot: mappingFunction(message.snapshot),
           });
 
           return state;
+        case "set destination":
         case "unset destination":
-          return {
-            isDestinationSet: false,
-          };
+          dispatch(state.relay, message);
+
+          return state;
       }
     },
     {
-      initialState: options?.initialDestination
-        ? {
-            destination: options?.initialDestination,
-            isDestinationSet: true,
-          }
-        : {
-            isDestinationSet: false,
-          },
+      initialStateFunc: (context): MapperState<TOutputSnapshot> => ({
+        relay: spawnRelay(context.self, options),
+      }),
     }
   ) as Mapper<TInputSnapshot, TOutputSnapshot>;

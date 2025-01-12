@@ -1,15 +1,5 @@
-import { Dispatchable } from "@nact/core";
-import { SnapshotMessage } from "../../messages/SnapshotMessage";
+import { Relay } from "../relay/Relay";
 
-type MapperStateWithDestination<TOutputSnapshot> = {
-  readonly destination: Dispatchable<SnapshotMessage<TOutputSnapshot>>;
-  readonly isDestinationSet: true;
+export type MapperState<TOutputSnapshot> = {
+  readonly relay: Relay<TOutputSnapshot>;
 };
-
-type MapperStateWithoutDestination = {
-  readonly isDestinationSet: false;
-};
-
-export type MapperState<TOutputSnapshot> =
-  | MapperStateWithDestination<TOutputSnapshot>
-  | MapperStateWithoutDestination;
