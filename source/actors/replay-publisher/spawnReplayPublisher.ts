@@ -25,26 +25,15 @@ export const spawnReplayPublisher = <TSnapshot>(
     parent,
     (
       state: ReplayPublisherState<TSnapshot>,
-      message: ReplayPublisherMessage<TSnapshot>,
-      context
+      message: ReplayPublisherMessage<TSnapshot>
     ): ReplayPublisherState<TSnapshot> => {
-      const stateWithEnsuredPublisher = state.isPublisherInitialized
-        ? state
-        : ({
-            ...state,
-            isPublisherInitialized: true,
-            publisher: spawnPublisher<TSnapshot>(context.self, {
-              initialSubscribersSet: options?.initialSubscribersSet,
-            }),
-          } satisfies ReplayPublisherState<TSnapshot>);
-
       switch (message.type) {
         case "snapshot":
-          dispatch(stateWithEnsuredPublisher.publisher, message);
+          dispatch(state.publisher, message);
 
           return {
-            ...stateWithEnsuredPublisher,
-            history: stateWithEnsuredPublisher.history.withMutations((list) => {
+            ...state,
+            history: state.history.withMutations((list) => {
               list.push(message);
 
               if (replayCount < list.count()) {
@@ -57,15 +46,18 @@ export const spawnReplayPublisher = <TSnapshot>(
             dispatch(message.subscriber, messageToReplay);
           }
         case "unsubscribe":
-          dispatch(stateWithEnsuredPublisher.publisher, message);
+          dispatch(state.publisher, message);
 
-          return stateWithEnsuredPublisher;
+          return state;
       }
     },
     {
-      initialState: {
-        history: List<SnapshotMessage<TSnapshot>>(),
-        isPublisherInitialized: false,
-      } satisfies ReplayPublisherState<TSnapshot>,
+      initialStateFunc: (context): ReplayPublisherState<TSnapshot> =>
+        ({
+          history: List<SnapshotMessage<TSnapshot>>(),
+          publisher: spawnPublisher(context.self, {
+            initialSubscribersSet: options?.initialSubscribersSet,
+          }),
+        } satisfies ReplayPublisherState<TSnapshot>),
     }
   ) as ReplayPublisher<TSnapshot>;
