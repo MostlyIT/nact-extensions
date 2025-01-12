@@ -9,15 +9,12 @@ import { Set } from "immutable";
 import { SnapshotMessage } from "../../messages/SnapshotMessage";
 import { Publisher } from "./Publisher";
 import { PublisherMessage } from "./PublisherMessage";
+import { PublisherOptions } from "./PublisherOptions";
 import { PublisherState } from "./PublisherState";
 
 export const spawnPublisher = <TSnapshot>(
   parent: LocalActorSystemRef | LocalActorRef<any>,
-  options?: {
-    readonly initialSubscribersSet?: Set<
-      Dispatchable<SnapshotMessage<TSnapshot>>
-    >;
-  }
+  options?: PublisherOptions<TSnapshot>
 ): Publisher<TSnapshot> =>
   spawn(
     parent,

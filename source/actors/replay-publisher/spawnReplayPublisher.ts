@@ -1,25 +1,21 @@
 import {
   dispatch,
-  Dispatchable,
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
 } from "@nact/core";
-import { List, Set } from "immutable";
+import { List } from "immutable";
 import { SnapshotMessage } from "../../messages/SnapshotMessage";
 import { spawnPublisher } from "../publisher/spawnPublisher";
 import { ReplayPublisher } from "./ReplayPublisher";
 import { ReplayPublisherMessage } from "./ReplayPublisherMessage";
+import { ReplayPublisherOptions } from "./ReplayPublisherOptions";
 import { ReplayPublisherState } from "./ReplayPublisherState";
 
 export const spawnReplayPublisher = <TSnapshot>(
   parent: LocalActorSystemRef | LocalActorRef<any>,
   replayCount: number,
-  options?: {
-    readonly initialSubscribersSet?: Set<
-      Dispatchable<SnapshotMessage<TSnapshot>>
-    >;
-  }
+  options?: ReplayPublisherOptions<TSnapshot>
 ): ReplayPublisher<TSnapshot> =>
   spawn(
     parent,
@@ -55,9 +51,7 @@ export const spawnReplayPublisher = <TSnapshot>(
       initialStateFunc: (context): ReplayPublisherState<TSnapshot> =>
         ({
           history: List<SnapshotMessage<TSnapshot>>(),
-          publisher: spawnPublisher(context.self, {
-            initialSubscribersSet: options?.initialSubscribersSet,
-          }),
+          publisher: spawnPublisher(context.self, options),
         } satisfies ReplayPublisherState<TSnapshot>),
     }
   ) as ReplayPublisher<TSnapshot>;
