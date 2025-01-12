@@ -7,6 +7,11 @@ export * from "./actors/publisher/PublisherMessage";
 export * from "./actors/publisher/PublisherOptions";
 export * from "./actors/publisher/spawnPublisher";
 
+export * from "./actors/relay/Relay";
+export * from "./actors/relay/RelayMessage";
+export * from "./actors/relay/RelayOptions";
+export * from "./actors/relay/spawnRelay";
+
 export * from "./actors/replay-publisher/ReplayPublisher";
 export * from "./actors/replay-publisher/ReplayPublisherMessage";
 export * from "./actors/replay-publisher/ReplayPublisherOptions";
