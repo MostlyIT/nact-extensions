@@ -1,0 +1,33 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+InputSnapshot: Snapshot {
+  shape: page
+}
+InputSnapshot -> Publisher
+Subscribe: {
+  shape: page
+}
+Subscribe -> Publisher
+Unsubscribe: {
+  shape: page
+}
+Unsubscribe -> Publisher
+
+# Main actor
+Publisher
+
+# Output messages
+OutputSnapshot: Snapshot {
+  shape: page
+}
+Publisher -> OutputSnapshot -> Subscribers
+
+# Environment actors
+Subscribers: {
+  style.multiple: true
+}

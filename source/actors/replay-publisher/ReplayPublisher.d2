@@ -1,0 +1,48 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+InputSnapshot: Snapshot {
+  shape: page
+}
+InputSnapshot -> ReplayPublisher.Self
+Subscribe: {
+  shape: page
+}
+Subscribe -> ReplayPublisher.Self
+Unsubscribe: {
+  shape: page
+}
+Unsubscribe -> ReplayPublisher.Publisher
+
+# Main actor
+ReplayPublisher: {
+  class: composition
+
+  # Internal actors
+  Publisher
+  Self
+
+  Snapshot: {
+    shape: page
+  }
+  Self -> Snapshot -> Publisher
+  Subscribe: {
+    shape: page
+  }
+  Self -> Subscribe -> Publisher
+}
+
+# Output messages
+OutputSnapshot: Snapshot {
+  shape: page
+}
+ReplayPublisher.Publisher -> OutputSnapshot -> Subscribers
+
+# Environment actors
+Subscribers: {
+  style.multiple: true
+}

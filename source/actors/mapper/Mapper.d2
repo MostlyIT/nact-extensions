@@ -1,0 +1,42 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+SetDestination: {
+  shape: page
+}
+SetDestination -> Mapper.Relay
+InputSnapshot: Snapshot {
+  shape: page
+}
+InputSnapshot -> Mapper.Self
+UnsetDestination: {
+  shape: page
+}
+UnsetDestination -> Mapper.Relay
+
+# Main actor
+Mapper: {
+  class: composition
+
+  # Internal actors
+  Relay
+  Self
+
+  MappedSnapshot: {
+    shape: page
+  }
+  Self -> MappedSnapshot -> Relay
+}
+
+# Output messages
+OutputMappedSnapshot: MappedSnapshot {
+  shape: page
+}
+Mapper.Relay -> OutputMappedSnapshot -> Destination
+
+# Environment actors
+Destination

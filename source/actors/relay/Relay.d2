@@ -1,0 +1,31 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+SetDestination: {
+  shape: page
+}
+SetDestination -> Relay
+InputSnapshot: Snapshot {
+  shape: page
+}
+InputSnapshot -> Relay
+UnsetDestination: {
+  shape: page
+}
+UnsetDestination -> Relay
+
+# Main actor
+Relay
+
+# Output messages
+OutputSnapshot: Snapshot {
+  shape: page
+}
+Relay -> OutputSnapshot -> Destination
+
+# Environment actors
+Destination
