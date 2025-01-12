@@ -4,7 +4,7 @@ import { SnapshotMessage } from "../../messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
 import { spawnMapper } from "./spawnMapper";
 
-describe("spawnMapper", () => {
+describe("Mapper", () => {
   describe("destination", () => {
     it("should support initial destination", async () => {
       const system = start();

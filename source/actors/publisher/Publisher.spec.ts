@@ -9,7 +9,7 @@ import { shouldSupportUnsubscribingConsumerTestCase } from "./__testing__/should
 import { shouldSupportUnsubscribingWithMultipleConsumersTestCase } from "./__testing__/shouldSupportUnsubscribingWithMultipleConsumersTestCase";
 import { spawnPublisher } from "./spawnPublisher";
 
-describe("spawnPublisher", () => {
+describe("Publisher", () => {
   describe("publishing", () => {
     it("should support publishing", async () => {
       const system = start();

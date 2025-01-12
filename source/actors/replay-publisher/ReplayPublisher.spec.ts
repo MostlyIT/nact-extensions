@@ -10,7 +10,7 @@ import { shouldSupportUnsubscribingWithMultipleConsumersTestCase } from "../publ
 import { shouldReplayMessagesToNewSubscribersTestCase } from "./__testing__/shouldReplayMessagesToNewSubscribersTestCase";
 import { spawnReplayPublisher } from "./spawnReplayPublisher";
 
-describe("spawnReplayPublisher", () => {
+describe("ReplayPublisher", () => {
   describe("publishing", () => {
     it("should support publishing", async () => {
       const system = start();

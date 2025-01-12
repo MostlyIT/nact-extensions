@@ -4,7 +4,7 @@ import { SnapshotMessage } from "../../messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
 import { spawnRelay } from "./spawnRelay";
 
-describe("spawnRelay", () => {
+describe("Relay", () => {
   describe("destination", () => {
     it("should support initial destination", async () => {
       const system = start();
