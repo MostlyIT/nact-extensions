@@ -5,7 +5,7 @@ import {
   spawn,
 } from "@nact/core";
 import { List } from "immutable";
-import { SnapshotMessage } from "../../messages/SnapshotMessage";
+import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { spawnPublisher } from "../publisher/spawnPublisher";
 import { ReplayPublisher } from "./ReplayPublisher";
 import { ReplayPublisherMessage } from "./ReplayPublisherMessage";

@@ -23,8 +23,8 @@ export * from "./actors/replay-publisher/ReplayPublisherMessage";
 export * from "./actors/replay-publisher/ReplayPublisherOptions";
 export * from "./actors/replay-publisher/spawnReplayPublisher";
 
-export * from "./messages/SetDestinationMessage";
-export * from "./messages/SnapshotMessage";
-export * from "./messages/SubscribeMessage";
-export * from "./messages/UnsetDestinationMessage";
-export * from "./messages/UnsubscribeMessage";
+export * from "./data-types/messages/SetDestinationMessage";
+export * from "./data-types/messages/SnapshotMessage";
+export * from "./data-types/messages/SubscribeMessage";
+export * from "./data-types/messages/UnsetDestinationMessage";
+export * from "./data-types/messages/UnsubscribeMessage";

@@ -8,7 +8,7 @@ import {
 } from "@nact/core";
 import { Set } from "immutable";
 import { expect, vi } from "vitest";
-import { SnapshotMessage } from "../../../messages/SnapshotMessage";
+import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import { delay } from "../../../utility/__testing__/delay";
 import { PublisherMessage } from "../PublisherMessage";
 import { PublisherOptions } from "../PublisherOptions";

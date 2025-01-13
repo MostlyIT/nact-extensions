@@ -1,5 +1,5 @@
 import { List } from "immutable";
-import { SnapshotMessage } from "../../messages/SnapshotMessage";
+import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { Publisher } from "../publisher/Publisher";
 
 export type ReplayPublisherState<TSnapshot> = {

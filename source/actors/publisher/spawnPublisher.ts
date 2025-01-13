@@ -6,7 +6,7 @@ import {
   spawn,
 } from "@nact/core";
 import { Set } from "immutable";
-import { SnapshotMessage } from "../../messages/SnapshotMessage";
+import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { Publisher } from "./Publisher";
 import { PublisherMessage } from "./PublisherMessage";
 import { PublisherOptions } from "./PublisherOptions";

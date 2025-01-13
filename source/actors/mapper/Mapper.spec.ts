@@ -1,6 +1,6 @@
 import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, it, vi } from "vitest";
-import { SnapshotMessage } from "../../messages/SnapshotMessage";
+import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
 import { spawnMapper } from "./spawnMapper";
 

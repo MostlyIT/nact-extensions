@@ -5,7 +5,7 @@ import {
   spawn,
 } from "@nact/core";
 import { expect, vi } from "vitest";
-import { SnapshotMessage } from "../../../messages/SnapshotMessage";
+import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import { delay } from "../../../utility/__testing__/delay";
 import { ReplayPublisherMessage } from "../ReplayPublisherMessage";
 
