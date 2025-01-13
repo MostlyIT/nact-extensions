@@ -14,14 +14,14 @@ describe("Relay", () => {
         consumerFunction(message)
       );
 
-      const mapper = spawnRelay(system, {
+      const relay = spawnRelay(system, {
         initialDestination: consumer,
       });
 
       await delay(10);
       expect(consumerFunction).not.toHaveBeenCalled();
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "snapshot",
         snapshot: 1000,
       });
@@ -33,7 +33,7 @@ describe("Relay", () => {
         snapshot: 1000,
       } satisfies SnapshotMessage<number>);
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "snapshot",
         snapshot: 314,
       });
@@ -59,14 +59,14 @@ describe("Relay", () => {
         consumerFunction2(message)
       );
 
-      const mapper = spawnRelay(system);
+      const relay = spawnRelay(system);
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "snapshot",
         snapshot: 1,
       });
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "set destination",
         destination: consumer1,
       });
@@ -74,7 +74,7 @@ describe("Relay", () => {
       await delay(10);
       expect(consumerFunction1).not.toHaveBeenCalled();
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "snapshot",
         snapshot: 1000,
       });
@@ -86,7 +86,7 @@ describe("Relay", () => {
         snapshot: 1000,
       } satisfies SnapshotMessage<number>);
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "set destination",
         destination: consumer2,
       });
@@ -95,7 +95,7 @@ describe("Relay", () => {
       expect(consumerFunction1).toHaveBeenCalledTimes(1);
       expect(consumerFunction2).not.toHaveBeenCalled();
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "snapshot",
         snapshot: 314,
       });
@@ -117,13 +117,13 @@ describe("Relay", () => {
         consumerFunction(message)
       );
 
-      const mapper = spawnRelay(system);
+      const relay = spawnRelay(system);
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "set destination",
         destination: consumer,
       });
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "snapshot",
         snapshot: 1000,
       });
@@ -135,10 +135,10 @@ describe("Relay", () => {
         snapshot: 1000,
       } satisfies SnapshotMessage<number>);
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "unset destination",
       });
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "snapshot",
         snapshot: 314,
       });
@@ -148,8 +148,8 @@ describe("Relay", () => {
     });
   });
 
-  describe("mapping", () => {
-    it("should map and relay inputted snapshots", async () => {
+  describe("relaying", () => {
+    it("should relay inputted snapshots", async () => {
       const system = start();
 
       const consumerFunction = vi.fn();
@@ -157,14 +157,14 @@ describe("Relay", () => {
         consumerFunction(message)
       );
 
-      const mapper = spawnRelay(system, {
+      const relay = spawnRelay(system, {
         initialDestination: consumer,
       });
 
       await delay(10);
       expect(consumerFunction).not.toHaveBeenCalled();
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "snapshot",
         snapshot: 1000,
       });
@@ -176,7 +176,7 @@ describe("Relay", () => {
         snapshot: 1000,
       } satisfies SnapshotMessage<number>);
 
-      dispatch(mapper, {
+      dispatch(relay, {
         type: "snapshot",
         snapshot: 314,
       });
