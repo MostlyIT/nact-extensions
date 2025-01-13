@@ -1,3 +1,8 @@
+export * from "./actors/distinct/Distinct";
+export * from "./actors/distinct/DistinctMessage";
+export * from "./actors/distinct/DistinctOptions";
+export * from "./actors/distinct/spawnDistinct";
+
 export * from "./actors/mapper/Mapper";
 export * from "./actors/mapper/MapperMessage";
 export * from "./actors/mapper/MapperOptions";
