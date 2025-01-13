@@ -1,0 +1,60 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+StateSnapshots: {
+  shape: page
+  style.multiple: true
+}
+StateSnapshots -> DeterminerAuthority.Combiner
+Subscribe: {
+  shape: page
+}
+Subscribe -> DeterminerAuthority.ReplayPublisher
+Unsubscribe: {
+  shape: page
+}
+Unsubscribe -> DeterminerAuthority.ReplayPublisher
+
+# Main actor
+DeterminerAuthority: {
+  class: composition
+
+  # Internal actors
+  Combiner
+  Distinct
+  ReplayPublisher
+  SemanticBrander
+  ValueDeterminer
+
+  CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
+    shape: page
+  }
+  Combiner -> CombinedStateSnapshot -> ValueDeterminer
+  DistinctStateSnapshot: StateSnapshot\n+ version {
+    shape: page
+  }
+  Distinct -> DistinctStateSnapshot -> SemanticBrander
+  StateSnapshotWithMetaData: StateSnapshot\n+ semantic information\n+ version {
+    shape: page
+  }
+  SemanticBrander -> StateSnapshotWithMetaData -> ReplayPublisher
+  StateSnapshot: StateSnapshot\n+ version {
+    shape: page
+  }
+  ValueDeterminer -> StateSnapshot -> Distinct
+}
+
+# Output messages
+OutputStateSnapshot: StateSnapshot\n+ semantic information\n+ version {
+  shape: page
+}
+DeterminerAuthority.ReplayPublisher -> OutputStateSnapshot -> Subscribers
+
+# Environment actors
+Subscribers: {
+  style.multiple: true
+}

@@ -6,39 +6,39 @@ classes: {
 
 # Input messages
 Events: {
-  style.multiple: true
   shape: page
+  style.multiple: true
 }
-Events -> Authority.StateReducer
+Events -> ControlAuthority.StateReducer
 StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
-  style.multiple: true
   shape: page
+  style.multiple: true
 }
-StateSnapshots -> Authority.VersionCombiner
+StateSnapshots -> ControlAuthority.Combiner
 Subscribe: {
   shape: page
 }
-Subscribe -> Authority.ReplayPublisher
+Subscribe -> ControlAuthority.ReplayPublisher
 Unsubscribe: {
   shape: page
 }
-Unsubscribe -> Authority.ReplayPublisher
+Unsubscribe -> ControlAuthority.ReplayPublisher
 
 # Main actor
-Authority: {
+ControlAuthority: {
   class: composition
 
   # Internal actors
+  Combiner
   Distinct
   ReplayPublisher
   StateReducer
-  VersionCombiner
   Versioner
 
   CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
     shape: page
   }
-  VersionCombiner -> CombinedStateSnapshot -> StateReducer
+  Combiner -> CombinedStateSnapshot -> StateReducer
   DistinctStateSnapshot: StateSnapshot\n+ version {
     shape: page
   }
@@ -57,7 +57,7 @@ Authority: {
 OutputStateSnapshot: StateSnapshot\n+ semantic information\n+ version {
   shape: page
 }
-Authority.ReplayPublisher -> OutputStateSnapshot -> Subscribers
+ControlAuthority.ReplayPublisher -> OutputStateSnapshot -> Subscribers
 
 # Environment actors
 Subscribers: {
