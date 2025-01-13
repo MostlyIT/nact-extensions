@@ -11,15 +11,12 @@ import { expect, vi } from "vitest";
 import { SnapshotMessage } from "../../../messages/SnapshotMessage";
 import { delay } from "../../../utility/__testing__/delay";
 import { PublisherMessage } from "../PublisherMessage";
+import { PublisherOptions } from "../PublisherOptions";
 
 export const shouldSupportInitialSubscribersSet = async (
   publisherFactory: (
     parent: LocalActorSystemRef | LocalActorRef<any>,
-    options?: {
-      readonly initialSubscribersSet: Set<
-        Dispatchable<SnapshotMessage<number>>
-      >;
-    }
+    options?: PublisherOptions<number>
   ) => LocalActorRef<PublisherMessage<number>>
 ) => {
   const system = start();
