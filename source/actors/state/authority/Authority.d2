@@ -1,0 +1,65 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+Events: {
+  style.multiple: true
+  shape: page
+}
+Events -> Authority.StateReducer
+StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
+  style.multiple: true
+  shape: page
+}
+StateSnapshots -> Authority.VersionCombiner
+Subscribe: {
+  shape: page
+}
+Subscribe -> Authority.ReplayPublisher
+Unsubscribe: {
+  shape: page
+}
+Unsubscribe -> Authority.ReplayPublisher
+
+# Main actor
+Authority: {
+  class: composition
+
+  # Internal actors
+  Distinct
+  ReplayPublisher
+  StateReducer
+  MetaDecorator
+  VersionCombiner
+
+  CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
+    shape: page
+  }
+  VersionCombiner -> CombinedStateSnapshot -> StateReducer
+  DistinctStateSnapshot: StateSnapshot\n+ version {
+    shape: page
+  }
+  Distinct -> DistinctStateSnapshot -> MetaDecorator
+  StateSnapshotWithMetaData: StateSnapshot\n+ semantic information\n+ version {
+    shape: page
+  }
+  MetaDecorator -> StateSnapshotWithMetaData -> ReplayPublisher
+  StateSnapshot: StateSnapshot\n+ version {
+    shape: page
+  }
+  StateReducer -> StateSnapshot -> Distinct
+}
+
+# Output messages
+OutputStateSnapshot: StateSnapshot\n+ semantic information\n+ version {
+  shape: page
+}
+Authority.ReplayPublisher -> OutputStateSnapshot -> Subscribers
+
+# Environment actors
+Subscribers: {
+  style.multiple: true
+}
