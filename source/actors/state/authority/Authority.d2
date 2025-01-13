@@ -32,8 +32,8 @@ Authority: {
   Distinct
   ReplayPublisher
   StateReducer
-  MetaDecorator
   VersionCombiner
+  Versioner
 
   CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
     shape: page
@@ -42,11 +42,11 @@ Authority: {
   DistinctStateSnapshot: StateSnapshot\n+ version {
     shape: page
   }
-  Distinct -> DistinctStateSnapshot -> MetaDecorator
+  Distinct -> DistinctStateSnapshot -> Versioner
   StateSnapshotWithMetaData: StateSnapshot\n+ semantic information\n+ version {
     shape: page
   }
-  MetaDecorator -> StateSnapshotWithMetaData -> ReplayPublisher
+  Versioner -> StateSnapshotWithMetaData -> ReplayPublisher
   StateSnapshot: StateSnapshot\n+ version {
     shape: page
   }
