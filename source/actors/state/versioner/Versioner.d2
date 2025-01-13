@@ -1,0 +1,42 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+SetDestination: {
+  shape: page
+}
+SetDestination -> Versioner.Relay
+InputSnapshot: Snapshot\n+ version {
+  shape: page
+}
+InputSnapshot -> Versioner.Self
+UnsetDestination: {
+  shape: page
+}
+UnsetDestination -> Versioner.Relay
+
+# Main actor
+Versioner: {
+  class: composition
+
+  # Internal actors
+  Relay
+  Self
+
+  Snapshot: Snapshot\n+ semantic information\n+ version {
+    shape: page
+  }
+  Self -> Snapshot -> Relay
+}
+
+# Output messages
+OutputSnapshot: Snapshot\n+ semantic information\n+ version {
+  shape: page
+}
+Versioner.Relay -> OutputSnapshot -> Destination
+
+# Environment actors
+Destination
