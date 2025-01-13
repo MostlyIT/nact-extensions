@@ -81,7 +81,7 @@ describe("Mapper", () => {
 
       await delay(10);
       expect(consumerFunction1).toHaveBeenCalledTimes(1);
-      expect(consumerFunction1).toHaveBeenLastCalledWith({
+      expect(consumerFunction1).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: 2000,
       } satisfies SnapshotMessage<number>);
@@ -103,7 +103,7 @@ describe("Mapper", () => {
       await delay(10);
       expect(consumerFunction1).toHaveBeenCalledTimes(1);
       expect(consumerFunction2).toHaveBeenCalledTimes(1);
-      expect(consumerFunction2).toHaveBeenLastCalledWith({
+      expect(consumerFunction2).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: 628,
       } satisfies SnapshotMessage<number>);
@@ -130,7 +130,7 @@ describe("Mapper", () => {
 
       await delay(10);
       expect(consumerFunction).toHaveBeenCalledTimes(1);
-      expect(consumerFunction).toHaveBeenCalledWith({
+      expect(consumerFunction).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: 2000,
       } satisfies SnapshotMessage<number>);
