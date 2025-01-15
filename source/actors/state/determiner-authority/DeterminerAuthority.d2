@@ -5,11 +5,11 @@ classes: {
 }
 
 # Input messages
-StateSnapshots: {
+StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
   shape: page
   style.multiple: true
 }
-StateSnapshots -> DeterminerAuthority.Combiner
+StateSnapshots -> DeterminerAuthority.VersionGate
 Subscribe: {
   shape: page
 }
@@ -28,6 +28,7 @@ DeterminerAuthority: {
   ReplayPublisher
   SemanticBrander
   ValueDeterminer
+  VersionGate
 
   CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
     shape: page
@@ -41,6 +42,11 @@ DeterminerAuthority: {
     shape: page
   }
   ValueDeterminer -> StateSnapshot -> SemanticBrander
+  StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
+    shape: page
+    style.multiple: true
+  }
+  VersionGate -> StateSnapshots -> Combiner
 }
 
 # Output messages
