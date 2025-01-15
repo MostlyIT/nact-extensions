@@ -1,0 +1,43 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+SetDestination: {
+  shape: page
+}
+SetDestination -> Combiner.Relay
+StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
+  shape: page
+  style.multiple: true
+}
+StateSnapshots -> Combiner.Self
+UnsetDestination: {
+  shape: page
+}
+UnsetDestination -> Combiner.Relay
+
+# Main actor
+Combiner: {
+  class: composition
+
+  # Internal actors
+  Relay
+  Self
+
+  CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
+    shape: page
+  }
+  Self -> CombinedStateSnapshot -> Relay
+}
+
+# Output messages
+OutputSnapshot: CombinedStateSnapshot\n+ version {
+  shape: page
+}
+Combiner.Relay -> OutputSnapshot -> Destination
+
+# Environment actors
+Destination
