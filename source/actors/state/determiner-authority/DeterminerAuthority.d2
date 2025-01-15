@@ -25,7 +25,6 @@ DeterminerAuthority: {
 
   # Internal actors
   Combiner
-  Distinct
   ReplayPublisher
   SemanticBrander
   ValueDeterminer
@@ -34,10 +33,6 @@ DeterminerAuthority: {
     shape: page
   }
   Combiner -> CombinedStateSnapshot -> ValueDeterminer
-  DistinctStateSnapshot: StateSnapshot\n+ version {
-    shape: page
-  }
-  Distinct -> DistinctStateSnapshot -> SemanticBrander
   StateSnapshotWithMetaData: StateSnapshot\n+ semantic information\n+ version {
     shape: page
   }
@@ -45,7 +40,7 @@ DeterminerAuthority: {
   StateSnapshot: StateSnapshot\n+ version {
     shape: page
   }
-  ValueDeterminer -> StateSnapshot -> Distinct
+  ValueDeterminer -> StateSnapshot -> SemanticBrander
 }
 
 # Output messages
