@@ -2,9 +2,9 @@
   "compilerOptions": {
     // Module and library settings
     "esModuleInterop": true,
-    "module": "ESNext",
+    "module": "ES2020",
     "moduleResolution": "bundler",
-    "target": "ESNext",
+    "target": "ES2020",
 
     // Source code checking
     "forceConsistentCasingInFileNames": true,
