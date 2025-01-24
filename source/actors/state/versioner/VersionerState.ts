@@ -1,4 +1,4 @@
-import { StateSnapshot } from "../../../data-types/StateSnapshot";
+import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Relay } from "../../relay/Relay";
 
 export type VersionerState<

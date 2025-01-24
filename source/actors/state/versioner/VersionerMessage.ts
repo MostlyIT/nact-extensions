@@ -1,7 +1,7 @@
 import { SetDestinationMessage } from "../../../data-types/messages/SetDestinationMessage";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import { UnsetDestinationMessage } from "../../../data-types/messages/UnsetDestinationMessage";
-import { StateSnapshot } from "../../../data-types/StateSnapshot";
+import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 
 export type VersionerMessage<
   TValue,

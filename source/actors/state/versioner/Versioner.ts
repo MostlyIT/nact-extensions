@@ -1,6 +1,6 @@
 import { LocalActorRef } from "@nact/core";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
-import { StateSnapshot } from "../../../data-types/StateSnapshot";
+import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { VersionerMessage } from "./VersionerMessage";
 
 declare const versioner: unique symbol;

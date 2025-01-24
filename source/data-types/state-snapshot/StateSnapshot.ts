@@ -1,11 +1,13 @@
+import { Version } from "./Version";
+
 export type StateSnapshot<
   TValue,
-  TVersion extends { readonly [key: symbol]: number },
+  TVersion extends Version<any>,
   TSemanticSymbol extends symbol | undefined = undefined
 > = {
-  readonly semanticSymbol: TSemanticSymbol;
   readonly value: TValue;
   readonly version: TVersion;
+  readonly semanticSymbol: TSemanticSymbol;
 };
 
 export type ValueOfStateSnapshot<
