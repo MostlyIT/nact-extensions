@@ -1,0 +1,42 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+SetDestination: {
+  shape: page
+}
+SetDestination -> SemanticBrander.Relay
+InputSnapshot: Snapshot\n+ version\n(+ semantic information) {
+  shape: page
+}
+InputSnapshot -> SemanticBrander.Self
+UnsetDestination: {
+  shape: page
+}
+UnsetDestination -> SemanticBrander.Relay
+
+# Main actor
+SemanticBrander: {
+  class: composition
+
+  # Internal actors
+  Relay
+  Self
+
+  Snapshot: Snapshot\n+ semantic information\n+ version {
+    shape: page
+  }
+  Self -> Snapshot -> Relay
+}
+
+# Output messages
+OutputSnapshot: Snapshot\n+ semantic information\n+ version {
+  shape: page
+}
+SemanticBrander.Relay -> OutputSnapshot -> Destination
+
+# Environment actors
+Destination
