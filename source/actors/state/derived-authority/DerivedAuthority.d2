@@ -9,7 +9,7 @@ StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
   shape: page
   style.multiple: true
 }
-StateSnapshots -> DerivedAuthority.VersionGate
+StateSnapshots -> DerivedAuthority.Combiner
 Subscribe: {
   shape: page
 }
@@ -28,7 +28,6 @@ DerivedAuthority: {
   ReplayPublisher
   SemanticBrander
   ValueDeterminer
-  VersionGate
 
   CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
     shape: page
@@ -42,11 +41,6 @@ DerivedAuthority: {
     shape: page
   }
   ValueDeterminer -> StateSnapshot -> SemanticBrander
-  StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
-    shape: page
-    style.multiple: true
-  }
-  VersionGate -> StateSnapshots -> Combiner
 }
 
 # Output messages

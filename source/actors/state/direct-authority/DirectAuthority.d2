@@ -14,7 +14,7 @@ StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
   shape: page
   style.multiple: true
 }
-StateSnapshots -> DirectAuthority.VersionGate
+StateSnapshots -> DirectAuthority.Combiner
 Subscribe: {
   shape: page
 }
@@ -34,7 +34,6 @@ DirectAuthority: {
   ReplayPublisher
   StateReducer
   Versioner
-  VersionGate
 
   CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
     shape: page
@@ -52,11 +51,6 @@ DirectAuthority: {
     shape: page
   }
   Versioner -> StateSnapshotWithMetaData -> ReplayPublisher
-  StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
-    shape: page
-    style.multiple: true
-  }
-  VersionGate -> StateSnapshots -> Combiner
 }
 
 # Output messages
