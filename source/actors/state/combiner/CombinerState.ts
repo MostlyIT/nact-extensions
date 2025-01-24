@@ -3,6 +3,10 @@ import {
   ValueOfStateSnapshot,
   VersionOfStateSnapshot,
 } from "../../../data-types/state-snapshot/StateSnapshot";
+import {
+  KeyOfVersion,
+  Version,
+} from "../../../data-types/state-snapshot/Version";
 import { Relay } from "../../relay/Relay";
 
 export type CombinerState<
@@ -16,8 +20,12 @@ export type CombinerState<
         readonly [key in keyof TStateSnapshotsObject &
           symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
       },
-      VersionOfStateSnapshot<
-        TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+      Version<
+        KeyOfVersion<
+          VersionOfStateSnapshot<
+            TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+          >
+        >
       >,
       undefined
     >

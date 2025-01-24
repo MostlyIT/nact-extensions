@@ -10,6 +10,10 @@ import {
   ValueOfStateSnapshot,
   VersionOfStateSnapshot,
 } from "../../../data-types/state-snapshot/StateSnapshot";
+import {
+  KeyOfVersion,
+  Version,
+} from "../../../data-types/state-snapshot/Version";
 import { mapValues } from "../../../utility/mapValues";
 import { ownValues } from "../../../utility/ownValues";
 import { combineVersions } from "../../../utility/state-snapshot/combineVersions";
@@ -70,13 +74,16 @@ export const spawnCombiner = <
             break;
           }
 
-          const combinedVersion =
-            combineVersionResult.value as VersionOfStateSnapshot<
-              {
-                readonly [key in keyof TStateSnapshotsObject &
-                  symbol]: TStateSnapshotsObject[key];
-              }[keyof TStateSnapshotsObject & symbol]
-            >;
+          const combinedVersion = combineVersionResult.value as Version<
+            KeyOfVersion<
+              VersionOfStateSnapshot<
+                {
+                  readonly [key in keyof TStateSnapshotsObject &
+                    symbol]: TStateSnapshotsObject[key];
+                }[keyof TStateSnapshotsObject & symbol]
+              >
+            >
+          >;
 
           dispatch(state.relay, {
             type: "snapshot",
@@ -124,8 +131,12 @@ export const spawnCombiner = <
                 readonly [key in keyof TStateSnapshotsObject &
                   symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
               },
-              VersionOfStateSnapshot<
-                TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+              Version<
+                KeyOfVersion<
+                  VersionOfStateSnapshot<
+                    TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+                  >
+                >
               >,
               undefined
             >

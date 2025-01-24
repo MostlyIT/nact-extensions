@@ -6,6 +6,10 @@ import {
   ValueOfStateSnapshot,
   VersionOfStateSnapshot,
 } from "../../../data-types/state-snapshot/StateSnapshot";
+import {
+  KeyOfVersion,
+  Version,
+} from "../../../data-types/state-snapshot/Version";
 
 export type CombinerMessage<
   TStateSnapshotsObject extends {
@@ -18,8 +22,12 @@ export type CombinerMessage<
           readonly [key in keyof TStateSnapshotsObject &
             symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
         },
-        VersionOfStateSnapshot<
-          TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+        Version<
+          KeyOfVersion<
+            VersionOfStateSnapshot<
+              TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+            >
+          >
         >,
         undefined
       >
