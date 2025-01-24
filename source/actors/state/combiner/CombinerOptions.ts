@@ -1,9 +1,8 @@
-import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
   VersionOfStateSnapshot,
-} from "../../../data-types/StateSnapshot";
+} from "../../../data-types/state-snapshot/StateSnapshot";
 import { RelayOptions } from "../../relay/RelayOptions";
 
 export type CombinerOptions<
@@ -11,16 +10,14 @@ export type CombinerOptions<
     readonly [key: symbol]: StateSnapshot<any, any, any>;
   }
 > = RelayOptions<
-  SnapshotMessage<
-    StateSnapshot<
-      {
-        readonly [key in keyof TStateSnapshotsObject &
-          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-      },
-      VersionOfStateSnapshot<
-        TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
-      >,
-      undefined
-    >
+  StateSnapshot<
+    {
+      readonly [key in keyof TStateSnapshotsObject &
+        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+    },
+    VersionOfStateSnapshot<
+      TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+    >,
+    undefined
   >
 >;

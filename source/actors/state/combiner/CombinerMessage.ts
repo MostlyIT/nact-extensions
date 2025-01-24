@@ -5,7 +5,7 @@ import {
   StateSnapshot,
   ValueOfStateSnapshot,
   VersionOfStateSnapshot,
-} from "../../../data-types/StateSnapshot";
+} from "../../../data-types/state-snapshot/StateSnapshot";
 
 export type CombinerMessage<
   TStateSnapshotsObject extends {
@@ -24,5 +24,5 @@ export type CombinerMessage<
         undefined
       >
     >
-  | SnapshotMessage<TStateSnapshotsObject[keyof TStateSnapshotsObject]>
+  | SnapshotMessage<TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]>
   | UnsetDestinationMessage;
