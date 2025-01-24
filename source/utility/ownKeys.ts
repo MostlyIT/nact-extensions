@@ -4,5 +4,5 @@ export const ownKeys = <
   }
 >(
   object: TInputObject
-): readonly (keyof TInputObject)[] =>
-  Reflect.ownKeys(object) as (keyof TInputObject)[];
+): readonly Exclude<keyof TInputObject, number>[] =>
+  Reflect.ownKeys(object) as Exclude<keyof TInputObject, number>[];

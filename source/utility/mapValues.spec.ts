@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mapValues } from "./mapValues";
+import { ownKeys } from "./ownKeys";
 
 describe("mapValues", () => {
   it("should map the empty object correctly", () => {
@@ -15,12 +16,12 @@ describe("mapValues", () => {
     } = {
       a: 0,
       b: 1,
-      c: 2,
+      2: 2,
     };
     expect(mapValues(input1, (value) => value * value)).toEqual({
       a: 0,
       b: 1,
-      c: 4,
+      2: 4,
     });
 
     const input2: {
@@ -28,7 +29,7 @@ describe("mapValues", () => {
     } = {
       a: "a",
       b: "B",
-      c: null,
+      2: null,
     };
     expect(
       mapValues(input2, (value) =>
@@ -37,7 +38,7 @@ describe("mapValues", () => {
     ).toEqual({
       a: "letter A",
       b: "letter B",
-      c: null,
+      2: null,
     });
   });
 
@@ -85,12 +86,12 @@ describe("mapValues", () => {
     } = {
       [symbol1]: 0,
       b: 1,
-      c: 2,
+      2: 2,
     };
     expect(mapValues(input1, (value) => value * value)).toEqual({
       [symbol1]: 0,
       b: 1,
-      c: 4,
+      2: 4,
     });
 
     const input2: {
@@ -98,7 +99,7 @@ describe("mapValues", () => {
     } = {
       [symbol1]: "a",
       b: "B",
-      c: null,
+      2: null,
     };
     expect(
       mapValues(input2, (value) =>
@@ -107,7 +108,7 @@ describe("mapValues", () => {
     ).toEqual({
       [symbol1]: "letter A",
       b: "letter B",
-      c: null,
+      2: null,
     });
   });
 
@@ -128,5 +129,40 @@ describe("mapValues", () => {
     expect(consumer).toHaveBeenCalledTimes(2);
     expect(consumer).toHaveBeenCalledWith(100, symbol, input);
     expect(consumer).toHaveBeenCalledWith(200, "text", input);
+  });
+
+  it("should have correct types in value mapper", () => {
+    const input: {
+      readonly [key: string]: number;
+    } = {
+      a: 0,
+      b: 1,
+      2: 2,
+    };
+
+    mapValues(input, (value, key, object) => {
+      const _valueTest: number = value;
+      const _keyTest: string = key;
+      const _objectTest: {
+        readonly [key: string]: number;
+      } = object;
+    });
+  });
+
+  it("should supply the right key and value types", () => {
+    const input: {
+      readonly [key: string]: number;
+    } = {
+      a: 0,
+      b: 1,
+      2: 2,
+    };
+
+    const result = mapValues(input, (value) => value * value);
+    const key = ownKeys(result)[0];
+    const value = result[key];
+
+    const _keyTest: string = key;
+    const _valueTest: number = value;
   });
 });

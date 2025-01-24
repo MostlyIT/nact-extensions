@@ -12,18 +12,18 @@ describe("ownKeys", () => {
     } = {
       a: 0,
       b: 1,
-      c: 2,
+      2: 2,
     };
-    expect(new Set(ownKeys(input1))).toEqual(new Set(["a", "b", "c"]));
+    expect(new Set(ownKeys(input1))).toEqual(new Set(["a", "b", "2"]));
 
     const input2: {
       readonly [key: string]: string | null;
     } = {
       a: "a",
       b: "B",
-      c: null,
+      2: null,
     };
-    expect(new Set(ownKeys(input2))).toEqual(new Set(["a", "b", "c"]));
+    expect(new Set(ownKeys(input2))).toEqual(new Set(["a", "b", "2"]));
   });
 
   it("should get keys from objects with symbol keys", () => {
@@ -62,17 +62,31 @@ describe("ownKeys", () => {
     } = {
       [symbol1]: 0,
       b: 1,
-      c: 2,
+      2: 2,
     };
-    expect(new Set(ownKeys(input1))).toEqual(new Set([symbol1, "b", "c"]));
+    expect(new Set(ownKeys(input1))).toEqual(new Set([symbol1, "b", "2"]));
 
     const input2: {
       readonly [key: string | symbol]: string | null;
     } = {
       [symbol1]: "a",
       b: "B",
-      c: null,
+      2: null,
     };
-    expect(new Set(ownKeys(input2))).toEqual(new Set([symbol1, "b", "c"]));
+    expect(new Set(ownKeys(input2))).toEqual(new Set([symbol1, "b", "2"]));
+  });
+
+  it("should supply the right key type", () => {
+    const input: {
+      readonly [key: string]: number;
+    } = {
+      a: 0,
+      b: 1,
+      2: 2,
+    };
+
+    const [key] = ownKeys(input);
+
+    const _keyTest: string = key;
   });
 });

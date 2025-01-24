@@ -1,3 +1,5 @@
+import { ownKeys } from "./ownKeys";
+
 export const mapValues = <
   TInputObject extends {
     readonly [key: string | symbol]: any;
@@ -7,17 +9,14 @@ export const mapValues = <
   object: TInputObject,
   valueMapper: (
     value: TInputObject[keyof TInputObject],
-    key: keyof TInputObject,
+    key: Exclude<keyof TInputObject, number>,
     object: TInputObject
   ) => TOutputValue
 ): {
-  readonly [key in keyof TInputObject]: TOutputValue;
+  readonly [key in Exclude<keyof TInputObject, number>]: TOutputValue;
 } =>
   Object.fromEntries(
-    Reflect.ownKeys(object).map((key) => [
-      key,
-      valueMapper(object[key], key, object),
-    ])
+    ownKeys(object).map((key) => [key, valueMapper(object[key], key, object)])
   ) as {
-    [key in keyof TInputObject]: TOutputValue;
+    [key in Exclude<keyof TInputObject, number>]: TOutputValue;
   };
