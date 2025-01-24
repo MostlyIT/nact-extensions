@@ -5,43 +5,53 @@ classes: {
 }
 
 # Input messages
+Events: {
+  shape: page
+  style.multiple: true
+}
+Events -> DirectAuthority.StateReducer
 StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
   shape: page
   style.multiple: true
 }
-StateSnapshots -> DeterminerAuthority.VersionGate
+StateSnapshots -> DirectAuthority.VersionGate
 Subscribe: {
   shape: page
 }
-Subscribe -> DeterminerAuthority.ReplayPublisher
+Subscribe -> DirectAuthority.ReplayPublisher
 Unsubscribe: {
   shape: page
 }
-Unsubscribe -> DeterminerAuthority.ReplayPublisher
+Unsubscribe -> DirectAuthority.ReplayPublisher
 
 # Main actor
-DeterminerAuthority: {
+DirectAuthority: {
   class: composition
 
   # Internal actors
   Combiner
+  Distinct
   ReplayPublisher
-  SemanticBrander
-  ValueDeterminer
+  StateReducer
+  Versioner
   VersionGate
 
   CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
     shape: page
   }
-  Combiner -> CombinedStateSnapshot -> ValueDeterminer
-  StateSnapshotWithMetaData: StateSnapshot\n+ semantic information\n+ version {
+  Combiner -> CombinedStateSnapshot -> StateReducer
+  DistinctStateSnapshot: StateSnapshot\n+ version {
     shape: page
   }
-  SemanticBrander -> StateSnapshotWithMetaData -> ReplayPublisher
+  Distinct -> DistinctStateSnapshot -> Versioner
   StateSnapshot: StateSnapshot\n+ version {
     shape: page
   }
-  ValueDeterminer -> StateSnapshot -> SemanticBrander
+  StateReducer -> StateSnapshot -> Distinct
+  StateSnapshotWithMetaData: StateSnapshot\n+ semantic information\n+ version {
+    shape: page
+  }
+  Versioner -> StateSnapshotWithMetaData -> ReplayPublisher
   StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
     shape: page
     style.multiple: true
@@ -53,7 +63,7 @@ DeterminerAuthority: {
 OutputStateSnapshot: StateSnapshot\n+ semantic information\n+ version {
   shape: page
 }
-DeterminerAuthority.ReplayPublisher -> OutputStateSnapshot -> Subscribers
+DirectAuthority.ReplayPublisher -> OutputStateSnapshot -> Subscribers
 
 # Environment actors
 Subscribers: {

@@ -5,53 +5,43 @@ classes: {
 }
 
 # Input messages
-Events: {
-  shape: page
-  style.multiple: true
-}
-Events -> ControlAuthority.StateReducer
 StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
   shape: page
   style.multiple: true
 }
-StateSnapshots -> ControlAuthority.VersionGate
+StateSnapshots -> DerivedAuthority.VersionGate
 Subscribe: {
   shape: page
 }
-Subscribe -> ControlAuthority.ReplayPublisher
+Subscribe -> DerivedAuthority.ReplayPublisher
 Unsubscribe: {
   shape: page
 }
-Unsubscribe -> ControlAuthority.ReplayPublisher
+Unsubscribe -> DerivedAuthority.ReplayPublisher
 
 # Main actor
-ControlAuthority: {
+DerivedAuthority: {
   class: composition
 
   # Internal actors
   Combiner
-  Distinct
   ReplayPublisher
-  StateReducer
-  Versioner
+  SemanticBrander
+  ValueDeterminer
   VersionGate
 
   CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
     shape: page
   }
-  Combiner -> CombinedStateSnapshot -> StateReducer
-  DistinctStateSnapshot: StateSnapshot\n+ version {
-    shape: page
-  }
-  Distinct -> DistinctStateSnapshot -> Versioner
-  StateSnapshot: StateSnapshot\n+ version {
-    shape: page
-  }
-  StateReducer -> StateSnapshot -> Distinct
+  Combiner -> CombinedStateSnapshot -> ValueDeterminer
   StateSnapshotWithMetaData: StateSnapshot\n+ semantic information\n+ version {
     shape: page
   }
-  Versioner -> StateSnapshotWithMetaData -> ReplayPublisher
+  SemanticBrander -> StateSnapshotWithMetaData -> ReplayPublisher
+  StateSnapshot: StateSnapshot\n+ version {
+    shape: page
+  }
+  ValueDeterminer -> StateSnapshot -> SemanticBrander
   StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
     shape: page
     style.multiple: true
@@ -63,7 +53,7 @@ ControlAuthority: {
 OutputStateSnapshot: StateSnapshot\n+ semantic information\n+ version {
   shape: page
 }
-ControlAuthority.ReplayPublisher -> OutputStateSnapshot -> Subscribers
+DerivedAuthority.ReplayPublisher -> OutputStateSnapshot -> Subscribers
 
 # Environment actors
 Subscribers: {
