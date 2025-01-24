@@ -2,10 +2,11 @@ import { SetDestinationMessage } from "../../../data-types/messages/SetDestinati
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import { UnsetDestinationMessage } from "../../../data-types/messages/UnsetDestinationMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
+import { Version } from "../../../data-types/state-snapshot/Version";
 
 export type VersionerMessage<
   TValue,
-  TInputVersion extends { readonly [key: symbol]: number },
+  TInputVersion extends Version<any>,
   TSemanticSymbol extends symbol
 > =
   | SetDestinationMessage<

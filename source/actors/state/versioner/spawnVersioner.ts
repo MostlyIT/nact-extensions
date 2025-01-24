@@ -4,6 +4,7 @@ import {
   LocalActorSystemRef,
   spawn,
 } from "@nact/core";
+import { Version } from "../../../data-types/state-snapshot/Version";
 import { spawnRelay } from "../../relay/spawnRelay";
 import { Versioner } from "./Versioner";
 import { VersionerMessage } from "./VersionerMessage";
@@ -12,7 +13,7 @@ import { VersionerState } from "./VersionerState";
 
 export const spawnVersioner = <
   TValue,
-  TInputVersion extends { readonly [key: symbol]: number },
+  TInputVersion extends Version<any>,
   TSemanticSymbol extends symbol
 >(
   parent: LocalActorSystemRef | LocalActorRef<any>,

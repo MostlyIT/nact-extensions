@@ -1,6 +1,7 @@
 import { LocalActorRef } from "@nact/core";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
+import { Version } from "../../../data-types/state-snapshot/Version";
 import { VersionerMessage } from "./VersionerMessage";
 
 declare const versioner: unique symbol;
@@ -10,7 +11,7 @@ declare const versioner: unique symbol;
  */
 export type Versioner<
   TValue,
-  TInputVersion extends { readonly [key: symbol]: number },
+  TInputVersion extends Version<any>,
   TSemanticSymbol extends symbol
 > = { [versioner]: true } & LocalActorRef<
   VersionerMessage<TValue, TInputVersion, TSemanticSymbol>

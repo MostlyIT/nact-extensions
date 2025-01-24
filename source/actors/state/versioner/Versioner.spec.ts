@@ -1,5 +1,6 @@
 import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, it, vi } from "vitest";
+import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
 import { spawnVersioner } from "./spawnVersioner";
 import { OutputSnapshotMessageOfVersioner } from "./Versioner";
@@ -256,7 +257,7 @@ describe("Versioner", () => {
       const versionerSymbol = Symbol();
       const versioner = spawnVersioner<
         number,
-        { [someOtherSymbol]: number },
+        Version<typeof someOtherSymbol>,
         typeof versionerSymbol
       >(system, versionerSymbol, {
         initialDestination: consumer,
@@ -305,7 +306,7 @@ describe("Versioner", () => {
       const versionerSymbol = Symbol();
       const versioner = spawnVersioner<
         number,
-        { [someOtherSymbol]: number },
+        Version<typeof someOtherSymbol>,
         typeof versionerSymbol
       >(system, versionerSymbol, {
         initialDestination: consumer,
@@ -421,7 +422,7 @@ describe("Versioner", () => {
       const versionerSymbol = Symbol();
       const versioner = spawnVersioner<
         number,
-        { [someOtherSymbol]: number },
+        Version<typeof someOtherSymbol>,
         typeof versionerSymbol
       >(system, versionerSymbol, {
         initialDestination: consumer,
