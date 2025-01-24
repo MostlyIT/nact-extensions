@@ -14,6 +14,7 @@ import { mapValues } from "../../../utility/mapValues";
 import { ownValues } from "../../../utility/ownValues";
 import { combineVersions } from "../../../utility/state-snapshot/combineVersions";
 import { spawnRelay } from "../../relay/spawnRelay";
+import { Combiner } from "./Combiner";
 import { CombinerMessage } from "./CombinerMessage";
 import { CombinerOptions } from "./CombinerOptions";
 import { CombinerState } from "./CombinerState";
@@ -30,7 +31,7 @@ export const spawnCombiner = <
     >;
   },
   options?: CombinerOptions<TStateSnapshotsObject>
-) =>
+): Combiner<TStateSnapshotsObject> =>
   spawn(
     parent,
     (
@@ -132,4 +133,4 @@ export const spawnCombiner = <
         };
       },
     }
-  );
+  ) as Combiner<TStateSnapshotsObject>;
