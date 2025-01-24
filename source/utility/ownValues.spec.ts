@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { ownKeys } from "./ownKeys";
+import { ownValues } from "./ownValues";
 
-describe("ownKeys", () => {
-  it("should get no keys from empty object", () => {
-    expect(ownKeys({})).toEqual([]);
+describe("ownValues", () => {
+  it("should get no values from empty object", () => {
+    expect(ownValues({})).toEqual([]);
   });
 
-  it("should get keys from objects with string keys", () => {
+  it("should get values from objects with string keys", () => {
     const input1: {
       readonly [key: string]: number;
     } = {
@@ -14,7 +14,7 @@ describe("ownKeys", () => {
       b: 1,
       2: 2,
     };
-    expect(new Set(ownKeys(input1))).toEqual(new Set(["a", "b", "2"]));
+    expect(new Set(ownValues(input1))).toEqual(new Set([0, 1, 2]));
 
     const input2: {
       readonly [key: string]: string | null;
@@ -23,10 +23,10 @@ describe("ownKeys", () => {
       b: "B",
       2: null,
     };
-    expect(new Set(ownKeys(input2))).toEqual(new Set(["a", "b", "2"]));
+    expect(new Set(ownValues(input2))).toEqual(new Set(["a", "B", null]));
   });
 
-  it("should get keys from objects with symbol keys", () => {
+  it("should get values from objects with symbol keys", () => {
     const symbol1 = Symbol();
     const symbol2 = Symbol();
     const symbol3 = Symbol();
@@ -38,9 +38,7 @@ describe("ownKeys", () => {
       [symbol2]: 1,
       [symbol3]: 2,
     };
-    expect(new Set(ownKeys(input1))).toEqual(
-      new Set([symbol1, symbol2, symbol3])
-    );
+    expect(new Set(ownValues(input1))).toEqual(new Set([0, 1, 2]));
 
     const input2: {
       readonly [key: symbol]: string | null;
@@ -49,12 +47,10 @@ describe("ownKeys", () => {
       [symbol2]: "B",
       [symbol3]: null,
     };
-    expect(new Set(ownKeys(input2))).toEqual(
-      new Set([symbol1, symbol2, symbol3])
-    );
+    expect(new Set(ownValues(input2))).toEqual(new Set(["a", "B", null]));
   });
 
-  it("should get keys from objects with mixed type keys", () => {
+  it("should get values from objects with mixed type keys", () => {
     const symbol1 = Symbol();
 
     const input1: {
@@ -64,7 +60,7 @@ describe("ownKeys", () => {
       b: 1,
       2: 2,
     };
-    expect(new Set(ownKeys(input1))).toEqual(new Set([symbol1, "b", "2"]));
+    expect(new Set(ownValues(input1))).toEqual(new Set([0, 1, 2]));
 
     const input2: {
       readonly [key: string | symbol]: string | null;
@@ -73,10 +69,10 @@ describe("ownKeys", () => {
       b: "B",
       2: null,
     };
-    expect(new Set(ownKeys(input2))).toEqual(new Set([symbol1, "b", "2"]));
+    expect(new Set(ownValues(input2))).toEqual(new Set(["a", "B", null]));
   });
 
-  it("should supply the right key type", () => {
+  it("should supply the right value type", () => {
     const input: {
       readonly [key: string]: number;
     } = {
@@ -85,8 +81,8 @@ describe("ownKeys", () => {
       2: 2,
     };
 
-    const [key] = ownKeys(input);
+    const value = ownValues(input)[0];
 
-    const _keyTest: string = key;
+    const _valueTest: number = value; // Type check
   });
 });
