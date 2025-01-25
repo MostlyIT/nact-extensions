@@ -27,12 +27,12 @@ DerivedAuthority: {
   Combiner
   ReplayPublisher
   SemanticBrander
-  ValueDeterminer
+  ValueSelector
 
   CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
     shape: page
   }
-  Combiner -> CombinedStateSnapshot -> ValueDeterminer
+  Combiner -> CombinedStateSnapshot -> ValueSelector
   StateSnapshotWithMetaData: StateSnapshot\n+ semantic information\n+ version {
     shape: page
   }
@@ -40,7 +40,7 @@ DerivedAuthority: {
   StateSnapshot: StateSnapshot\n+ version {
     shape: page
   }
-  ValueDeterminer -> StateSnapshot -> SemanticBrander
+  ValueSelector -> StateSnapshot -> SemanticBrander
 }
 
 # Output messages
