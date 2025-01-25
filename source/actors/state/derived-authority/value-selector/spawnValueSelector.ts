@@ -22,7 +22,7 @@ export const spawnValueSelector = <
     readonly [key: symbol]: StateSnapshot<any, any, any>;
   },
   TOutputValue,
-  TCache
+  TCache = undefined
 >(
   parent: LocalActorSystemRef | LocalActorRef<any>,
   valueSelector: (
@@ -30,9 +30,8 @@ export const spawnValueSelector = <
       readonly [key in keyof TStateSnapshotsObject &
         symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
     },
-    cache: TCache
-  ) => { value: TOutputValue; cache: TCache },
-  initialCache: TCache,
+    cache: TCache | undefined
+  ) => { value: TOutputValue; cache: TCache | undefined },
   options?: ValueSelectorOptions<TStateSnapshotsObject, TOutputValue>
 ): ValueSelector<TStateSnapshotsObject, TOutputValue> =>
   spawn(
@@ -69,7 +68,7 @@ export const spawnValueSelector = <
     },
     {
       initialStateFunc: (context) => ({
-        cache: initialCache,
+        cache: undefined,
         relay: spawnRelay(context.self, options),
       }),
     }

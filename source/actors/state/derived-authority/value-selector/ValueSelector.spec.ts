@@ -55,7 +55,6 @@ describe("ValueSelector", () => {
           value: `${inputs[sourceASymbol]} ${inputs[sourceBSymbol]}`,
           cache: undefined,
         }),
-        undefined,
         options
       ),
     (relayLike) =>
@@ -148,16 +147,12 @@ describe("ValueSelector", () => {
         },
         string,
         null
-      >(
-        system,
-        (inputs, cache) => {
-          const numValue: number = inputs[sourceASymbol]; // Type test
-          const strValue: string = inputs[sourceBSymbol]; // Type test
-          const symbolValue: null = cache; // Type test
-          return { value: `${numValue} ${strValue} ${symbolValue}`, cache };
-        },
-        null
-      );
+      >(system, (inputs, cache) => {
+        const numValue: number = inputs[sourceASymbol]; // Type test
+        const strValue: string = inputs[sourceBSymbol]; // Type test
+        const symbolValue: null | undefined = cache; // Type test
+        return { value: `${numValue} ${strValue} ${symbolValue}`, cache };
+      });
     });
 
     it("should select value based on inputs and value selector", async () => {
@@ -181,14 +176,10 @@ describe("ValueSelector", () => {
         },
         string,
         typeof mockCache
-      >(
-        system,
-        (inputs) => ({
-          value: `${inputs[sourceASymbol]} + ${inputs[sourceBSymbol]}`,
-          cache: mockCache,
-        }),
-        mockCache
-      );
+      >(system, (inputs) => ({
+        value: `${inputs[sourceASymbol]} + ${inputs[sourceBSymbol]}`,
+        cache: mockCache,
+      }));
 
       const consumerFunction = vi.fn();
       const consumer = spawn(system, (_state, message) =>
@@ -248,13 +239,11 @@ describe("ValueSelector", () => {
             typeof sourceBSymbol
           >;
         },
-        string,
-        null
-      >(
-        system,
-        (inputs) => ({ value: String(inputs[sourceASymbol]), cache: null }),
-        null
-      );
+        string
+      >(system, (inputs) => ({
+        value: String(inputs[sourceASymbol]),
+        cache: undefined,
+      }));
 
       const consumerFunction = vi.fn();
       const consumer = spawn(system, (_state, message) =>
@@ -306,13 +295,11 @@ describe("ValueSelector", () => {
             typeof sourceASymbol
           >;
         },
-        number,
-        null
-      >(
-        system,
-        (inputs) => ({ value: inputs[sourceASymbol], cache: null }),
-        null
-      );
+        number
+      >(system, (inputs) => ({
+        value: inputs[sourceASymbol],
+        cache: undefined,
+      }));
 
       const consumerFunction = vi.fn();
       const consumer = spawn(system, (_state, message) =>
@@ -350,69 +337,6 @@ describe("ValueSelector", () => {
       );
     });
 
-    it("should support initial cache", async () => {
-      const system = start();
-
-      const cacheRecorder = vi.fn();
-
-      const listSymbol = Symbol();
-      const targetSymbol = Symbol();
-      // Create selector that finds index of target in list
-      const selector = spawnValueSelector<
-        {
-          [listSymbol]: StateSnapshot<
-            number[],
-            Version<typeof listSymbol>,
-            typeof listSymbol
-          >;
-          [targetSymbol]: StateSnapshot<
-            number,
-            Version<typeof targetSymbol>,
-            typeof targetSymbol
-          >;
-        },
-        number | null,
-        number | null
-      >(
-        system,
-        (inputs, lastFoundIndex) => {
-          cacheRecorder(lastFoundIndex);
-
-          const list = inputs[listSymbol];
-          const target = inputs[targetSymbol];
-
-          // Start search from last found index if available
-          if (lastFoundIndex !== null && list[lastFoundIndex] === target) {
-            return { value: lastFoundIndex, cache: lastFoundIndex };
-          }
-
-          const indexWithNegative = list.indexOf(target);
-          const index = indexWithNegative !== -1 ? indexWithNegative : null;
-          return { value: index, cache: index };
-        },
-        1
-      );
-
-      dispatch(selector, {
-        type: "snapshot",
-        snapshot: {
-          value: {
-            [listSymbol]: [10, 20, 30, 40],
-            [targetSymbol]: 30,
-          },
-          version: {
-            [listSymbol]: 1,
-            [targetSymbol]: 1,
-          },
-          semanticSymbol: undefined,
-        },
-      });
-
-      await delay(10);
-      expect(cacheRecorder).toHaveBeenCalledTimes(1);
-      expect(cacheRecorder).toHaveBeenNthCalledWith(1, 1);
-    });
-
     it("should carry over cache between subsequent value selector function calls", async () => {
       const system = start();
 
@@ -435,26 +359,22 @@ describe("ValueSelector", () => {
           >;
         },
         number | null,
-        number | null
-      >(
-        system,
-        (inputs, lastFoundIndex) => {
-          cacheRecorder(lastFoundIndex);
+        number
+      >(system, (inputs, lastFoundIndex) => {
+        cacheRecorder(lastFoundIndex);
 
-          const list = inputs[listSymbol];
-          const target = inputs[targetSymbol];
+        const list = inputs[listSymbol];
+        const target = inputs[targetSymbol];
 
-          // Start search from last found index if available
-          if (lastFoundIndex !== null && list[lastFoundIndex] === target) {
-            return { value: lastFoundIndex, cache: lastFoundIndex };
-          }
+        // Start search from last found index if available
+        if (lastFoundIndex !== undefined && list[lastFoundIndex] === target) {
+          return { value: lastFoundIndex, cache: lastFoundIndex };
+        }
 
-          const indexWithNegative = list.indexOf(target);
-          const index = indexWithNegative !== -1 ? indexWithNegative : null;
-          return { value: index, cache: index };
-        },
-        null
-      );
+        const indexWithNegative = list.indexOf(target);
+        const index = indexWithNegative !== -1 ? indexWithNegative : null;
+        return { value: index, cache: index ?? undefined };
+      });
 
       // First search
       dispatch(selector, {
@@ -490,7 +410,7 @@ describe("ValueSelector", () => {
 
       await delay(10);
       expect(cacheRecorder).toHaveBeenCalledTimes(2);
-      expect(cacheRecorder).toHaveBeenNthCalledWith(1, null);
+      expect(cacheRecorder).toHaveBeenNthCalledWith(1, undefined);
       expect(cacheRecorder).toHaveBeenNthCalledWith(2, 2);
     });
   });

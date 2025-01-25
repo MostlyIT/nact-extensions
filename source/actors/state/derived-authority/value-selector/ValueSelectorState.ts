@@ -13,9 +13,9 @@ export type ValueSelectorState<
     readonly [key: symbol]: StateSnapshot<any, any, any>;
   },
   TOutputValue,
-  TCache
+  TCache = undefined
 > = {
-  cache: TCache;
+  cache: TCache | undefined;
   relay: Relay<
     StateSnapshot<
       TOutputValue,
