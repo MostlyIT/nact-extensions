@@ -1,0 +1,42 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+SetDestination: {
+  shape: page
+}
+SetDestination -> ValueSelector.Relay
+CombinedStateSnapshot: CombinedStateSnapshot\n+ version\n(+ semantic information) {
+  shape: page
+}
+CombinedStateSnapshot -> ValueSelector.Self
+UnsetDestination: {
+  shape: page
+}
+UnsetDestination -> ValueSelector.Relay
+
+# Main actor
+ValueSelector: {
+  class: composition
+
+  # Internal actors
+  Relay
+  Self
+
+  Snapshot: Snapshot\n+ version {
+    shape: page
+  }
+  Self -> Snapshot -> Relay
+}
+
+# Output messages
+StateSnapshot: Snapshot\n+ version {
+  shape: page
+}
+ValueSelector.Relay -> StateSnapshot -> Destination
+
+# Environment actors
+Destination
