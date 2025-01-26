@@ -23,6 +23,8 @@ import { CombinerMessage } from "./CombinerMessage";
 import { CombinerOptions } from "./CombinerOptions";
 import { CombinerState } from "./CombinerState";
 
+const unsetSymbol = Symbol();
+
 export const spawnCombiner = <
   TStateSnapshotsObject extends {
     readonly [key: symbol]: StateSnapshot<any, any, any>;
@@ -39,9 +41,9 @@ export const spawnCombiner = <
   spawn(
     parent,
     (
-      state: CombinerState<TStateSnapshotsObject>,
+      state: CombinerState<TStateSnapshotsObject, typeof unsetSymbol>,
       message: CombinerMessage<TStateSnapshotsObject>
-    ): CombinerState<TStateSnapshotsObject> => {
+    ): CombinerState<TStateSnapshotsObject, typeof unsetSymbol> => {
       switch (message.type) {
         case "snapshot":
           state = {
@@ -58,7 +60,7 @@ export const spawnCombiner = <
 
           if (
             partialStateSnapshotsList.some(
-              (stateSnapshot) => stateSnapshot === undefined
+              (stateSnapshot) => stateSnapshot === unsetSymbol
             )
           ) {
             break;
@@ -110,20 +112,13 @@ export const spawnCombiner = <
       return state;
     },
     {
-      initialStateFunc: (context): CombinerState<TStateSnapshotsObject> => {
-        for (const key of Reflect.ownKeys(stateSnapshotSources)) {
-          const stateSnapshotSource = stateSnapshotSources[key as symbol];
-          dispatch(stateSnapshotSource, {
-            type: "subscribe",
-            // @ts-expect-error
-            subscriber: context.self,
-          });
-        }
-
+      initialStateFunc: (
+        context
+      ): CombinerState<TStateSnapshotsObject, typeof unsetSymbol> => {
         return {
           combinedStateSnapshotObject: mapValues(
             stateSnapshotSources,
-            () => undefined
+            () => unsetSymbol
           ),
           relay: spawnRelay<
             StateSnapshot<

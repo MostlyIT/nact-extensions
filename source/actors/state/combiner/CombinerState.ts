@@ -12,7 +12,8 @@ import { Relay } from "../../relay/Relay";
 export type CombinerState<
   TStateSnapshotsObject extends {
     readonly [key: symbol]: StateSnapshot<any, any, any>;
-  }
+  },
+  TUnsetSymbol extends symbol
 > = {
   readonly relay: Relay<
     StateSnapshot<
@@ -33,6 +34,6 @@ export type CombinerState<
   readonly combinedStateSnapshotObject: {
     readonly [key in keyof TStateSnapshotsObject & symbol]:
       | TStateSnapshotsObject[key]
-      | undefined;
+      | TUnsetSymbol;
   };
 };

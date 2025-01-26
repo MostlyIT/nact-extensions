@@ -1,6 +1,5 @@
 import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, it, vi } from "vitest";
-import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
 import { delay } from "../../../utility/__testing__/delay";
 import { spawnCombiner } from "./spawnCombiner";
 
@@ -459,7 +458,7 @@ describe("Combiner", () => {
       });
     });
 
-    it("should subscribe to all provided sources on initialization", async () => {
+    it("should not subscribe to any provided sources on initialization", async () => {
       const system = start();
 
       const sourceASubscribeFunction = vi.fn();
@@ -481,26 +480,14 @@ describe("Combiner", () => {
       const sourceSymbolA = Symbol();
       const sourceSymbolB = Symbol();
 
-      const combiner = spawnCombiner(system, {
+      spawnCombiner(system, {
         [sourceSymbolA]: sourceA,
         [sourceSymbolB]: sourceB,
       });
 
       await delay(10);
-
-      expect(sourceASubscribeFunction).toHaveBeenCalledTimes(1);
-      expect(sourceASubscribeFunction).toHaveBeenNthCalledWith(1, {
-        type: "subscribe",
-        // @ts-expect-error
-        subscriber: combiner,
-      } satisfies SubscribeMessage<any>);
-
-      expect(sourceBSubscribeFunction).toHaveBeenCalledTimes(1);
-      expect(sourceBSubscribeFunction).toHaveBeenNthCalledWith(1, {
-        type: "subscribe",
-        // @ts-expect-error
-        subscriber: combiner,
-      } satisfies SubscribeMessage<any>);
+      expect(sourceASubscribeFunction).not.toHaveBeenCalled();
+      expect(sourceBSubscribeFunction).not.toHaveBeenCalled();
     });
   });
 });
