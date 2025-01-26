@@ -1,63 +1,91 @@
-import { start } from "@nact/core";
-import { describe, it } from "vitest";
-import { shouldPublishToConsumersEveryTimeTestCase } from "./__testing__/shouldPublishToConsumersEveryTimeTestCase";
-import { shouldSupportInitialSubscribersSet } from "./__testing__/shouldSupportInitialSubscribersSet";
-import { shouldSupportMultipleSubscribersTestCase } from "./__testing__/shouldSupportMultipleSubscribersTestCase";
-import { shouldSupportPublishingTestCase } from "./__testing__/shouldSupportPublishingTestCase";
-import { shouldSupportSubscribingConsumerTestCase } from "./__testing__/shouldSupportSubscribingConsumerTestCase";
-import { shouldSupportUnsubscribingConsumerTestCase } from "./__testing__/shouldSupportUnsubscribingConsumerTestCase";
-import { shouldSupportUnsubscribingWithMultipleConsumersTestCase } from "./__testing__/shouldSupportUnsubscribingWithMultipleConsumersTestCase";
+import { dispatch, spawn, start } from "@nact/core";
+import { Set } from "immutable";
+import { describe, expect, it, vi } from "vitest";
+import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
+import { delay } from "../../utility/__testing__/delay";
+import { testPublisherLike } from "./__testing__/testPublisherLike";
+import { Publisher } from "./Publisher";
 import { spawnPublisher } from "./spawnPublisher";
 
 describe("Publisher", () => {
+  // @ts-expect-error
+  testPublisherLike<Publisher<number>, number>(
+    spawnPublisher,
+    (publisherLike) =>
+      dispatch(publisherLike, {
+        type: "snapshot",
+        snapshot: 1000,
+      }),
+    1000,
+    (publisherLike) =>
+      dispatch(publisherLike, {
+        type: "snapshot",
+        snapshot: 314,
+      }),
+    314,
+    (publisherLike) =>
+      dispatch(publisherLike, {
+        type: "snapshot",
+        snapshot: 1,
+      }),
+    1
+  );
+
   describe("publishing", () => {
-    it("should support publishing", async () => {
+    it("should publish inputted snapshot messages", async () => {
       const system = start();
-      const publisher = spawnPublisher<number>(system);
-      await shouldSupportPublishingTestCase(system, publisher);
-    });
 
-    it("should publish to consumers every time", async () => {
-      const system = start();
-      const publisher = spawnPublisher<number>(system);
-      await shouldPublishToConsumersEveryTimeTestCase(system, publisher);
-    });
-  });
-
-  describe("subscribing", () => {
-    it("should support subscribing a consumer", async () => {
-      const system = start();
-      const publisher = spawnPublisher<number>(system);
-      await shouldSupportSubscribingConsumerTestCase(system, publisher);
-    });
-
-    it("should support having multiple subscribers", async () => {
-      const system = start();
-      const publisher = spawnPublisher<number>(system);
-      await shouldSupportMultipleSubscribersTestCase(system, publisher);
-    });
-
-    it("should support initial subscribers set", async () => {
-      await shouldSupportInitialSubscribersSet((parent, options) =>
-        spawnPublisher(parent, options)
+      const consumerFunction1 = vi.fn();
+      const consumer1 = spawn(system, (_state, message) =>
+        consumerFunction1(message)
       );
-    });
-  });
 
-  describe("unsubscribing", () => {
-    it("should support unsubscribe a consumer", async () => {
-      const system = start();
-      const publisher = spawnPublisher<number>(system);
-      await shouldSupportUnsubscribingConsumerTestCase(system, publisher);
-    });
-
-    it("should support unsubscribing when multiple consumers are subscribed", async () => {
-      const system = start();
-      const publisher = spawnPublisher<number>(system);
-      await shouldSupportUnsubscribingWithMultipleConsumersTestCase(
-        system,
-        publisher
+      const consumerFunction2 = vi.fn();
+      const consumer2 = spawn(system, (_state, message) =>
+        consumerFunction2(message)
       );
+
+      const publisher = spawnPublisher(system, {
+        initialSubscribersSet: Set([consumer1, consumer2]),
+      });
+
+      await delay(10);
+      expect(consumerFunction1).not.toHaveBeenCalled();
+      expect(consumerFunction2).not.toHaveBeenCalled();
+
+      dispatch(publisher, {
+        type: "snapshot",
+        snapshot: 1000,
+      });
+
+      await delay(10);
+      expect(consumerFunction1).toHaveBeenCalledTimes(1);
+      expect(consumerFunction1).toHaveBeenNthCalledWith(1, {
+        type: "snapshot",
+        snapshot: 1000,
+      } satisfies SnapshotMessage<number>);
+      expect(consumerFunction2).toHaveBeenCalledTimes(1);
+      expect(consumerFunction2).toHaveBeenNthCalledWith(1, {
+        type: "snapshot",
+        snapshot: 1000,
+      } satisfies SnapshotMessage<number>);
+
+      dispatch(publisher, {
+        type: "snapshot",
+        snapshot: 314,
+      });
+
+      await delay(10);
+      expect(consumerFunction1).toHaveBeenCalledTimes(2);
+      expect(consumerFunction1).toHaveBeenNthCalledWith(2, {
+        type: "snapshot",
+        snapshot: 314,
+      } satisfies SnapshotMessage<number>);
+      expect(consumerFunction2).toHaveBeenCalledTimes(2);
+      expect(consumerFunction2).toHaveBeenNthCalledWith(2, {
+        type: "snapshot",
+        snapshot: 314,
+      } satisfies SnapshotMessage<number>);
     });
   });
 });

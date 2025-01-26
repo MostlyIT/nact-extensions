@@ -1,75 +1,127 @@
-import { start } from "@nact/core";
-import { describe, it } from "vitest";
-import { shouldPublishToConsumersEveryTimeTestCase } from "../publisher/__testing__/shouldPublishToConsumersEveryTimeTestCase";
-import { shouldSupportInitialSubscribersSet } from "../publisher/__testing__/shouldSupportInitialSubscribersSet";
-import { shouldSupportMultipleSubscribersTestCase } from "../publisher/__testing__/shouldSupportMultipleSubscribersTestCase";
-import { shouldSupportPublishingTestCase } from "../publisher/__testing__/shouldSupportPublishingTestCase";
-import { shouldSupportSubscribingConsumerTestCase } from "../publisher/__testing__/shouldSupportSubscribingConsumerTestCase";
-import { shouldSupportUnsubscribingConsumerTestCase } from "../publisher/__testing__/shouldSupportUnsubscribingConsumerTestCase";
-import { shouldSupportUnsubscribingWithMultipleConsumersTestCase } from "../publisher/__testing__/shouldSupportUnsubscribingWithMultipleConsumersTestCase";
-import { shouldReplayMessagesToNewSubscribersTestCase } from "./__testing__/shouldReplayMessagesToNewSubscribersTestCase";
+import { dispatch, spawn, start } from "@nact/core";
+import { describe, expect, it, vi } from "vitest";
+import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
+import { delay } from "../../utility/__testing__/delay";
+import { testPublisherLike } from "../publisher/__testing__/testPublisherLike";
+import { ReplayPublisher } from "./ReplayPublisher";
 import { spawnReplayPublisher } from "./spawnReplayPublisher";
 
 describe("ReplayPublisher", () => {
-  describe("publishing", () => {
-    it("should support publishing", async () => {
-      const system = start();
-      const replayPublisher = spawnReplayPublisher<number>(system, 0);
-      await shouldSupportPublishingTestCase(system, replayPublisher);
+  // @ts-expect-error
+  testPublisherLike<ReplayPublisher<number>, number>(
+    (parent, options) => spawnReplayPublisher(parent, 0, options),
+    (publisherLike) =>
+      dispatch(publisherLike, {
+        type: "snapshot",
+        snapshot: 1000,
+      }),
+    1000,
+    (publisherLike) =>
+      dispatch(publisherLike, {
+        type: "snapshot",
+        snapshot: 314,
+      }),
+    314,
+    (publisherLike) =>
+      dispatch(publisherLike, {
+        type: "snapshot",
+        snapshot: 1,
+      }),
+    1
+  );
+
+  it("should replay snapshot messages to new subscribers", async () => {
+    const system = start();
+
+    const consumerFunction1 = vi.fn();
+    const consumer1 = spawn(system, (_state, message) =>
+      consumerFunction1(message)
+    );
+
+    const consumerFunction2 = vi.fn();
+    const consumer2 = spawn(system, (_state, message) =>
+      consumerFunction2(message)
+    );
+
+    const consumerFunction3 = vi.fn();
+    const consumer3 = spawn(system, (_state, message) =>
+      consumerFunction3(message)
+    );
+
+    const replayPublisher = spawnReplayPublisher(system, 2);
+
+    dispatch(replayPublisher, {
+      type: "snapshot",
+      snapshot: 1000,
+    });
+    dispatch(replayPublisher, {
+      type: "subscribe",
+      subscriber: consumer1,
     });
 
-    it("should publish to consumers every time", async () => {
-      const system = start();
-      const replayPublisher = spawnReplayPublisher<number>(system, 1);
-      await shouldPublishToConsumersEveryTimeTestCase(system, replayPublisher);
-    });
-  });
+    await delay(10);
+    expect(consumerFunction1).toHaveBeenCalledTimes(1);
+    expect(consumerFunction1).toHaveBeenNthCalledWith(1, {
+      type: "snapshot",
+      snapshot: 1000,
+    } satisfies SnapshotMessage<number>);
+    expect(consumerFunction2).not.toHaveBeenCalled();
+    expect(consumerFunction3).not.toHaveBeenCalled();
 
-  describe("replaying", () => {
-    it("should replay messages to new subscribers", async () => {
-      const system = start();
-      const replayPublisher = spawnReplayPublisher<number>(system, 2);
-      await shouldReplayMessagesToNewSubscribersTestCase(
-        system,
-        replayPublisher
-      );
+    dispatch(replayPublisher, {
+      type: "snapshot",
+      snapshot: 314,
     });
-  });
-
-  describe("subscribing", () => {
-    it("should support subscribing a consumer", async () => {
-      const system = start();
-      const replayPublisher = spawnReplayPublisher<number>(system, 0);
-      await shouldSupportSubscribingConsumerTestCase(system, replayPublisher);
+    dispatch(replayPublisher, {
+      type: "subscribe",
+      subscriber: consumer2,
     });
 
-    it("should support having multiple subscribers", async () => {
-      const system = start();
-      const replayPublisher = spawnReplayPublisher<number>(system, 3);
-      await shouldSupportMultipleSubscribersTestCase(system, replayPublisher);
+    await delay(10);
+    expect(consumerFunction1).toHaveBeenCalledTimes(2);
+    expect(consumerFunction1).toHaveBeenNthCalledWith(2, {
+      type: "snapshot",
+      snapshot: 314,
+    } satisfies SnapshotMessage<number>);
+    expect(consumerFunction2).toHaveBeenCalledTimes(2);
+    expect(consumerFunction2).toHaveBeenNthCalledWith(1, {
+      type: "snapshot",
+      snapshot: 1000,
+    } satisfies SnapshotMessage<number>);
+    expect(consumerFunction2).toHaveBeenNthCalledWith(2, {
+      type: "snapshot",
+      snapshot: 314,
+    } satisfies SnapshotMessage<number>);
+    expect(consumerFunction3).not.toHaveBeenCalled();
+
+    dispatch(replayPublisher, {
+      type: "snapshot",
+      snapshot: 1,
+    });
+    dispatch(replayPublisher, {
+      type: "subscribe",
+      subscriber: consumer3,
     });
 
-    it("should support initial subscribers set", async () => {
-      await shouldSupportInitialSubscribersSet((parent, options) =>
-        spawnReplayPublisher(parent, 2, options)
-      );
-    });
-  });
-
-  describe("unsubscribing", () => {
-    it("should support unsubscribe a consumer", async () => {
-      const system = start();
-      const replayPublisher = spawnReplayPublisher<number>(system, 4);
-      await shouldSupportUnsubscribingConsumerTestCase(system, replayPublisher);
-    });
-
-    it("should support unsubscribing when multiple consumers are subscribed", async () => {
-      const system = start();
-      const replayPublisher = spawnReplayPublisher<number>(system, 5);
-      await shouldSupportUnsubscribingWithMultipleConsumersTestCase(
-        system,
-        replayPublisher
-      );
-    });
+    await delay(10);
+    expect(consumerFunction1).toHaveBeenCalledTimes(3);
+    expect(consumerFunction1).toHaveBeenNthCalledWith(3, {
+      type: "snapshot",
+      snapshot: 1,
+    } satisfies SnapshotMessage<number>);
+    expect(consumerFunction2).toHaveBeenCalledTimes(3);
+    expect(consumerFunction2).toHaveBeenNthCalledWith(3, {
+      type: "snapshot",
+      snapshot: 1,
+    } satisfies SnapshotMessage<number>);
+    expect(consumerFunction3).toHaveBeenCalledTimes(2);
+    expect(consumerFunction3).toHaveBeenNthCalledWith(1, {
+      type: "snapshot",
+      snapshot: 314,
+    } satisfies SnapshotMessage<number>);
+    expect(consumerFunction3).toHaveBeenNthCalledWith(2, {
+      type: "snapshot",
+      snapshot: 1,
+    } satisfies SnapshotMessage<number>);
   });
 });
