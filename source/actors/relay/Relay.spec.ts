@@ -31,7 +31,7 @@ describe("Relay", () => {
   );
 
   describe("relaying", () => {
-    it("should relay inputted snapshots", async () => {
+    it("should relay inputted snapshot messages", async () => {
       const system = start();
 
       const consumerFunction = vi.fn();
