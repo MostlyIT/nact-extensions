@@ -18,9 +18,9 @@ export type DerivedAuthorityState<
   TOutputValue,
   TSemanticSymbol extends symbol
 > = {
-  combiner: Combiner<TStateSnapshotsObject>;
-  valueSelector: ValueSelector<TStateSnapshotsObject, TOutputValue>;
-  semanticBrander: SemanticBrander<
+  readonly combiner: Combiner<TStateSnapshotsObject>;
+  readonly valueSelector: ValueSelector<TStateSnapshotsObject, TOutputValue>;
+  readonly semanticBrander: SemanticBrander<
     TOutputValue,
     Version<
       KeyOfVersion<
@@ -31,7 +31,7 @@ export type DerivedAuthorityState<
     >,
     TSemanticSymbol
   >;
-  replayPublisher: ReplayPublisher<
+  readonly replayPublisher: ReplayPublisher<
     StateSnapshot<
       TOutputValue,
       Version<
