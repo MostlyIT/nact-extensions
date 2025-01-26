@@ -13,7 +13,7 @@ import {
 
 export type CombinerMessage<
   TStateSnapshotsObject extends {
-    readonly [key: symbol]: StateSnapshot<any, any, any>;
+    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
   }
 > =
   | SetDestinationMessage<

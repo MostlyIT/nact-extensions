@@ -10,7 +10,7 @@ import { PublisherOptions } from "../../publisher/PublisherOptions";
 
 export type DerivedAuthorityOptions<
   TStateSnapshotsObject extends {
-    readonly [key: symbol]: StateSnapshot<any, any, any>;
+    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
   },
   TOutputValue,
   TSemanticSymbol extends symbol

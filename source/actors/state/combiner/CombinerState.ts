@@ -11,7 +11,7 @@ import { Relay } from "../../relay/Relay";
 
 export type CombinerState<
   TStateSnapshotsObject extends {
-    readonly [key: symbol]: StateSnapshot<any, any, any>;
+    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
   },
   TUnsetSymbol extends symbol
 > = {

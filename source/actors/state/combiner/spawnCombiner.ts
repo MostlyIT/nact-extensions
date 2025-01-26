@@ -27,7 +27,7 @@ const unsetSymbol = Symbol();
 
 export const spawnCombiner = <
   TStateSnapshotsObject extends {
-    readonly [key: symbol]: StateSnapshot<any, any, any>;
+    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
   }
 >(
   parent: LocalActorSystemRef | LocalActorRef<any>,

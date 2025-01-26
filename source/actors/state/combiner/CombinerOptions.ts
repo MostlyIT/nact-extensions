@@ -11,7 +11,7 @@ import { RelayOptions } from "../../relay/RelayOptions";
 
 export type CombinerOptions<
   TStateSnapshotsObject extends {
-    readonly [key: symbol]: StateSnapshot<any, any, any>;
+    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
   }
 > = RelayOptions<
   StateSnapshot<
