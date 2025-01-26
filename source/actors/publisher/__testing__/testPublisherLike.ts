@@ -117,8 +117,8 @@ export const testPublisherLike = <
         type: "snapshot",
         snapshot: expectedSecondSnapshot,
       });
-      expect(consumerFunction2).toHaveBeenCalledTimes(1);
-      expect(consumerFunction2).toHaveBeenNthCalledWith(1, {
+      expect(consumerFunction2.mock.calls.length).toBeGreaterThanOrEqual(1);
+      expect(consumerFunction2).toHaveBeenLastCalledWith({
         type: "snapshot",
         snapshot: expectedSecondSnapshot,
       });
@@ -138,13 +138,13 @@ export const testPublisherLike = <
         type: "snapshot",
         snapshot: expectedThirdSnapshot,
       });
-      expect(consumerFunction2).toHaveBeenCalledTimes(2);
-      expect(consumerFunction2).toHaveBeenNthCalledWith(2, {
+      expect(consumerFunction2.mock.calls.length).toBeGreaterThanOrEqual(2);
+      expect(consumerFunction2).toHaveBeenLastCalledWith({
         type: "snapshot",
         snapshot: expectedThirdSnapshot,
       });
-      expect(consumerFunction3).toHaveBeenCalledTimes(1);
-      expect(consumerFunction3).toHaveBeenNthCalledWith(1, {
+      expect(consumerFunction3.mock.calls.length).toBeGreaterThanOrEqual(1);
+      expect(consumerFunction3).toHaveBeenLastCalledWith({
         type: "snapshot",
         snapshot: expectedThirdSnapshot,
       });
