@@ -64,8 +64,15 @@ export const spawnDerivedAuthority = <
       TOutputValue,
       TSemanticSymbol
     > => {
-      dispatch(state.publisher, message);
-      return state;
+      switch (message.type) {
+        case "snapshot":
+          dispatch(state.combiner, message);
+          return state;
+        case "subscribe":
+        case "unsubscribe":
+          dispatch(state.publisher, message);
+          return state;
+      }
     },
     {
       initialStateFunc: (context) => {

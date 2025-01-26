@@ -1,3 +1,4 @@
+import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
 import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import {
@@ -21,6 +22,7 @@ export type DerivedAuthorityMessage<
         TSemanticSymbol
       >
     >
+  | SnapshotMessage<TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]>
   | UnsubscribeMessage<
       StateSnapshot<
         TOutputValue,
