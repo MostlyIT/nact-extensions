@@ -6,7 +6,7 @@ import {
   KeyOfVersion,
   Version,
 } from "../../../data-types/state-snapshot/Version";
-import { Publisher } from "../../publisher/Publisher";
+import { ReplayPublisher } from "../../replay-publisher/ReplayPublisher";
 import { Combiner } from "../combiner/Combiner";
 import { SemanticBrander } from "../semantic-brander/SemanticBrander";
 import { ValueSelector } from "./value-selector/ValueSelector";
@@ -31,7 +31,7 @@ export type DerivedAuthorityState<
     >,
     TSemanticSymbol
   >;
-  publisher: Publisher<
+  replayPublisher: ReplayPublisher<
     StateSnapshot<
       TOutputValue,
       Version<

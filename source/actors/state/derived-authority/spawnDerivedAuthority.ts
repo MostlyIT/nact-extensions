@@ -9,7 +9,7 @@ import {
   StateSnapshot,
   ValueOfStateSnapshot,
 } from "../../../data-types/state-snapshot/StateSnapshot";
-import { spawnPublisher } from "../../publisher/spawnPublisher";
+import { spawnReplayPublisher } from "../../replay-publisher/spawnReplayPublisher";
 import { spawnCombiner } from "../combiner/spawnCombiner";
 import { spawnSemanticBrander } from "../semantic-brander/spawnSemanticBrander";
 import { DerivedAuthority } from "./DerivedAuthority";
@@ -70,19 +70,19 @@ export const spawnDerivedAuthority = <
           return state;
         case "subscribe":
         case "unsubscribe":
-          dispatch(state.publisher, message);
+          dispatch(state.replayPublisher, message);
           return state;
       }
     },
     {
       initialStateFunc: (context) => {
-        const publisher = spawnPublisher(context.self, options);
+        const replayPublisher = spawnReplayPublisher(context.self, 1, options);
         const semanticBrander = spawnSemanticBrander(
           context.self,
           semanticSymbol,
           {
             // @ts-expect-error
-            initialDestination: publisher,
+            initialDestination: replayPublisher,
           }
         );
         const valueSelector = spawnValueSelector(
@@ -102,7 +102,7 @@ export const spawnDerivedAuthority = <
           combiner,
           valueSelector,
           semanticBrander,
-          publisher,
+          replayPublisher,
         } satisfies DerivedAuthorityState<
           TStateSnapshotsObject,
           TOutputValue,
