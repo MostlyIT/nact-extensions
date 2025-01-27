@@ -4,6 +4,9 @@ import { EventAuthorityMessage } from "./EventAuthorityMessage";
 
 declare const eventAuthority: unique symbol;
 
+/**
+ * An actor responsible for a specific piece of application state whose value can be dependent on other authorities, but can also be changed directly through events.
+ */
 export type EventAuthority<
   TStateSnapshotsObject extends {
     readonly [key in symbol]: StateSnapshot<any, any, key>;
