@@ -1,0 +1,47 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+Events: {
+  shape: page
+  style.multiple: true
+}
+Events -> ValueReducer.Self
+SetDestination: {
+  shape: page
+}
+SetDestination -> ValueReducer.Relay
+CombinedStateSnapshot: CombinedStateSnapshot\n+ version\n(+ semantic information) {
+  shape: page
+}
+CombinedStateSnapshot -> ValueReducer.Self
+UnsetDestination: {
+  shape: page
+}
+UnsetDestination -> ValueReducer.Relay
+
+# Main actor
+ValueReducer: {
+  class: composition
+
+  # Internal actors
+  Relay
+  Self
+
+  Snapshot: Snapshot\n+ version {
+    shape: page
+  }
+  Self -> Snapshot -> Relay
+}
+
+# Output messages
+StateSnapshot: Snapshot\n+ version {
+  shape: page
+}
+ValueReducer.Relay -> StateSnapshot -> Destination
+
+# Environment actors
+Destination

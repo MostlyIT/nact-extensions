@@ -9,23 +9,23 @@ Events: {
   shape: page
   style.multiple: true
 }
-Events -> DirectAuthority.StateReducer
+Events -> EventAuthority.StateReducer
 StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
   shape: page
   style.multiple: true
 }
-StateSnapshots -> DirectAuthority.Combiner
+StateSnapshots -> EventAuthority.Combiner
 Subscribe: {
   shape: page
 }
-Subscribe -> DirectAuthority.ReplayPublisher
+Subscribe -> EventAuthority.ReplayPublisher
 Unsubscribe: {
   shape: page
 }
-Unsubscribe -> DirectAuthority.ReplayPublisher
+Unsubscribe -> EventAuthority.ReplayPublisher
 
 # Main actor
-DirectAuthority: {
+EventAuthority: {
   class: composition
 
   # Internal actors
@@ -57,7 +57,7 @@ DirectAuthority: {
 OutputStateSnapshot: StateSnapshot\n+ semantic information\n+ version {
   shape: page
 }
-DirectAuthority.ReplayPublisher -> OutputStateSnapshot -> Subscribers
+EventAuthority.ReplayPublisher -> OutputStateSnapshot -> Subscribers
 
 # Environment actors
 Subscribers: {
