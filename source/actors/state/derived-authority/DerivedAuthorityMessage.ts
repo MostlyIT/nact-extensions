@@ -5,6 +5,10 @@ import {
   StateSnapshot,
   VersionOfStateSnapshot,
 } from "../../../data-types/state-snapshot/StateSnapshot";
+import {
+  KeyOfVersion,
+  Version,
+} from "../../../data-types/state-snapshot/Version";
 
 export type DerivedAuthorityMessage<
   TStateSnapshotsObject extends {
@@ -16,8 +20,12 @@ export type DerivedAuthorityMessage<
   | SubscribeMessage<
       StateSnapshot<
         TOutputValue,
-        VersionOfStateSnapshot<
-          TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+        Version<
+          KeyOfVersion<
+            VersionOfStateSnapshot<
+              TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+            >
+          >
         >,
         TSemanticSymbol
       >
@@ -26,8 +34,12 @@ export type DerivedAuthorityMessage<
   | UnsubscribeMessage<
       StateSnapshot<
         TOutputValue,
-        VersionOfStateSnapshot<
-          TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+        Version<
+          KeyOfVersion<
+            VersionOfStateSnapshot<
+              TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+            >
+          >
         >,
         TSemanticSymbol
       >
