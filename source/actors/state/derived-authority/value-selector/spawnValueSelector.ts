@@ -19,7 +19,7 @@ import { ValueSelectorState } from "./ValueSelectorState";
  */
 export const spawnValueSelector = <
   TStateSnapshotsObject extends {
-    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
+    readonly [key in symbol]: StateSnapshot<any, any, key>;
   },
   TOutputValue,
   TCache = undefined

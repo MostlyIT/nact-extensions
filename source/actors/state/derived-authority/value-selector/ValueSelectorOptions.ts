@@ -10,7 +10,7 @@ import { RelayOptions } from "../../../relay/RelayOptions";
 
 export type ValueSelectorOptions<
   TStateSnapshotsObject extends {
-    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
+    readonly [key in symbol]: StateSnapshot<any, any, key>;
   },
   TOutputValue
 > = RelayOptions<

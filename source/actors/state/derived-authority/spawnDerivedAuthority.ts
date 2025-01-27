@@ -20,7 +20,7 @@ import { spawnValueSelector } from "./value-selector/spawnValueSelector";
 
 export const spawnDerivedAuthority = <
   TStateSnapshotsObject extends {
-    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
+    readonly [key in symbol]: StateSnapshot<any, any, key>;
   },
   TOutputValue,
   TSemanticSymbol extends symbol,

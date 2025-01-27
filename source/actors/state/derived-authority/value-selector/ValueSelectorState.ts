@@ -10,7 +10,7 @@ import { Relay } from "../../../relay/Relay";
 
 export type ValueSelectorState<
   TStateSnapshotsObject extends {
-    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
+    readonly [key in symbol]: StateSnapshot<any, any, key>;
   },
   TOutputValue,
   TCache = undefined

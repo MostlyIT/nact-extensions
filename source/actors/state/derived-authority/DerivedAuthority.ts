@@ -6,7 +6,7 @@ declare const derivedAuthority: unique symbol;
 
 export type DerivedAuthority<
   TStateSnapshotsObject extends {
-    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
+    readonly [key in symbol]: StateSnapshot<any, any, key>;
   },
   TOutputValue,
   TSemanticSymbol extends symbol

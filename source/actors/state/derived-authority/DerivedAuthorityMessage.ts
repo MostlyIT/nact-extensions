@@ -8,7 +8,7 @@ import {
 
 export type DerivedAuthorityMessage<
   TStateSnapshotsObject extends {
-    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
+    readonly [key in symbol]: StateSnapshot<any, any, key>;
   },
   TOutputValue,
   TSemanticSymbol extends symbol

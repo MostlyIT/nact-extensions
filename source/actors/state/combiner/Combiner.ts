@@ -9,7 +9,7 @@ declare const combiner: unique symbol;
  */
 export type Combiner<
   TStateSnapshotsObject extends {
-    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
+    readonly [key in symbol]: StateSnapshot<any, any, key>;
   }
 > = { [combiner]: true } & LocalActorRef<
   CombinerMessage<TStateSnapshotsObject>

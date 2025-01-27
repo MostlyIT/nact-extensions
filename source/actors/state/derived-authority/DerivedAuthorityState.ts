@@ -13,7 +13,7 @@ import { ValueSelector } from "./value-selector/ValueSelector";
 
 export type DerivedAuthorityState<
   TStateSnapshotsObject extends {
-    readonly [TKey in symbol]: StateSnapshot<any, any, TKey>;
+    readonly [key in symbol]: StateSnapshot<any, any, key>;
   },
   TOutputValue,
   TSemanticSymbol extends symbol
