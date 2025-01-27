@@ -387,6 +387,65 @@ describe("EventAuthority", () => {
       } satisfies SnapshotMessage<StateSnapshot<number, Version<typeof sourceSymbol | typeof ownSourceSymbol>, typeof ownSourceSymbol>>);
     });
 
+    it("should base output value on events even when there are no inputs", async () => {
+      const system = start();
+
+      const consumerFunction = vi.fn();
+      const consumer = spawn(system, (_state, message) =>
+        consumerFunction(message)
+      );
+
+      const ownSourceSymbol = Symbol();
+      const authority = spawnEventAuthority<
+        {},
+        number,
+        number,
+        typeof ownSourceSymbol,
+        number
+      >(
+        system,
+        ownSourceSymbol,
+        {},
+        (_state, eventMessage, _lastCombinedObject) => eventMessage,
+        (state, _newCombinedObject) => state ?? 0,
+        (state, _lastCombinedObject) => state,
+        (previous, current) => previous === current,
+        {
+          initialSubscribersSet: Set([consumer]),
+        }
+      );
+
+      dispatch(authority, 1000);
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+      expect(consumerFunction).toHaveBeenNthCalledWith(1, {
+        type: "snapshot",
+        snapshot: {
+          value: 1000,
+          version: {
+            [ownSourceSymbol]: 0,
+          },
+          semanticSymbol: ownSourceSymbol,
+        },
+      } satisfies SnapshotMessage<StateSnapshot<number, Version<typeof ownSourceSymbol>, typeof ownSourceSymbol>>);
+
+      dispatch(authority, 314);
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(2);
+      expect(consumerFunction).toHaveBeenNthCalledWith(2, {
+        type: "snapshot",
+        snapshot: {
+          value: 314,
+          version: {
+            [ownSourceSymbol]: 1,
+          },
+          semanticSymbol: ownSourceSymbol,
+        },
+      } satisfies SnapshotMessage<StateSnapshot<number, Version<typeof ownSourceSymbol>, typeof ownSourceSymbol>>);
+    });
+
     it("should base output value on inputs", async () => {
       const system = start();
 

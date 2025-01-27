@@ -222,6 +222,71 @@ describe("ValueReducer", () => {
       } satisfies SnapshotMessage<StateSnapshot<number, Version<typeof sourceSymbol>, undefined>>);
     });
 
+    it("should base output value on events even when there are no inputs", async () => {
+      const system = start();
+
+      const consumerFunction = vi.fn();
+      const consumer = spawn(system, (_state, message) =>
+        consumerFunction(message)
+      );
+
+      const valueReducer = spawnValueReducer<{}, number, number, number>(
+        system,
+        (_state, eventMessage, _lastCombinedObject) => eventMessage,
+        (state, _newCombinedObject) => state ?? 0,
+        (state, _lastCombinedObject) => state,
+        {
+          initialDestination: consumer,
+        }
+      );
+
+      dispatch(valueReducer, {
+        type: "snapshot",
+        snapshot: {
+          value: {},
+          version: {},
+          semanticSymbol: undefined,
+        },
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+      expect(consumerFunction).toHaveBeenNthCalledWith(1, {
+        type: "snapshot",
+        snapshot: {
+          value: 0,
+          version: {},
+          semanticSymbol: undefined,
+        },
+      } satisfies SnapshotMessage<StateSnapshot<number, {}, undefined>>);
+
+      dispatch(valueReducer, 1000);
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(2);
+      expect(consumerFunction).toHaveBeenNthCalledWith(2, {
+        type: "snapshot",
+        snapshot: {
+          value: 1000,
+          version: {},
+          semanticSymbol: undefined,
+        },
+      } satisfies SnapshotMessage<StateSnapshot<number, {}, undefined>>);
+
+      dispatch(valueReducer, 314);
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(3);
+      expect(consumerFunction).toHaveBeenNthCalledWith(3, {
+        type: "snapshot",
+        snapshot: {
+          value: 314,
+          version: {},
+          semanticSymbol: undefined,
+        },
+      } satisfies SnapshotMessage<StateSnapshot<number, {}, undefined>>);
+    });
+
     it("should base output value on inputs", async () => {
       const system = start();
 

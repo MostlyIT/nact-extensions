@@ -14,6 +14,7 @@ import {
   KeyOfVersion,
   Version,
 } from "../../../data-types/state-snapshot/Version";
+import { ownKeys } from "../../../utility/ownKeys";
 import { areVersionsEqual } from "../../../utility/state-snapshot/areVersionsEqual";
 import { spawnDistinct } from "../../distinct/spawnDistinct";
 import { spawnReplayPublisher } from "../../replay-publisher/spawnReplayPublisher";
@@ -24,6 +25,7 @@ import { EventAuthorityMessage } from "./EventAuthorityMessage";
 import { EventAuthorityOptions } from "./EventAuthorityOptions";
 import { EventAuthorityState } from "./EventAuthorityState";
 import { spawnValueReducer } from "./value-reducer/spawnValueReducer";
+import { ValueReducerMessage } from "./value-reducer/ValueReducerMessage";
 
 export const spawnEventAuthority = <
   TStateSnapshotsObject extends {
@@ -172,6 +174,26 @@ export const spawnEventAuthority = <
           // @ts-expect-error
           initialDestination: valueReducer,
         });
+
+        // If there are no inputs, valueReducer needs one empty state snapshot to get started.
+        if (ownKeys(stateSnapshotSources).length === 0) {
+          dispatch(valueReducer, {
+            type: "unset destination",
+          });
+          dispatch(valueReducer, {
+            type: "snapshot",
+            snapshot: {
+              value: {},
+              version: {},
+              semanticSymbol: undefined,
+            },
+          } as ValueReducerMessage<TStateSnapshotsObject, TEventMessage, TOutputValue>);
+          // @ts-expect-error
+          dispatch(valueReducer, {
+            type: "set destination",
+            destination: distinct,
+          });
+        }
 
         return {
           combiner,
