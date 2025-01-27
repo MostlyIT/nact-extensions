@@ -23,8 +23,36 @@ export * from "./actors/replay-publisher/ReplayPublisherMessage";
 export * from "./actors/replay-publisher/ReplayPublisherOptions";
 export * from "./actors/replay-publisher/spawnReplayPublisher";
 
+export * from "./actors/state/combiner/Combiner";
+export * from "./actors/state/combiner/CombinerMessage";
+export * from "./actors/state/combiner/CombinerOptions";
+export * from "./actors/state/combiner/spawnCombiner";
+
+export * from "./actors/state/derived-authority/DerivedAuthority";
+export * from "./actors/state/derived-authority/DerivedAuthorityMessage";
+export * from "./actors/state/derived-authority/DerivedAuthorityOptions";
+export * from "./actors/state/derived-authority/spawnDerivedAuthority";
+
+export * from "./actors/state/event-authority/EventAuthority";
+export * from "./actors/state/event-authority/EventAuthorityMessage";
+export * from "./actors/state/event-authority/EventAuthorityOptions";
+export * from "./actors/state/event-authority/spawnEventAuthority";
+
+export * from "./actors/state/semantic-brander/SemanticBrander";
+export * from "./actors/state/semantic-brander/SemanticBranderMessage";
+export * from "./actors/state/semantic-brander/SemanticBranderOptions";
+export * from "./actors/state/semantic-brander/spawnSemanticBrander";
+
+export * from "./actors/state/versioner/spawnVersioner";
+export * from "./actors/state/versioner/Versioner";
+export * from "./actors/state/versioner/VersionerMessage";
+export * from "./actors/state/versioner/VersionerOptions";
+
 export * from "./data-types/messages/SetDestinationMessage";
 export * from "./data-types/messages/SnapshotMessage";
 export * from "./data-types/messages/SubscribeMessage";
 export * from "./data-types/messages/UnsetDestinationMessage";
 export * from "./data-types/messages/UnsubscribeMessage";
+
+export * from "./data-types/state-snapshot/StateSnapshot";
+export * from "./data-types/state-snapshot/Version";
