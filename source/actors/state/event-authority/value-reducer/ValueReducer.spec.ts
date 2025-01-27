@@ -305,8 +305,6 @@ describe("ValueReducer", () => {
       });
     });
 
-    it("should support base", async () => {});
-
     it("should carry over unrelated versions unchanged", async () => {
       const system = start();
 
