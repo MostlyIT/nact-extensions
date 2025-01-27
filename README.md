@@ -29,6 +29,31 @@ The library is written in **TypeScript** and uses the _TypeScript compiler_ to c
   </tr>
 </table>
 
+### Actor Model
+
+**@nact/core** is used as the actor model implementation.
+
+### Persistent Collections
+
+**ImmutableJS** is used for its persistent collections.
+
+### Testing
+
+**Vitest** is used for testing purposes.
+
+<table>
+  <tr>
+    <th>Configuration file</th>
+    <th>Configuration description</th>
+  </tr>
+  <tr>
+    <td>vitest.config.ts</td>
+    <td><ul>
+      <li>Basic configuration.</li>
+    </ul></td>
+  </tr>
+</table>
+
 ### Package Distribution
 
 **npm** is used as package distribution solution.
@@ -41,7 +66,6 @@ The library is written in **TypeScript** and uses the _TypeScript compiler_ to c
   <tr>
     <td>package.json</td>
     <td><ul>
-      <li>Custom readme file is linked.</li>
       <li>Various pieces of package metadata, such as homepage and license, is filled out.</li>
     </ul></td>
   </tr>
