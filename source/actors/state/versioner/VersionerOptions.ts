@@ -1,5 +1,8 @@
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
-import { Version } from "../../../data-types/state-snapshot/Version";
+import {
+  KeyOfVersion,
+  Version,
+} from "../../../data-types/state-snapshot/Version";
 import { RelayOptions } from "../../relay/RelayOptions";
 
 export type VersionerOptions<
@@ -9,9 +12,7 @@ export type VersionerOptions<
 > = RelayOptions<
   StateSnapshot<
     TValue,
-    TInputVersion & {
-      readonly [key in TSemanticSymbol]: number;
-    },
+    Version<KeyOfVersion<TInputVersion> | TSemanticSymbol>,
     TSemanticSymbol
   >
 >;
