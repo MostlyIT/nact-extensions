@@ -178,9 +178,6 @@ export const spawnEventAuthority = <
         // If there are no inputs, valueReducer needs one empty state snapshot to get started.
         if (ownKeys(stateSnapshotSources).length === 0) {
           dispatch(valueReducer, {
-            type: "unset destination",
-          });
-          dispatch(valueReducer, {
             type: "snapshot",
             snapshot: {
               value: {},
@@ -188,11 +185,6 @@ export const spawnEventAuthority = <
               semanticSymbol: undefined,
             },
           } as ValueReducerMessage<TStateSnapshotsObject, TEventMessage, TOutputValue>);
-          // @ts-expect-error
-          dispatch(valueReducer, {
-            type: "set destination",
-            destination: distinct,
-          });
         }
 
         return {

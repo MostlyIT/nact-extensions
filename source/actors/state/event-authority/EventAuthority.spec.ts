@@ -415,16 +415,29 @@ describe("EventAuthority", () => {
         }
       );
 
-      dispatch(authority, 1000);
-
       await delay(10);
       expect(consumerFunction).toHaveBeenCalledTimes(1);
       expect(consumerFunction).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: {
-          value: 1000,
+          value: 0,
           version: {
             [ownSourceSymbol]: 0,
+          },
+          semanticSymbol: ownSourceSymbol,
+        },
+      } satisfies SnapshotMessage<StateSnapshot<number, Version<typeof ownSourceSymbol>, typeof ownSourceSymbol>>);
+
+      dispatch(authority, 1000);
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(2);
+      expect(consumerFunction).toHaveBeenNthCalledWith(2, {
+        type: "snapshot",
+        snapshot: {
+          value: 1000,
+          version: {
+            [ownSourceSymbol]: 1,
           },
           semanticSymbol: ownSourceSymbol,
         },
@@ -433,13 +446,13 @@ describe("EventAuthority", () => {
       dispatch(authority, 314);
 
       await delay(10);
-      expect(consumerFunction).toHaveBeenCalledTimes(2);
-      expect(consumerFunction).toHaveBeenNthCalledWith(2, {
+      expect(consumerFunction).toHaveBeenCalledTimes(3);
+      expect(consumerFunction).toHaveBeenNthCalledWith(3, {
         type: "snapshot",
         snapshot: {
           value: 314,
           version: {
-            [ownSourceSymbol]: 1,
+            [ownSourceSymbol]: 2,
           },
           semanticSymbol: ownSourceSymbol,
         },
