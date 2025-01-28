@@ -19,6 +19,7 @@ export type EventAuthorityMessage<
   TSemanticSymbol extends symbol
 > =
   | TEventMessage
+  | SnapshotMessage<TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]>
   | SubscribeMessage<
       StateSnapshot<
         TOutputValue,
@@ -32,7 +33,6 @@ export type EventAuthorityMessage<
         TSemanticSymbol
       >
     >
-  | SnapshotMessage<TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]>
   | UnsubscribeMessage<
       StateSnapshot<
         TOutputValue,

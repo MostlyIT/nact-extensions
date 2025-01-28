@@ -17,6 +17,7 @@ export type DerivedAuthorityMessage<
   TOutputValue,
   TSemanticSymbol extends symbol
 > =
+  | SnapshotMessage<TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]>
   | SubscribeMessage<
       StateSnapshot<
         TOutputValue,
@@ -30,7 +31,6 @@ export type DerivedAuthorityMessage<
         TSemanticSymbol
       >
     >
-  | SnapshotMessage<TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]>
   | UnsubscribeMessage<
       StateSnapshot<
         TOutputValue,
