@@ -48,31 +48,19 @@ export const testPublisherLike = <
       });
 
       await delay(10);
-      const didConsumer1ReceiveInitial =
-        consumerFunction1.mock.calls.length === 1;
-      const didConsumer2ReceiveInitial =
-        consumerFunction2.mock.calls.length === 1;
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 1 : 0
-      );
-      expect(consumerFunction2.mock.calls.length).toBe(
-        didConsumer2ReceiveInitial ? 1 : 0
-      );
+      consumerFunction1.mockClear();
+      consumerFunction2.mockClear();
 
       causeFirstSnapshot(publisherLike);
 
       await delay(10);
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 2 : 1
-      );
-      expect(consumerFunction1).toHaveBeenLastCalledWith({
+      expect(consumerFunction1).toHaveBeenCalledTimes(1);
+      expect(consumerFunction1).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: expectedFirstSnapshot,
       });
-      expect(consumerFunction2.mock.calls.length).toBe(
-        didConsumer2ReceiveInitial ? 2 : 1
-      );
-      expect(consumerFunction1).toHaveBeenLastCalledWith({
+      expect(consumerFunction2).toHaveBeenCalledTimes(1);
+      expect(consumerFunction2).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: expectedFirstSnapshot,
       });
@@ -105,16 +93,13 @@ export const testPublisherLike = <
       });
 
       await delay(10);
-      const didConsumer1ReceiveInitial =
-        consumerFunction1.mock.calls.length === 1;
+      consumerFunction1.mockClear();
 
       causeFirstSnapshot(publisherLike);
 
       await delay(10);
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 2 : 1
-      );
-      expect(consumerFunction1).toHaveBeenLastCalledWith({
+      expect(consumerFunction1).toHaveBeenCalledTimes(1);
+      expect(consumerFunction1).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: expectedFirstSnapshot,
       });
@@ -128,23 +113,18 @@ export const testPublisherLike = <
       });
 
       await delay(10);
-      const didConsumer2ReceiveInitial =
-        consumerFunction2.mock.calls.length === 1;
+      consumerFunction2.mockClear();
 
       causeSecondSnapshot(publisherLike);
 
       await delay(10);
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 3 : 2
-      );
-      expect(consumerFunction1).toHaveBeenLastCalledWith({
+      expect(consumerFunction1).toHaveBeenCalledTimes(2);
+      expect(consumerFunction1).toHaveBeenNthCalledWith(2, {
         type: "snapshot",
         snapshot: expectedSecondSnapshot,
       });
-      expect(consumerFunction2.mock.calls.length).toBe(
-        didConsumer2ReceiveInitial ? 2 : 1
-      );
-      expect(consumerFunction2).toHaveBeenLastCalledWith({
+      expect(consumerFunction2).toHaveBeenCalledTimes(1);
+      expect(consumerFunction2).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: expectedSecondSnapshot,
       });
@@ -157,30 +137,23 @@ export const testPublisherLike = <
       });
 
       await delay(10);
-      const didConsumer3ReceiveInitial =
-        consumerFunction3.mock.calls.length === 1;
+      consumerFunction3.mockClear();
 
       causeThirdSnapshot(publisherLike);
 
       await delay(10);
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 4 : 3
-      );
-      expect(consumerFunction1).toHaveBeenLastCalledWith({
+      expect(consumerFunction1).toHaveBeenCalledTimes(3);
+      expect(consumerFunction1).toHaveBeenNthCalledWith(3, {
         type: "snapshot",
         snapshot: expectedThirdSnapshot,
       });
-      expect(consumerFunction2.mock.calls.length).toBe(
-        didConsumer2ReceiveInitial ? 3 : 2
-      );
-      expect(consumerFunction2).toHaveBeenLastCalledWith({
+      expect(consumerFunction2).toHaveBeenCalledTimes(2);
+      expect(consumerFunction2).toHaveBeenNthCalledWith(2, {
         type: "snapshot",
         snapshot: expectedThirdSnapshot,
       });
-      expect(consumerFunction3.mock.calls.length).toBe(
-        didConsumer3ReceiveInitial ? 2 : 1
-      );
-      expect(consumerFunction3).toHaveBeenLastCalledWith({
+      expect(consumerFunction3).toHaveBeenCalledTimes(1);
+      expect(consumerFunction3).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: expectedThirdSnapshot,
       });
@@ -210,25 +183,19 @@ export const testPublisherLike = <
       });
 
       await delay(10);
-      const didConsumer1ReceiveInitial =
-        consumerFunction1.mock.calls.length === 1;
-      const didConsumer2ReceiveInitial =
-        consumerFunction2.mock.calls.length === 1;
+      consumerFunction1.mockClear();
+      consumerFunction2.mockClear();
 
       causeFirstSnapshot(publisherLike);
 
       await delay(10);
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 2 : 1
-      );
-      expect(consumerFunction1).toHaveBeenLastCalledWith({
+      expect(consumerFunction1).toHaveBeenCalledTimes(1);
+      expect(consumerFunction1).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: expectedFirstSnapshot,
       });
-      expect(consumerFunction2.mock.calls.length).toBe(
-        didConsumer2ReceiveInitial ? 2 : 1
-      );
-      expect(consumerFunction2).toHaveBeenLastCalledWith({
+      expect(consumerFunction2).toHaveBeenCalledTimes(1);
+      expect(consumerFunction2).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: expectedFirstSnapshot,
       });
@@ -242,13 +209,9 @@ export const testPublisherLike = <
       causeSecondSnapshot(publisherLike);
 
       await delay(10);
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 2 : 1
-      );
-      expect(consumerFunction2.mock.calls.length).toBe(
-        didConsumer2ReceiveInitial ? 3 : 2
-      );
-      expect(consumerFunction2).toHaveBeenLastCalledWith({
+      expect(consumerFunction1).toHaveBeenCalledTimes(1);
+      expect(consumerFunction2).toHaveBeenCalledTimes(2);
+      expect(consumerFunction2).toHaveBeenNthCalledWith(2, {
         type: "snapshot",
         snapshot: expectedSecondSnapshot,
       });
@@ -262,12 +225,8 @@ export const testPublisherLike = <
       causeThirdSnapshot(publisherLike);
 
       await delay(10);
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 2 : 1
-      );
-      expect(consumerFunction2.mock.calls.length).toBe(
-        didConsumer2ReceiveInitial ? 3 : 2
-      );
+      expect(consumerFunction1).toHaveBeenCalledTimes(1);
+      expect(consumerFunction2).toHaveBeenCalledTimes(2);
     });
 
     it("should not overreact when attempting to unsubscribe subscribers that are not subscribed", async () => {
@@ -288,16 +247,13 @@ export const testPublisherLike = <
       });
 
       await delay(10);
-      const didConsumer1ReceiveInitial =
-        consumerFunction1.mock.calls.length === 1;
+      consumerFunction1.mockClear();
 
       causeFirstSnapshot(publisherLike);
 
       await delay(10);
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 2 : 1
-      );
-      expect(consumerFunction1).toHaveBeenLastCalledWith({
+      expect(consumerFunction1).toHaveBeenCalledTimes(1);
+      expect(consumerFunction1).toHaveBeenNthCalledWith(1, {
         type: "snapshot",
         snapshot: expectedFirstSnapshot,
       });
@@ -312,9 +268,7 @@ export const testPublisherLike = <
       causeSecondSnapshot(publisherLike);
 
       await delay(10);
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 2 : 1
-      );
+      expect(consumerFunction1).toHaveBeenCalledTimes(1);
       expect(consumerFunction2).not.toHaveBeenCalled();
 
       // @ts-expect-error
@@ -331,9 +285,7 @@ export const testPublisherLike = <
       causeThirdSnapshot(publisherLike);
 
       await delay(10);
-      expect(consumerFunction1.mock.calls.length).toBe(
-        didConsumer1ReceiveInitial ? 2 : 1
-      );
+      expect(consumerFunction1).toHaveBeenCalledTimes(1);
       expect(consumerFunction2).not.toHaveBeenCalled();
     });
   });
