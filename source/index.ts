@@ -38,6 +38,11 @@ export * from "./actors/state/event-authority/EventAuthorityMessage";
 export * from "./actors/state/event-authority/EventAuthorityOptions";
 export * from "./actors/state/event-authority/spawnEventAuthority";
 
+export * from "./actors/state/pure-event-authority/PureEventAuthority";
+export * from "./actors/state/pure-event-authority/PureEventAuthorityMessage";
+export * from "./actors/state/pure-event-authority/PureEventAuthorityOptions";
+export * from "./actors/state/pure-event-authority/spawnPureEventAuthority";
+
 export * from "./actors/state/semantic-brander/SemanticBrander";
 export * from "./actors/state/semantic-brander/SemanticBranderMessage";
 export * from "./actors/state/semantic-brander/SemanticBranderOptions";
