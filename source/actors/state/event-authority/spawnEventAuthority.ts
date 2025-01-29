@@ -5,6 +5,7 @@ import {
   spawn,
 } from "@nact/core";
 import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
+import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
@@ -40,7 +41,8 @@ export const spawnEventAuthority = <
   semanticSymbol: TSemanticSymbol,
   stateSnapshotSources: {
     readonly [key in keyof TStateSnapshotsObject & symbol]: LocalActorRef<
-      SubscribeMessage<TStateSnapshotsObject[key]>
+      | SubscribeMessage<TStateSnapshotsObject[key]>
+      | UnsubscribeMessage<TStateSnapshotsObject[key]>
     >;
   },
   eventReducer: (
