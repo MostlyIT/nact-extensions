@@ -9,3 +9,15 @@ declare const openAuthority: unique symbol;
 export type OpenAuthority<TValue, TSemanticSymbol extends symbol> = {
   [openAuthority]: true;
 } & LocalActorRef<OpenAuthorityMessage<TValue, TSemanticSymbol>>;
+
+// Basic
+
+export type ValueOfOpenAuthority<
+  TOpenAuthority extends OpenAuthority<any, any>
+> = TOpenAuthority extends OpenAuthority<infer TValue, any> ? TValue : never;
+
+export type SemanticSymbolOfOpenAuthority<
+  TOpenAuthority extends OpenAuthority<any, any>
+> = TOpenAuthority extends OpenAuthority<any, infer TSemanticSymbol>
+  ? TSemanticSymbol
+  : never;
