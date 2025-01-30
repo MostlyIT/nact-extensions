@@ -1,6 +1,6 @@
 {
   "name": "@mostly-it/nact-extensions",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "description": "A library with reusable logic for the actor system library @nact/core.",
   "type": "module",
   "author": "MostlyIT",
@@ -13,7 +13,10 @@
     "url": "https://github.com/MostlyIT/nact-extensions/issues"
   },
   "license": "MIT-0",
-  "exports": "./source/index.ts",
+  "exports": {
+    ".": "./source/index.ts",
+    "./utility": "./source/utility/index.ts"
+  },
   "files": [
     "/source",
     "!/**/*.spec.ts",
