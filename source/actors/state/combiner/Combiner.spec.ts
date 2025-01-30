@@ -1,196 +1,125 @@
 import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, it, vi } from "vitest";
+import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
+import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
+import { testRelayLike } from "../../relay/__testing__/testRelayLike";
+import { Combiner } from "./Combiner";
 import { spawnCombiner } from "./spawnCombiner";
 
 describe("Combiner", () => {
-  describe("destination", () => {
-    it("should support initial destination", async () => {
-      const system = start();
-
-      const consumerFunction = vi.fn();
-      const consumer = spawn(system, (_state, message) =>
-        consumerFunction(message)
-      );
-
-      const sourceSymbolA = Symbol();
-      const sourceSymbolB = Symbol();
-
-      const sourceA = spawn(system, (_state, _message) => _state);
-      const sourceB = spawn(system, (_state, _message) => _state);
-
-      const combiner = spawnCombiner(
-        system,
+  {
+    const sourceSymbolA = Symbol();
+    const sourceSymbolB = Symbol();
+    testRelayLike<
+      // @ts-expect-error
+      Combiner<{
+        readonly [sourceSymbolA]: StateSnapshot<
+          number,
+          Version<typeof sourceSymbolA>,
+          typeof sourceSymbolA
+        >;
+        readonly [sourceSymbolB]: StateSnapshot<
+          string,
+          Version<typeof sourceSymbolB>,
+          typeof sourceSymbolB
+        >;
+      }>,
+      StateSnapshot<
         {
-          [sourceSymbolA]: sourceA,
-          [sourceSymbolB]: sourceB,
+          readonly [sourceSymbolA]: number;
+          readonly [sourceSymbolB]: string;
         },
-        {
-          initialDestination: consumer,
-        }
-      );
+        Version<typeof sourceSymbolA | typeof sourceSymbolB>,
+        undefined
+      >
+    >(
+      (parent, options?) => {
+        const sourceA = spawn(parent, (_state, _message) => _state);
+        const sourceB = spawn(parent, (_state, _message) => _state);
 
-      await delay(10);
-      expect(consumerFunction).not.toHaveBeenCalled();
-
-      // Send snapshots from both sources
-      dispatch(combiner, {
-        type: "snapshot",
-        snapshot: {
-          value: 100,
-          version: { [sourceSymbolA]: 0 },
-          semanticSymbol: sourceSymbolA,
-        },
-      });
-
-      dispatch(combiner, {
-        type: "snapshot",
-        snapshot: {
-          value: "hello",
-          version: { [sourceSymbolB]: 0 },
-          semanticSymbol: sourceSymbolB,
-        },
-      });
-
-      await delay(10);
-      expect(consumerFunction).toHaveBeenCalledTimes(1);
-      expect(consumerFunction).toHaveBeenCalledWith({
-        type: "snapshot",
-        snapshot: {
-          value: {
-            [sourceSymbolA]: 100,
-            [sourceSymbolB]: "hello",
+        return spawnCombiner(
+          parent,
+          {
+            [sourceSymbolA]: sourceA,
+            [sourceSymbolB]: sourceB,
           },
-          version: {
-            [sourceSymbolA]: 0,
-            [sourceSymbolB]: 0,
+          options
+        );
+      },
+      (relayLike) => {
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 100,
+            version: { [sourceSymbolA]: 0 },
+            semanticSymbol: sourceSymbolA,
           },
-          semanticSymbol: undefined,
+        });
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: "hello",
+            version: { [sourceSymbolB]: 0 },
+            semanticSymbol: sourceSymbolB,
+          },
+        });
+      },
+      {
+        value: {
+          [sourceSymbolA]: 100,
+          [sourceSymbolB]: "hello",
         },
-      });
-    });
-
-    it("should support setting destination", async () => {
-      const system = start();
-
-      const consumerFunction1 = vi.fn();
-      const consumer1 = spawn(system, (_state, message) =>
-        consumerFunction1(message)
-      );
-
-      const consumerFunction2 = vi.fn();
-      const consumer2 = spawn(system, (_state, message) =>
-        consumerFunction2(message)
-      );
-
-      const sourceSymbol = Symbol();
-      const source = spawn(system, (_state, _message) => _state);
-
-      const combiner = spawnCombiner(system, {
-        [sourceSymbol]: source,
-      });
-
-      dispatch(combiner, {
-        type: "set destination",
-        destination: consumer1,
-      });
-
-      dispatch(combiner, {
-        type: "snapshot",
-        snapshot: {
-          value: 100,
-          version: { [sourceSymbol]: 0 },
-          semanticSymbol: sourceSymbol,
+        version: {
+          [sourceSymbolA]: 0,
+          [sourceSymbolB]: 0,
         },
-      });
-
-      await delay(10);
-      expect(consumerFunction1).toHaveBeenCalledTimes(1);
-      expect(consumerFunction1).toHaveBeenNthCalledWith(1, {
-        type: "snapshot",
-        snapshot: {
-          value: { [sourceSymbol]: 100 },
-          version: { [sourceSymbol]: 0 },
-          semanticSymbol: undefined,
+        semanticSymbol: undefined,
+      },
+      (relayLike) => {
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 314,
+            version: { [sourceSymbolA]: 1 },
+            semanticSymbol: sourceSymbolA,
+          },
+        });
+      },
+      {
+        value: {
+          [sourceSymbolA]: 314,
+          [sourceSymbolB]: "hello",
         },
-      });
-
-      dispatch(combiner, {
-        type: "set destination",
-        destination: consumer2,
-      });
-
-      dispatch(combiner, {
-        type: "snapshot",
-        snapshot: {
-          value: 200,
-          version: { [sourceSymbol]: 1 },
-          semanticSymbol: sourceSymbol,
+        version: {
+          [sourceSymbolA]: 1,
+          [sourceSymbolB]: 0,
         },
-      });
-
-      await delay(10);
-      expect(consumerFunction1).toHaveBeenCalledTimes(1);
-      expect(consumerFunction2).toHaveBeenCalledTimes(1);
-      expect(consumerFunction2).toHaveBeenNthCalledWith(1, {
-        type: "snapshot",
-        snapshot: {
-          value: { [sourceSymbol]: 200 },
-          version: { [sourceSymbol]: 1 },
-          semanticSymbol: undefined,
+        semanticSymbol: undefined,
+      },
+      (relayLike) => {
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: "test",
+            version: { [sourceSymbolB]: 1 },
+            semanticSymbol: sourceSymbolB,
+          },
+        });
+      },
+      {
+        value: {
+          [sourceSymbolA]: 314,
+          [sourceSymbolB]: "test",
         },
-      });
-    });
-
-    it("should support unsetting destination", async () => {
-      const system = start();
-
-      const consumerFunction = vi.fn();
-      const consumer = spawn(system, (_state, message) =>
-        consumerFunction(message)
-      );
-
-      const sourceSymbol = Symbol();
-      const source = spawn(system, (_state, _message) => _state);
-
-      const combiner = spawnCombiner(system, {
-        [sourceSymbol]: source,
-      });
-
-      dispatch(combiner, {
-        type: "set destination",
-        destination: consumer,
-      });
-
-      dispatch(combiner, {
-        type: "snapshot",
-        snapshot: {
-          value: 100,
-          version: { [sourceSymbol]: 0 },
-          semanticSymbol: sourceSymbol,
+        version: {
+          [sourceSymbolA]: 1,
+          [sourceSymbolB]: 1,
         },
-      });
-
-      await delay(10);
-      expect(consumerFunction).toHaveBeenCalledTimes(1);
-
-      dispatch(combiner, {
-        type: "unset destination",
-      });
-
-      dispatch(combiner, {
-        type: "snapshot",
-        snapshot: {
-          value: 200,
-          version: { [sourceSymbol]: 1 },
-          semanticSymbol: sourceSymbol,
-        },
-      });
-
-      await delay(10);
-      expect(consumerFunction).toHaveBeenCalledTimes(1);
-    });
-  });
+        semanticSymbol: undefined,
+      }
+    );
+  }
 
   describe("combining", () => {
     it("should combine state snapshots from multiple sources", async () => {

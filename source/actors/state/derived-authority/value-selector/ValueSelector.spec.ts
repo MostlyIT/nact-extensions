@@ -8,33 +8,12 @@ import { spawnValueSelector } from "./spawnValueSelector";
 import { ValueSelector } from "./ValueSelector";
 
 describe("ValueSelector", () => {
-  const sourceASymbol = Symbol();
-  const sourceBSymbol = Symbol();
-  testRelayLike<
-    // @ts-expect-error
-    ValueSelector<
-      {
-        [sourceASymbol]: StateSnapshot<
-          number,
-          Version<typeof sourceASymbol>,
-          typeof sourceASymbol
-        >;
-        [sourceBSymbol]: StateSnapshot<
-          string,
-          Version<typeof sourceBSymbol>,
-          typeof sourceBSymbol
-        >;
-      },
-      string
-    >,
-    StateSnapshot<
-      string,
-      Version<typeof sourceASymbol | typeof sourceBSymbol>,
-      undefined
-    >
-  >(
-    (parent, options?) =>
-      spawnValueSelector<
+  {
+    const sourceASymbol = Symbol();
+    const sourceBSymbol = Symbol();
+    testRelayLike<
+      // @ts-expect-error
+      ValueSelector<
         {
           [sourceASymbol]: StateSnapshot<
             number,
@@ -47,91 +26,116 @@ describe("ValueSelector", () => {
             typeof sourceBSymbol
           >;
         },
+        string
+      >,
+      StateSnapshot<
         string,
+        Version<typeof sourceASymbol | typeof sourceBSymbol>,
         undefined
-      >(
-        parent,
-        (inputs) => ({
-          value: `${inputs[sourceASymbol]} ${inputs[sourceBSymbol]}`,
-          cache: undefined,
+      >
+    >(
+      (parent, options?) =>
+        spawnValueSelector<
+          {
+            [sourceASymbol]: StateSnapshot<
+              number,
+              Version<typeof sourceASymbol>,
+              typeof sourceASymbol
+            >;
+            [sourceBSymbol]: StateSnapshot<
+              string,
+              Version<typeof sourceBSymbol>,
+              typeof sourceBSymbol
+            >;
+          },
+          string,
+          undefined
+        >(
+          parent,
+          (inputs) => ({
+            value: `${inputs[sourceASymbol]} ${inputs[sourceBSymbol]}`,
+            cache: undefined,
+          }),
+          options
+        ),
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: {
+              [sourceASymbol]: 1000,
+              [sourceBSymbol]: "monkeys",
+            },
+            version: {
+              [sourceASymbol]: 0,
+              [sourceBSymbol]: 0,
+            },
+            semanticSymbol: undefined,
+          },
         }),
-        options
-      ),
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: {
-            [sourceASymbol]: 1000,
-            [sourceBSymbol]: "monkeys",
-          },
-          version: {
-            [sourceASymbol]: 0,
-            [sourceBSymbol]: 0,
-          },
-          semanticSymbol: undefined,
+      {
+        value: "1000 monkeys",
+        version: {
+          [sourceASymbol]: 0,
+          [sourceBSymbol]: 0,
         },
-      }),
-    {
-      value: "1000 monkeys",
-      version: {
-        [sourceASymbol]: 0,
-        [sourceBSymbol]: 0,
+        semanticSymbol: undefined,
       },
-      semanticSymbol: undefined,
-    },
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: {
-            [sourceASymbol]: 314,
-            [sourceBSymbol]: "monkeys",
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: {
+              [sourceASymbol]: 314,
+              [sourceBSymbol]: "monkeys",
+            },
+            version: {
+              [sourceASymbol]: 1,
+              [sourceBSymbol]: 0,
+            },
+            semanticSymbol: undefined,
           },
-          version: {
-            [sourceASymbol]: 1,
-            [sourceBSymbol]: 0,
-          },
-          semanticSymbol: undefined,
+        }),
+      {
+        value: "314 monkeys",
+        version: {
+          [sourceASymbol]: 1,
+          [sourceBSymbol]: 0,
         },
-      }),
-    {
-      value: "314 monkeys",
-      version: {
-        [sourceASymbol]: 1,
-        [sourceBSymbol]: 0,
+        semanticSymbol: undefined,
       },
-      semanticSymbol: undefined,
-    },
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: {
-            [sourceASymbol]: 314,
-            [sourceBSymbol]: "apples",
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: {
+              [sourceASymbol]: 314,
+              [sourceBSymbol]: "apples",
+            },
+            version: {
+              [sourceASymbol]: 1,
+              [sourceBSymbol]: 1,
+            },
+            semanticSymbol: undefined,
           },
-          version: {
-            [sourceASymbol]: 1,
-            [sourceBSymbol]: 1,
-          },
-          semanticSymbol: undefined,
+        }),
+      {
+        value: "314 apples",
+        version: {
+          [sourceASymbol]: 1,
+          [sourceBSymbol]: 1,
         },
-      }),
-    {
-      value: "314 apples",
-      version: {
-        [sourceASymbol]: 1,
-        [sourceBSymbol]: 1,
-      },
-      semanticSymbol: undefined,
-    }
-  );
+        semanticSymbol: undefined,
+      }
+    );
+  }
 
   describe("value selecting", () => {
     it("should supply the right types to value selector function", async () => {
       const system = start();
 
+      const sourceASymbol = Symbol();
+      const sourceBSymbol = Symbol();
       spawnValueSelector<
         {
           [sourceASymbol]: StateSnapshot<

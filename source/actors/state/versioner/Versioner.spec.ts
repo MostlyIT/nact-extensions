@@ -8,76 +8,78 @@ import { spawnVersioner } from "./spawnVersioner";
 import { Versioner } from "./Versioner";
 
 describe("Versioner", () => {
-  const sourceSymbol = Symbol();
-  const ownSourceSymbol = Symbol();
-  testRelayLike<
-    // @ts-expect-error
-    Versioner<number, Version<typeof sourceSymbol>, typeof ownSourceSymbol>,
-    StateSnapshot<
-      number,
-      Version<typeof sourceSymbol | typeof ownSourceSymbol>,
-      typeof ownSourceSymbol
-    >
-  >(
-    (parent, options?) => spawnVersioner(parent, ownSourceSymbol, options),
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 1000,
-          version: {
-            [sourceSymbol]: 0,
+  {
+    const sourceSymbol = Symbol();
+    const ownSourceSymbol = Symbol();
+    testRelayLike<
+      // @ts-expect-error
+      Versioner<number, Version<typeof sourceSymbol>, typeof ownSourceSymbol>,
+      StateSnapshot<
+        number,
+        Version<typeof sourceSymbol | typeof ownSourceSymbol>,
+        typeof ownSourceSymbol
+      >
+    >(
+      (parent, options?) => spawnVersioner(parent, ownSourceSymbol, options),
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 1000,
+            version: {
+              [sourceSymbol]: 0,
+            },
+            semanticSymbol: sourceSymbol,
           },
-          semanticSymbol: sourceSymbol,
+        }),
+      {
+        value: 1000,
+        version: {
+          [sourceSymbol]: 0,
+          [ownSourceSymbol]: 0,
         },
-      }),
-    {
-      value: 1000,
-      version: {
-        [sourceSymbol]: 0,
-        [ownSourceSymbol]: 0,
+        semanticSymbol: ownSourceSymbol,
       },
-      semanticSymbol: ownSourceSymbol,
-    },
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 314,
-          version: {
-            [sourceSymbol]: 1,
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 314,
+            version: {
+              [sourceSymbol]: 1,
+            },
+            semanticSymbol: sourceSymbol,
           },
-          semanticSymbol: sourceSymbol,
+        }),
+      {
+        value: 314,
+        version: {
+          [sourceSymbol]: 1,
+          [ownSourceSymbol]: 1,
         },
-      }),
-    {
-      value: 314,
-      version: {
-        [sourceSymbol]: 1,
-        [ownSourceSymbol]: 1,
+        semanticSymbol: ownSourceSymbol,
       },
-      semanticSymbol: ownSourceSymbol,
-    },
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 1,
-          version: {
-            [sourceSymbol]: 3,
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 1,
+            version: {
+              [sourceSymbol]: 3,
+            },
+            semanticSymbol: sourceSymbol,
           },
-          semanticSymbol: sourceSymbol,
+        }),
+      {
+        value: 1,
+        version: {
+          [sourceSymbol]: 3,
+          [ownSourceSymbol]: 2,
         },
-      }),
-    {
-      value: 1,
-      version: {
-        [sourceSymbol]: 3,
-        [ownSourceSymbol]: 2,
-      },
-      semanticSymbol: ownSourceSymbol,
-    }
-  );
+        semanticSymbol: ownSourceSymbol,
+      }
+    );
+  }
 
   describe("versioning", () => {
     it("should brand with the right semantic symbol", async () => {

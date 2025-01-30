@@ -11,38 +11,12 @@ import { EventAuthority } from "./EventAuthority";
 import { spawnEventAuthority } from "./spawnEventAuthority";
 
 describe("EventAuthority", () => {
-  const sourceSymbol = Symbol();
-  const ownSourceSymbol = Symbol();
-  testPublisherLike<
-    // @ts-expect-error
-    EventAuthority<
-      {
-        [sourceSymbol]: StateSnapshot<
-          number,
-          Version<typeof sourceSymbol>,
-          typeof sourceSymbol
-        >;
-      },
-      "toggle doubling",
-      number,
-      typeof ownSourceSymbol
-    >,
-    StateSnapshot<
-      number,
-      Version<typeof sourceSymbol | typeof ownSourceSymbol>,
-      typeof ownSourceSymbol
-    >
-  >(
-    (parent, options?) => {
-      const inert =
-        spawnPublisher<
-          StateSnapshot<
-            number,
-            Version<typeof sourceSymbol>,
-            typeof sourceSymbol
-          >
-        >(parent);
-      return spawnEventAuthority<
+  {
+    const sourceSymbol = Symbol();
+    const ownSourceSymbol = Symbol();
+    testPublisherLike<
+      // @ts-expect-error
+      EventAuthority<
         {
           [sourceSymbol]: StateSnapshot<
             number,
@@ -52,64 +26,92 @@ describe("EventAuthority", () => {
         },
         "toggle doubling",
         number,
-        typeof ownSourceSymbol,
-        boolean
-      >(
-        parent,
-        ownSourceSymbol,
-        // @ts-expect-error
-        { [sourceSymbol]: inert },
-        (state, _eventMessage, _lastCombinedObject) => !state,
-        (state, _newCombinedObject) => (state !== undefined ? state : false),
-        (state, lastCombinedObject) =>
-          (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
-        (previous, current) => previous === current,
-        options
-      );
-    },
-    (publisherLike) =>
-      dispatch(publisherLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 1000,
-          version: { [sourceSymbol]: 0 },
-          semanticSymbol: sourceSymbol,
-        },
-      }),
-    {
-      value: 1000,
-      version: { [sourceSymbol]: 0, [ownSourceSymbol]: 0 },
-      semanticSymbol: ownSourceSymbol,
-    },
-    (publisherLike) =>
-      dispatch(publisherLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 314,
-          version: { [sourceSymbol]: 1 },
-          semanticSymbol: sourceSymbol,
-        },
-      }),
-    {
-      value: 314,
-      version: { [sourceSymbol]: 1, [ownSourceSymbol]: 1 },
-      semanticSymbol: ownSourceSymbol,
-    },
-    (publisherLike) =>
-      dispatch(publisherLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 1,
-          version: { [sourceSymbol]: 2 },
-          semanticSymbol: sourceSymbol,
-        },
-      }),
-    {
-      value: 1,
-      version: { [sourceSymbol]: 2, [ownSourceSymbol]: 2 },
-      semanticSymbol: ownSourceSymbol,
-    }
-  );
+        typeof ownSourceSymbol
+      >,
+      StateSnapshot<
+        number,
+        Version<typeof sourceSymbol | typeof ownSourceSymbol>,
+        typeof ownSourceSymbol
+      >
+    >(
+      (parent, options?) => {
+        const inert =
+          spawnPublisher<
+            StateSnapshot<
+              number,
+              Version<typeof sourceSymbol>,
+              typeof sourceSymbol
+            >
+          >(parent);
+        return spawnEventAuthority<
+          {
+            [sourceSymbol]: StateSnapshot<
+              number,
+              Version<typeof sourceSymbol>,
+              typeof sourceSymbol
+            >;
+          },
+          "toggle doubling",
+          number,
+          typeof ownSourceSymbol,
+          boolean
+        >(
+          parent,
+          ownSourceSymbol,
+          // @ts-expect-error
+          { [sourceSymbol]: inert },
+          (state, _eventMessage, _lastCombinedObject) => !state,
+          (state, _newCombinedObject) => (state !== undefined ? state : false),
+          (state, lastCombinedObject) =>
+            (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
+          (previous, current) => previous === current,
+          options
+        );
+      },
+      (publisherLike) =>
+        dispatch(publisherLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 1000,
+            version: { [sourceSymbol]: 0 },
+            semanticSymbol: sourceSymbol,
+          },
+        }),
+      {
+        value: 1000,
+        version: { [sourceSymbol]: 0, [ownSourceSymbol]: 0 },
+        semanticSymbol: ownSourceSymbol,
+      },
+      (publisherLike) =>
+        dispatch(publisherLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 314,
+            version: { [sourceSymbol]: 1 },
+            semanticSymbol: sourceSymbol,
+          },
+        }),
+      {
+        value: 314,
+        version: { [sourceSymbol]: 1, [ownSourceSymbol]: 1 },
+        semanticSymbol: ownSourceSymbol,
+      },
+      (publisherLike) =>
+        dispatch(publisherLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 1,
+            version: { [sourceSymbol]: 2 },
+            semanticSymbol: sourceSymbol,
+          },
+        }),
+      {
+        value: 1,
+        version: { [sourceSymbol]: 2, [ownSourceSymbol]: 2 },
+        semanticSymbol: ownSourceSymbol,
+      }
+    );
+  }
 
   describe("value management", () => {
     it("should disallow dispatching unsupported state snapshots", async () => {

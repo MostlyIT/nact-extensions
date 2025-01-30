@@ -8,74 +8,80 @@ import { SemanticBrander } from "./SemanticBrander";
 import { spawnSemanticBrander } from "./spawnSemanticBrander";
 
 describe("SemanticBrander", () => {
-  const sourceSymbol = Symbol();
-  const ownSourceSymbol = Symbol();
-  testRelayLike<
-    // @ts-expect-error
-    SemanticBrander<
-      number,
-      Version<typeof sourceSymbol>,
-      typeof ownSourceSymbol
-    >,
-    StateSnapshot<number, Version<typeof sourceSymbol>, typeof ownSourceSymbol>
-  >(
-    (parent, options?) =>
-      spawnSemanticBrander(parent, ownSourceSymbol, options),
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 1000,
-          version: {
-            [sourceSymbol]: 0,
+  {
+    const sourceSymbol = Symbol();
+    const ownSourceSymbol = Symbol();
+    testRelayLike<
+      // @ts-expect-error
+      SemanticBrander<
+        number,
+        Version<typeof sourceSymbol>,
+        typeof ownSourceSymbol
+      >,
+      StateSnapshot<
+        number,
+        Version<typeof sourceSymbol>,
+        typeof ownSourceSymbol
+      >
+    >(
+      (parent, options?) =>
+        spawnSemanticBrander(parent, ownSourceSymbol, options),
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 1000,
+            version: {
+              [sourceSymbol]: 0,
+            },
+            semanticSymbol: undefined,
           },
-          semanticSymbol: undefined,
+        }),
+      {
+        value: 1000,
+        version: {
+          [sourceSymbol]: 0,
         },
-      }),
-    {
-      value: 1000,
-      version: {
-        [sourceSymbol]: 0,
+        semanticSymbol: ownSourceSymbol,
       },
-      semanticSymbol: ownSourceSymbol,
-    },
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 314,
-          version: {
-            [sourceSymbol]: 2,
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 314,
+            version: {
+              [sourceSymbol]: 2,
+            },
+            semanticSymbol: sourceSymbol,
           },
-          semanticSymbol: sourceSymbol,
+        }),
+      {
+        value: 314,
+        version: {
+          [sourceSymbol]: 2,
         },
-      }),
-    {
-      value: 314,
-      version: {
-        [sourceSymbol]: 2,
+        semanticSymbol: ownSourceSymbol,
       },
-      semanticSymbol: ownSourceSymbol,
-    },
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 1,
-          version: {
-            [sourceSymbol]: 5,
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 1,
+            version: {
+              [sourceSymbol]: 5,
+            },
+            semanticSymbol: undefined,
           },
-          semanticSymbol: undefined,
+        }),
+      {
+        value: 1,
+        version: {
+          [sourceSymbol]: 5,
         },
-      }),
-    {
-      value: 1,
-      version: {
-        [sourceSymbol]: 5,
-      },
-      semanticSymbol: ownSourceSymbol,
-    }
-  );
+        semanticSymbol: ownSourceSymbol,
+      }
+    );
+  }
 
   describe("semantic branding", () => {
     it("should brand with the right semantic symbol", async () => {

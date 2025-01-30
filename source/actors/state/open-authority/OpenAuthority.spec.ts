@@ -10,49 +10,51 @@ import { OpenAuthority } from "./OpenAuthority";
 import { spawnOpenAuthority } from "./spawnOpenAuthority";
 
 describe("OpenAuthority", () => {
-  const ownSourceSymbol = Symbol();
-  testPublisherLike<
-    // @ts-expect-error
-    OpenAuthority<number, typeof ownSourceSymbol>,
-    StateSnapshot<
-      number,
-      Version<typeof ownSourceSymbol>,
-      typeof ownSourceSymbol
-    >
-  >(
-    (parent, options?) =>
-      spawnOpenAuthority(parent, ownSourceSymbol, 0, options),
-    (authorityLike) =>
-      dispatch(authorityLike, {
-        type: "transform content",
-        transformer: (value) => value + 1,
-      }),
-    {
-      value: 1,
-      version: { [ownSourceSymbol]: 1 },
-      semanticSymbol: ownSourceSymbol,
-    },
-    (authorityLike) =>
-      dispatch(authorityLike, {
-        type: "replace content",
+  {
+    const ownSourceSymbol = Symbol();
+    testPublisherLike<
+      // @ts-expect-error
+      OpenAuthority<number, typeof ownSourceSymbol>,
+      StateSnapshot<
+        number,
+        Version<typeof ownSourceSymbol>,
+        typeof ownSourceSymbol
+      >
+    >(
+      (parent, options?) =>
+        spawnOpenAuthority(parent, ownSourceSymbol, 0, options),
+      (authorityLike) =>
+        dispatch(authorityLike, {
+          type: "transform content",
+          transformer: (value) => value + 1,
+        }),
+      {
+        value: 1,
+        version: { [ownSourceSymbol]: 1 },
+        semanticSymbol: ownSourceSymbol,
+      },
+      (authorityLike) =>
+        dispatch(authorityLike, {
+          type: "replace content",
+          value: 42,
+        }),
+      {
         value: 42,
-      }),
-    {
-      value: 42,
-      version: { [ownSourceSymbol]: 2 },
-      semanticSymbol: ownSourceSymbol,
-    },
-    (authorityLike) =>
-      dispatch(authorityLike, {
-        type: "transform content",
-        transformer: (value) => value * 2,
-      }),
-    {
-      value: 84,
-      version: { [ownSourceSymbol]: 3 },
-      semanticSymbol: ownSourceSymbol,
-    }
-  );
+        version: { [ownSourceSymbol]: 2 },
+        semanticSymbol: ownSourceSymbol,
+      },
+      (authorityLike) =>
+        dispatch(authorityLike, {
+          type: "transform content",
+          transformer: (value) => value * 2,
+        }),
+      {
+        value: 84,
+        version: { [ownSourceSymbol]: 3 },
+        semanticSymbol: ownSourceSymbol,
+      }
+    );
+  }
 
   describe("value management", () => {
     it("should support initial value", async () => {

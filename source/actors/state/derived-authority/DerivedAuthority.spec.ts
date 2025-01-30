@@ -9,93 +9,99 @@ import { DerivedAuthority } from "./DerivedAuthority";
 import { spawnDerivedAuthority } from "./spawnDerivedAuthority";
 
 describe("DerivedAuthority", () => {
-  const source = Symbol();
-  const ownSource = Symbol();
-  testPublisherLike<
-    // @ts-expect-error
-    DerivedAuthority<
-      {
-        [source]: StateSnapshot<number, Version<typeof source>, typeof source>;
-      },
-      number,
-      typeof ownSource
-    >,
-    StateSnapshot<number, Version<typeof source>, typeof ownSource>
-  >(
-    (parent, options) => {
-      const inert =
-        spawnPublisher<
-          StateSnapshot<number, Version<typeof source>, typeof source>
-        >(parent);
-      return spawnDerivedAuthority(
-        parent,
-        ownSource,
+  {
+    const source = Symbol();
+    const ownSource = Symbol();
+    testPublisherLike<
+      // @ts-expect-error
+      DerivedAuthority<
         {
-          // @ts-expect-error
-          [source]: inert,
+          [source]: StateSnapshot<
+            number,
+            Version<typeof source>,
+            typeof source
+          >;
         },
-        (inputs, cache) => ({
-          value: 2 * inputs[source],
-          cache,
+        number,
+        typeof ownSource
+      >,
+      StateSnapshot<number, Version<typeof source>, typeof ownSource>
+    >(
+      (parent, options) => {
+        const inert =
+          spawnPublisher<
+            StateSnapshot<number, Version<typeof source>, typeof source>
+          >(parent);
+        return spawnDerivedAuthority(
+          parent,
+          ownSource,
+          {
+            // @ts-expect-error
+            [source]: inert,
+          },
+          (inputs, cache) => ({
+            value: 2 * inputs[source],
+            cache,
+          }),
+          options
+        );
+      },
+      (publisherLike) =>
+        dispatch(publisherLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 1000,
+            version: {
+              [source]: 0,
+            },
+            semanticSymbol: source,
+          },
         }),
-        options
-      );
-    },
-    (publisherLike) =>
-      dispatch(publisherLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 1000,
-          version: {
-            [source]: 0,
-          },
-          semanticSymbol: source,
+      {
+        value: 2000,
+        version: {
+          [source]: 0,
         },
-      }),
-    {
-      value: 2000,
-      version: {
-        [source]: 0,
+        semanticSymbol: ownSource,
       },
-      semanticSymbol: ownSource,
-    },
-    (publisherLike) =>
-      dispatch(publisherLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 314,
-          version: {
-            [source]: 1,
+      (publisherLike) =>
+        dispatch(publisherLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 314,
+            version: {
+              [source]: 1,
+            },
+            semanticSymbol: source,
           },
-          semanticSymbol: source,
+        }),
+      {
+        value: 628,
+        version: {
+          [source]: 1,
         },
-      }),
-    {
-      value: 628,
-      version: {
-        [source]: 1,
+        semanticSymbol: ownSource,
       },
-      semanticSymbol: ownSource,
-    },
-    (publisherLike) =>
-      dispatch(publisherLike, {
-        type: "snapshot",
-        snapshot: {
-          value: 1,
-          version: {
-            [source]: 2,
+      (publisherLike) =>
+        dispatch(publisherLike, {
+          type: "snapshot",
+          snapshot: {
+            value: 1,
+            version: {
+              [source]: 2,
+            },
+            semanticSymbol: source,
           },
-          semanticSymbol: source,
+        }),
+      {
+        value: 2,
+        version: {
+          [source]: 2,
         },
-      }),
-    {
-      value: 2,
-      version: {
-        [source]: 2,
-      },
-      semanticSymbol: ownSource,
-    }
-  );
+        semanticSymbol: ownSource,
+      }
+    );
+  }
 
   describe("deriving", () => {
     it("should disallow dispatching unsupported state snapshots", async () => {

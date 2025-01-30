@@ -10,50 +10,52 @@ import { PureEventAuthority } from "./PureEventAuthority";
 import { spawnPureEventAuthority } from "./spawnPureEventAuthority";
 
 describe("PureEventAuthority", () => {
-  const ownSourceSymbol = Symbol();
-  testPublisherLike<
-    // @ts-expect-error
-    PureEventAuthority<"increment", number, typeof ownSourceSymbol>,
-    StateSnapshot<
-      number,
-      Version<typeof ownSourceSymbol>,
-      typeof ownSourceSymbol
-    >
-  >(
-    (parent, options?) =>
-      spawnPureEventAuthority<
-        "increment",
+  {
+    const ownSourceSymbol = Symbol();
+    testPublisherLike<
+      // @ts-expect-error
+      PureEventAuthority<"increment", number, typeof ownSourceSymbol>,
+      StateSnapshot<
         number,
-        typeof ownSourceSymbol,
-        number
-      >(
-        parent,
-        ownSourceSymbol,
-        (state, _eventMessage) => state + 1,
-        (state) => state,
-        (previous, current) => previous === current,
-        0,
-        options
-      ),
-    (publisherLike) => dispatch(publisherLike, "increment"),
-    {
-      value: 1,
-      version: { [ownSourceSymbol]: 1 },
-      semanticSymbol: ownSourceSymbol,
-    },
-    (publisherLike) => dispatch(publisherLike, "increment"),
-    {
-      value: 2,
-      version: { [ownSourceSymbol]: 2 },
-      semanticSymbol: ownSourceSymbol,
-    },
-    (publisherLike) => dispatch(publisherLike, "increment"),
-    {
-      value: 3,
-      version: { [ownSourceSymbol]: 3 },
-      semanticSymbol: ownSourceSymbol,
-    }
-  );
+        Version<typeof ownSourceSymbol>,
+        typeof ownSourceSymbol
+      >
+    >(
+      (parent, options?) =>
+        spawnPureEventAuthority<
+          "increment",
+          number,
+          typeof ownSourceSymbol,
+          number
+        >(
+          parent,
+          ownSourceSymbol,
+          (state, _eventMessage) => state + 1,
+          (state) => state,
+          (previous, current) => previous === current,
+          0,
+          options
+        ),
+      (publisherLike) => dispatch(publisherLike, "increment"),
+      {
+        value: 1,
+        version: { [ownSourceSymbol]: 1 },
+        semanticSymbol: ownSourceSymbol,
+      },
+      (publisherLike) => dispatch(publisherLike, "increment"),
+      {
+        value: 2,
+        version: { [ownSourceSymbol]: 2 },
+        semanticSymbol: ownSourceSymbol,
+      },
+      (publisherLike) => dispatch(publisherLike, "increment"),
+      {
+        value: 3,
+        version: { [ownSourceSymbol]: 3 },
+        semanticSymbol: ownSourceSymbol,
+      }
+    );
+  }
 
   describe("value management", () => {
     it("should supply the right types to the input functions", () => {

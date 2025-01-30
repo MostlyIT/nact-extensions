@@ -9,24 +9,11 @@ import { spawnValueReducer } from "./spawnValueReducer";
 import { ValueReducer } from "./ValueReducer";
 
 describe("ValueReducer", () => {
-  const sourceSymbol = Symbol();
-  testRelayLike<
-    // @ts-expect-error
-    ValueReducer<
-      {
-        [sourceSymbol]: StateSnapshot<
-          number,
-          Version<typeof sourceSymbol>,
-          typeof sourceSymbol
-        >;
-      },
-      "toggle doubling",
-      number
-    >,
-    StateSnapshot<number, Version<typeof sourceSymbol>, undefined>
-  >(
-    (parent, options?) =>
-      spawnValueReducer<
+  {
+    const sourceSymbol = Symbol();
+    testRelayLike<
+      // @ts-expect-error
+      ValueReducer<
         {
           [sourceSymbol]: StateSnapshot<
             number,
@@ -35,59 +22,74 @@ describe("ValueReducer", () => {
           >;
         },
         "toggle doubling",
-        number,
-        boolean
-      >(
-        parent,
-        (state, _eventMessage, _lastCombinedObject) => !state,
-        (state, _newCombinedObject) => (state !== undefined ? state : false),
-        (state, lastCombinedObject) =>
-          (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
-        options
-      ),
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: { [sourceSymbol]: 1000 },
-          version: { [sourceSymbol]: 0 },
-          semanticSymbol: undefined,
-        },
-      }),
-    {
-      value: 1000,
-      version: { [sourceSymbol]: 0 },
-      semanticSymbol: undefined,
-    },
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: { [sourceSymbol]: 314 },
-          version: { [sourceSymbol]: 1 },
-          semanticSymbol: undefined,
-        },
-      }),
-    {
-      value: 314,
-      version: { [sourceSymbol]: 1 },
-      semanticSymbol: undefined,
-    },
-    (relayLike) =>
-      dispatch(relayLike, {
-        type: "snapshot",
-        snapshot: {
-          value: { [sourceSymbol]: 1 },
-          version: { [sourceSymbol]: 2 },
-          semanticSymbol: undefined,
-        },
-      }),
-    {
-      value: 1,
-      version: { [sourceSymbol]: 2 },
-      semanticSymbol: undefined,
-    }
-  );
+        number
+      >,
+      StateSnapshot<number, Version<typeof sourceSymbol>, undefined>
+    >(
+      (parent, options?) =>
+        spawnValueReducer<
+          {
+            [sourceSymbol]: StateSnapshot<
+              number,
+              Version<typeof sourceSymbol>,
+              typeof sourceSymbol
+            >;
+          },
+          "toggle doubling",
+          number,
+          boolean
+        >(
+          parent,
+          (state, _eventMessage, _lastCombinedObject) => !state,
+          (state, _newCombinedObject) => (state !== undefined ? state : false),
+          (state, lastCombinedObject) =>
+            (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
+          options
+        ),
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: { [sourceSymbol]: 1000 },
+            version: { [sourceSymbol]: 0 },
+            semanticSymbol: undefined,
+          },
+        }),
+      {
+        value: 1000,
+        version: { [sourceSymbol]: 0 },
+        semanticSymbol: undefined,
+      },
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: { [sourceSymbol]: 314 },
+            version: { [sourceSymbol]: 1 },
+            semanticSymbol: undefined,
+          },
+        }),
+      {
+        value: 314,
+        version: { [sourceSymbol]: 1 },
+        semanticSymbol: undefined,
+      },
+      (relayLike) =>
+        dispatch(relayLike, {
+          type: "snapshot",
+          snapshot: {
+            value: { [sourceSymbol]: 1 },
+            version: { [sourceSymbol]: 2 },
+            semanticSymbol: undefined,
+          },
+        }),
+      {
+        value: 1,
+        version: { [sourceSymbol]: 2 },
+        semanticSymbol: undefined,
+      }
+    );
+  }
 
   describe("value reducing", () => {
     it("should supply the right types to the input functions", async () => {
@@ -143,6 +145,7 @@ describe("ValueReducer", () => {
         consumerFunction(message)
       );
 
+      const sourceSymbol = Symbol();
       const valueReducer = spawnValueReducer<
         {
           [sourceSymbol]: StateSnapshot<
@@ -295,6 +298,7 @@ describe("ValueReducer", () => {
         consumerFunction(message)
       );
 
+      const sourceSymbol = Symbol();
       const valueReducer = spawnValueReducer<
         {
           [sourceSymbol]: StateSnapshot<
@@ -569,6 +573,7 @@ describe("ValueReducer", () => {
         consumerFunction(message)
       );
 
+      const sourceSymbol = Symbol();
       const valueReducer = spawnValueReducer<
         {
           [sourceSymbol]: StateSnapshot<
