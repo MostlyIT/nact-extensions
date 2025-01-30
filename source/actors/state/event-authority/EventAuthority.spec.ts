@@ -1054,5 +1054,197 @@ describe("EventAuthority", () => {
         },
       });
     });
+
+    it("should accept async function input", async () => {
+      const system = start();
+
+      const consumerFunction = vi.fn();
+      const consumer = spawn(system, (_state, message) =>
+        consumerFunction(message)
+      );
+
+      const sourceASymbol = Symbol();
+      const sourceBSymbol = Symbol();
+      const ownSymbol = Symbol();
+
+      const sourceA = spawn(system, (_state, _message) => _state);
+      const sourceB = spawn(system, (_state, _message) => _state);
+
+      const authority1 = spawnEventAuthority<
+        {
+          [sourceASymbol]: StateSnapshot<
+            number,
+            Version<typeof sourceASymbol>,
+            typeof sourceASymbol
+          >;
+          [sourceBSymbol]: StateSnapshot<
+            string,
+            Version<typeof sourceASymbol | typeof sourceBSymbol>,
+            typeof sourceBSymbol
+          >;
+        },
+        "toggle doubling",
+        number,
+        typeof ownSymbol,
+        boolean
+      >(
+        system,
+        ownSymbol,
+        { [sourceASymbol]: sourceA, [sourceBSymbol]: sourceB },
+        async (state, _eventMessage, _lastCombinedObject) => {
+          await delay(2);
+          return !state;
+        },
+        async (state, _newCombinedObject) => {
+          await delay(2);
+          return state !== undefined ? state : false;
+        },
+        async (state, lastCombinedObject) => {
+          await delay(2);
+          return (state ? 2 : 1) * lastCombinedObject[sourceASymbol];
+        },
+        async (previous, current) => {
+          await delay(2);
+          return previous === current;
+        },
+        {
+          initialSubscribersSet: Set([consumer]),
+        }
+      );
+
+      dispatch(authority1, {
+        type: "snapshot",
+        snapshot: {
+          value: 1000,
+          version: { [sourceASymbol]: 0 },
+          semanticSymbol: sourceASymbol,
+        },
+      });
+
+      await delay(10);
+      expect(consumerFunction).not.toHaveBeenCalled();
+
+      dispatch(authority1, {
+        type: "snapshot",
+        snapshot: {
+          value: "text",
+          version: { [sourceASymbol]: 0, [sourceBSymbol]: 0 },
+          semanticSymbol: sourceBSymbol,
+        },
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+      expect(consumerFunction).toHaveBeenNthCalledWith(1, {
+        type: "snapshot",
+        snapshot: {
+          value: 1000,
+          version: {
+            [sourceASymbol]: 0,
+            [sourceBSymbol]: 0,
+            [ownSymbol]: 0,
+          },
+          semanticSymbol: ownSymbol,
+        },
+      });
+
+      dispatch(authority1, {
+        type: "snapshot",
+        snapshot: {
+          value: 500,
+          version: { [sourceASymbol]: 1 },
+          semanticSymbol: sourceASymbol,
+        },
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+
+      dispatch(authority1, {
+        type: "snapshot",
+        snapshot: {
+          value: "text",
+          version: { [sourceASymbol]: 1, [sourceBSymbol]: 2 },
+          semanticSymbol: sourceBSymbol,
+        },
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(2);
+      expect(consumerFunction).toHaveBeenNthCalledWith(2, {
+        type: "snapshot",
+        snapshot: {
+          value: 500,
+          version: {
+            [sourceASymbol]: 1,
+            [sourceBSymbol]: 2,
+            [ownSymbol]: 1,
+          },
+          semanticSymbol: ownSymbol,
+        },
+      });
+
+      consumerFunction.mockClear();
+
+      const sourceSymbol = Symbol();
+
+      const source = spawn(system, (_state, _message) => _state);
+
+      const authority2 = spawnEventAuthority<
+        {
+          [sourceSymbol]: StateSnapshot<
+            number,
+            Version<typeof sourceSymbol>,
+            typeof sourceSymbol
+          >;
+        },
+        "toggle doubling",
+        number,
+        typeof ownSymbol,
+        boolean
+      >(
+        system,
+        ownSymbol,
+        { [sourceSymbol]: source },
+        async (state, _eventMessage, _lastCombinedObject) => {
+          await delay(2);
+          return !state;
+        },
+        async (state, _newCombinedObject) => {
+          await delay(2);
+          return state !== undefined ? state : false;
+        },
+        async (state, lastCombinedObject) => {
+          await delay(2);
+          return (state ? 2 : 1) * lastCombinedObject[sourceSymbol];
+        },
+        async (previous, current) => {
+          await delay(2);
+          return previous === current;
+        },
+        {
+          initialSubscribersSet: Set([consumer]),
+        }
+      );
+
+      dispatch(authority2, {
+        type: "snapshot",
+        snapshot: {
+          value: 0,
+          version: { [sourceSymbol]: 0 },
+          semanticSymbol: sourceSymbol,
+        },
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+      expect(consumerFunction.mock.calls[0][0].snapshot.value).toBe(0);
+
+      // Toggle doubling - should go from 0 to 0 (1x0 to 2x0)
+      dispatch(authority2, "toggle doubling");
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1); // No new call since value is equal
+    });
   });
 });

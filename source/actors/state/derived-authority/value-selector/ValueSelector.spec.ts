@@ -413,5 +413,74 @@ describe("ValueSelector", () => {
       expect(cacheRecorder).toHaveBeenNthCalledWith(1, undefined);
       expect(cacheRecorder).toHaveBeenNthCalledWith(2, 2);
     });
+
+    it("should accept async function input", async () => {
+      const system = start();
+      const sourceASymbol = Symbol();
+      const sourceBSymbol = Symbol();
+
+      const mockCache = { computeCount: 0 };
+      const valueSelector = spawnValueSelector<
+        {
+          [sourceASymbol]: StateSnapshot<
+            number,
+            Version<typeof sourceASymbol>,
+            typeof sourceASymbol
+          >;
+          [sourceBSymbol]: StateSnapshot<
+            string,
+            Version<typeof sourceBSymbol>,
+            typeof sourceBSymbol
+          >;
+        },
+        string,
+        typeof mockCache
+      >(system, async (inputs) => {
+        await delay(2);
+        return {
+          value: `${inputs[sourceASymbol]} + ${inputs[sourceBSymbol]}`,
+          cache: mockCache,
+        };
+      });
+
+      const consumerFunction = vi.fn();
+      const consumer = spawn(system, (_state, message) =>
+        consumerFunction(message)
+      );
+
+      dispatch(valueSelector, {
+        type: "set destination",
+        destination: consumer,
+      });
+
+      dispatch(valueSelector, {
+        type: "snapshot",
+        snapshot: {
+          value: {
+            [sourceASymbol]: 42,
+            [sourceBSymbol]: "test",
+          },
+          version: {
+            [sourceASymbol]: 1,
+            [sourceBSymbol]: 1,
+          },
+          semanticSymbol: undefined,
+        },
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+      expect(consumerFunction).toHaveBeenCalledWith({
+        type: "snapshot",
+        snapshot: {
+          value: "42 + test",
+          version: {
+            [sourceASymbol]: 1,
+            [sourceBSymbol]: 1,
+          },
+          semanticSymbol: undefined,
+        },
+      });
+    });
   });
 });

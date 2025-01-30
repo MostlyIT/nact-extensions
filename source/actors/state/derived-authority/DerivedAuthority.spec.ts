@@ -714,5 +714,88 @@ describe("DerivedAuthority", () => {
         ownSymbol
       );
     });
+
+    it("should accept async function input", async () => {
+      const system = start();
+      const sourceSymbol = Symbol();
+      const ownSymbol = Symbol();
+
+      const source =
+        spawnPublisher<
+          StateSnapshot<
+            number,
+            Version<typeof sourceSymbol>,
+            typeof sourceSymbol
+          >
+        >(system);
+
+      const authority = spawnDerivedAuthority(
+        system,
+        ownSymbol,
+        {
+          // @ts-expect-error
+          [sourceSymbol]: source,
+        },
+        async (inputs) => {
+          await delay(2);
+          return {
+            value: 2 * inputs[sourceSymbol],
+            cache: undefined,
+          };
+        }
+      );
+
+      dispatch(authority, {
+        type: "snapshot",
+        snapshot: {
+          value: 21,
+          version: { [sourceSymbol]: 0 },
+          semanticSymbol: sourceSymbol,
+        },
+      });
+
+      await delay(10);
+
+      const consumerFunction = vi.fn();
+      const consumer = spawn(system, (_state, message) =>
+        consumerFunction(message)
+      );
+
+      dispatch(authority, {
+        type: "subscribe",
+        subscriber: consumer,
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+      expect(consumerFunction).toHaveBeenNthCalledWith(1, {
+        type: "snapshot",
+        snapshot: {
+          value: 42,
+          version: { [sourceSymbol]: 0 },
+          semanticSymbol: ownSymbol,
+        },
+      });
+
+      dispatch(authority, {
+        type: "snapshot",
+        snapshot: {
+          value: 1,
+          version: { [sourceSymbol]: 1 },
+          semanticSymbol: sourceSymbol,
+        },
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(2);
+      expect(consumerFunction).toHaveBeenNthCalledWith(2, {
+        type: "snapshot",
+        snapshot: {
+          value: 2,
+          version: { [sourceSymbol]: 1 },
+          semanticSymbol: ownSymbol,
+        },
+      });
+    });
   });
 });

@@ -560,5 +560,96 @@ describe("ValueReducer", () => {
       expect(consumerFunction).toHaveBeenCalledTimes(1);
       expect(consumerFunction.mock.calls[0][0].snapshot.value).toBe(200);
     });
+
+    it("should accept async function input", async () => {
+      const system = start();
+
+      const consumerFunction = vi.fn();
+      const consumer = spawn(system, (_state, message) =>
+        consumerFunction(message)
+      );
+
+      const valueReducer = spawnValueReducer<
+        {
+          [sourceSymbol]: StateSnapshot<
+            number,
+            Version<typeof sourceSymbol>,
+            typeof sourceSymbol
+          >;
+        },
+        "toggle doubling",
+        number,
+        boolean
+      >(
+        system,
+        async (state, _eventMessage, _lastCombinedObject) => {
+          await delay(2);
+          return !state;
+        },
+        async (state, _newCombinedObject) => {
+          await delay(2);
+          return state !== undefined ? state : false;
+        },
+        async (state, lastCombinedObject) => {
+          await delay(2);
+          return (state ? 2 : 1) * lastCombinedObject[sourceSymbol];
+        },
+        {
+          initialDestination: consumer,
+        }
+      );
+
+      dispatch(valueReducer, {
+        type: "snapshot",
+        snapshot: {
+          value: {
+            [sourceSymbol]: 1000,
+          },
+          version: {
+            [sourceSymbol]: 0,
+          },
+          semanticSymbol: undefined,
+        },
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+      expect(consumerFunction).toHaveBeenNthCalledWith(1, {
+        type: "snapshot",
+        snapshot: {
+          value: 1000,
+          version: {
+            [sourceSymbol]: 0,
+          },
+          semanticSymbol: undefined,
+        },
+      });
+
+      dispatch(valueReducer, {
+        type: "snapshot",
+        snapshot: {
+          value: {
+            [sourceSymbol]: 314,
+          },
+          version: {
+            [sourceSymbol]: 1,
+          },
+          semanticSymbol: undefined,
+        },
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(2);
+      expect(consumerFunction).toHaveBeenNthCalledWith(2, {
+        type: "snapshot",
+        snapshot: {
+          value: 314,
+          version: {
+            [sourceSymbol]: 1,
+          },
+          semanticSymbol: undefined,
+        },
+      });
+    });
   });
 });

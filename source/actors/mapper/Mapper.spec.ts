@@ -71,5 +71,52 @@ describe("Mapper", () => {
         snapshot: 628,
       } satisfies SnapshotMessage<number>);
     });
+
+    it("should accept async function input", async () => {
+      const system = start();
+
+      const consumerFunction = vi.fn();
+      const consumer = spawn(system, (_state, message) =>
+        consumerFunction(message)
+      );
+
+      const mapper = spawnMapper(
+        system,
+        async (input: number) => {
+          await delay(2);
+          return 2 * input;
+        },
+        {
+          initialDestination: consumer,
+        }
+      );
+
+      await delay(10);
+      expect(consumerFunction).not.toHaveBeenCalled();
+
+      dispatch(mapper, {
+        type: "snapshot",
+        snapshot: 1000,
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+      expect(consumerFunction).toHaveBeenNthCalledWith(1, {
+        type: "snapshot",
+        snapshot: 2000,
+      } satisfies SnapshotMessage<number>);
+
+      dispatch(mapper, {
+        type: "snapshot",
+        snapshot: 314,
+      });
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(2);
+      expect(consumerFunction).toHaveBeenNthCalledWith(2, {
+        type: "snapshot",
+        snapshot: 628,
+      } satisfies SnapshotMessage<number>);
+    });
   });
 });

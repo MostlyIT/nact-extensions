@@ -362,5 +362,85 @@ describe("PureEventAuthority", () => {
         },
       });
     });
+
+    it("should accept async function input", async () => {
+      const system = start();
+
+      const consumerFunction = vi.fn();
+      const consumer = spawn(system, (_state, message) =>
+        consumerFunction(message)
+      );
+
+      const ownSymbol = Symbol();
+
+      const authority = spawnPureEventAuthority<
+        "toggle doubling",
+        number,
+        typeof ownSymbol,
+        boolean
+      >(
+        system,
+        ownSymbol,
+        async (state, _eventMessage) => {
+          await delay(2);
+          return !state;
+        },
+        async (state) => {
+          await delay(2);
+          return state ? 2000 : 1000;
+        },
+        async (previous, current) => {
+          await delay(2);
+          return previous === current;
+        },
+        false,
+        {
+          initialSubscribersSet: Set([consumer]),
+        }
+      );
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(1);
+      expect(consumerFunction).toHaveBeenNthCalledWith(1, {
+        type: "snapshot",
+        snapshot: {
+          value: 1000,
+          version: {
+            [ownSymbol]: 0,
+          },
+          semanticSymbol: ownSymbol,
+        },
+      } satisfies SnapshotMessage<StateSnapshot<number, Version<typeof ownSymbol>, typeof ownSymbol>>);
+
+      dispatch(authority, "toggle doubling");
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(2);
+      expect(consumerFunction).toHaveBeenNthCalledWith(2, {
+        type: "snapshot",
+        snapshot: {
+          value: 2000,
+          version: {
+            [ownSymbol]: 1,
+          },
+          semanticSymbol: ownSymbol,
+        },
+      } satisfies SnapshotMessage<StateSnapshot<number, Version<typeof ownSymbol>, typeof ownSymbol>>);
+
+      dispatch(authority, "toggle doubling");
+
+      await delay(10);
+      expect(consumerFunction).toHaveBeenCalledTimes(3);
+      expect(consumerFunction).toHaveBeenNthCalledWith(3, {
+        type: "snapshot",
+        snapshot: {
+          value: 1000,
+          version: {
+            [ownSymbol]: 2,
+          },
+          semanticSymbol: ownSymbol,
+        },
+      } satisfies SnapshotMessage<StateSnapshot<number, Version<typeof ownSymbol>, typeof ownSymbol>>);
+    });
   });
 });
