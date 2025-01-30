@@ -7,6 +7,7 @@ import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
 import { testPublisherLike } from "../../publisher/__testing__/testPublisherLike";
 import { spawnPublisher } from "../../publisher/spawnPublisher";
+import { testCombinerLike } from "../combiner/__testing__/testCombinerLike";
 import { EventAuthority } from "./EventAuthority";
 import { spawnEventAuthority } from "./spawnEventAuthority";
 
@@ -110,6 +111,22 @@ describe("EventAuthority", () => {
         version: { [sourceSymbol]: 2, [ownSourceSymbol]: 2 },
         semanticSymbol: ownSourceSymbol,
       }
+    );
+  }
+
+  {
+    const ownSymbol = Symbol();
+    testCombinerLike((parent, stateSnapshotSources, options) =>
+      spawnEventAuthority(
+        parent,
+        ownSymbol,
+        stateSnapshotSources,
+        (state, _eventMessage, _lastCombinedObject) => state,
+        (_state, _newCombinedObject) => undefined,
+        (state) => state,
+        (previous, current) => previous === current,
+        options
+      )
     );
   }
 

@@ -4,6 +4,7 @@ import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot"
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
 import { testRelayLike } from "../../relay/__testing__/testRelayLike";
+import { testCombinerLike } from "./__testing__/testCombinerLike";
 import { Combiner } from "./Combiner";
 import { spawnCombiner } from "./spawnCombiner";
 
@@ -118,6 +119,12 @@ describe("Combiner", () => {
         },
         semanticSymbol: undefined,
       }
+    );
+  }
+
+  {
+    testCombinerLike((parent, stateSnapshotSources, options) =>
+      spawnCombiner(parent, stateSnapshotSources, options)
     );
   }
 
@@ -385,38 +392,6 @@ describe("Combiner", () => {
           semanticSymbol: undefined,
         },
       });
-    });
-
-    it("should not subscribe to any provided sources on initialization", async () => {
-      const system = start();
-
-      const sourceASubscribeFunction = vi.fn();
-      const sourceA = spawn(system, (_state, message) => {
-        if (message.type === "subscribe") {
-          sourceASubscribeFunction(message);
-        }
-        return _state;
-      });
-
-      const sourceBSubscribeFunction = vi.fn();
-      const sourceB = spawn(system, (_state, message) => {
-        if (message.type === "subscribe") {
-          sourceBSubscribeFunction(message);
-        }
-        return _state;
-      });
-
-      const sourceSymbolA = Symbol();
-      const sourceSymbolB = Symbol();
-
-      spawnCombiner(system, {
-        [sourceSymbolA]: sourceA,
-        [sourceSymbolB]: sourceB,
-      });
-
-      await delay(10);
-      expect(sourceASubscribeFunction).not.toHaveBeenCalled();
-      expect(sourceBSubscribeFunction).not.toHaveBeenCalled();
     });
   });
 });

@@ -5,6 +5,7 @@ import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
 import { testPublisherLike } from "../../publisher/__testing__/testPublisherLike";
 import { spawnPublisher } from "../../publisher/spawnPublisher";
+import { testCombinerLike } from "../combiner/__testing__/testCombinerLike";
 import { DerivedAuthority } from "./DerivedAuthority";
 import { spawnDerivedAuthority } from "./spawnDerivedAuthority";
 
@@ -100,6 +101,19 @@ describe("DerivedAuthority", () => {
         },
         semanticSymbol: ownSource,
       }
+    );
+  }
+
+  {
+    const ownSymbol = Symbol();
+    testCombinerLike((parent, stateSnapshotSources, options) =>
+      spawnDerivedAuthority(
+        parent,
+        ownSymbol,
+        stateSnapshotSources,
+        (_inputs, cache) => ({ value: undefined, cache }),
+        options
+      )
     );
   }
 

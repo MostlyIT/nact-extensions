@@ -7,6 +7,7 @@ import {
   Version,
 } from "../../../data-types/state-snapshot/Version";
 import { PublisherOptions } from "../../publisher/PublisherOptions";
+import { CombinerOwnOptions } from "../combiner/CombinerOptions";
 
 export type EventAuthorityOptions<
   TStateSnapshotsObject extends {
@@ -14,16 +15,17 @@ export type EventAuthorityOptions<
   },
   TOutputValue,
   TSemanticSymbol extends symbol
-> = PublisherOptions<
-  StateSnapshot<
-    TOutputValue,
-    Version<
-      KeyOfVersion<
-        VersionOfStateSnapshot<
-          TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+> = CombinerOwnOptions &
+  PublisherOptions<
+    StateSnapshot<
+      TOutputValue,
+      Version<
+        KeyOfVersion<
+          VersionOfStateSnapshot<
+            TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+          >
         >
-      >
-    >,
-    TSemanticSymbol
-  >
->;
+      >,
+      TSemanticSymbol
+    >
+  >;

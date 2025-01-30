@@ -114,9 +114,30 @@ export const spawnCombiner = <
       return state;
     },
     {
+      afterStop: (_state, context) => {
+        if (options !== undefined && options.manageOwnSubscriptions === true) {
+          for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
+            // @ts-expect-error
+            dispatch(stateSnapshotSource, {
+              type: "unsubscribe",
+              subscriber: context.self,
+            });
+          }
+        }
+      },
       initialStateFunc: (
         context
       ): CombinerState<TStateSnapshotsObject, typeof unsetSymbol> => {
+        if (options !== undefined && options.manageOwnSubscriptions === true) {
+          for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
+            // @ts-expect-error
+            dispatch(stateSnapshotSource, {
+              type: "subscribe",
+              subscriber: context.self,
+            });
+          }
+        }
+
         return {
           combinedStateSnapshotObject: mapValues(
             stateSnapshotSources,

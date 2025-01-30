@@ -17,6 +17,7 @@ import {
   Version,
 } from "../../../data-types/state-snapshot/Version";
 import { ownKeys } from "../../../utility/ownKeys";
+import { ownValues } from "../../../utility/ownValues";
 import { areVersionsEqual } from "../../../utility/state-snapshot/areVersionsEqual";
 import { spawnDistinct } from "../../distinct/spawnDistinct";
 import { spawnReplayPublisher } from "../../replay-publisher/spawnReplayPublisher";
@@ -129,7 +130,28 @@ export const spawnEventAuthority = <
       return state;
     },
     {
+      afterStop: (_state, context) => {
+        if (options !== undefined && options.manageOwnSubscriptions === true) {
+          for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
+            // @ts-expect-error
+            dispatch(stateSnapshotSource, {
+              type: "unsubscribe",
+              subscriber: context.self,
+            });
+          }
+        }
+      },
       initialStateFunc: (context) => {
+        if (options !== undefined && options.manageOwnSubscriptions === true) {
+          for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
+            // @ts-expect-error
+            dispatch(stateSnapshotSource, {
+              type: "subscribe",
+              subscriber: context.self,
+            });
+          }
+        }
+
         const replayPublisher = spawnReplayPublisher(context.self, 1, options);
         const versioner = spawnVersioner(context.self, semanticSymbol, {
           // @ts-expect-error

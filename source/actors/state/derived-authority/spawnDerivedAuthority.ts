@@ -11,6 +11,7 @@ import {
   StateSnapshot,
   ValueOfStateSnapshot,
 } from "../../../data-types/state-snapshot/StateSnapshot";
+import { ownValues } from "../../../utility/ownValues";
 import { spawnReplayPublisher } from "../../replay-publisher/spawnReplayPublisher";
 import { spawnCombiner } from "../combiner/spawnCombiner";
 import { spawnSemanticBrander } from "../semantic-brander/spawnSemanticBrander";
@@ -80,7 +81,28 @@ export const spawnDerivedAuthority = <
       }
     },
     {
+      afterStop: (_state, context) => {
+        if (options !== undefined && options.manageOwnSubscriptions === true) {
+          for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
+            // @ts-expect-error
+            dispatch(stateSnapshotSource, {
+              type: "unsubscribe",
+              subscriber: context.self,
+            });
+          }
+        }
+      },
       initialStateFunc: (context) => {
+        if (options !== undefined && options.manageOwnSubscriptions === true) {
+          for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
+            // @ts-expect-error
+            dispatch(stateSnapshotSource, {
+              type: "subscribe",
+              subscriber: context.self,
+            });
+          }
+        }
+
         const replayPublisher = spawnReplayPublisher(context.self, 1, options);
         const semanticBrander = spawnSemanticBrander(
           context.self,
@@ -101,6 +123,7 @@ export const spawnDerivedAuthority = <
         const combiner = spawnCombiner(context.self, stateSnapshotSources, {
           // @ts-expect-error
           initialDestination: valueSelector,
+          manageOwnSubscriptions: false,
         });
 
         return {
