@@ -66,5 +66,6 @@ export * from "./data-types/messages/TransformContentMessage";
 export * from "./data-types/messages/UnsetDestinationMessage";
 export * from "./data-types/messages/UnsubscribeMessage";
 
+export * from "./data-types/MaybeAsync";
 export * from "./data-types/state-snapshot/StateSnapshot";
 export * from "./data-types/state-snapshot/Version";

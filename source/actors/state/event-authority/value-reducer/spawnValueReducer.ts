@@ -5,6 +5,7 @@ import {
   spawn,
 } from "@nact/core";
 import { List } from "immutable";
+import { MaybeAsync } from "../../../../data-types/MaybeAsync";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
@@ -24,33 +25,39 @@ export const spawnValueReducer = <
   TState
 >(
   parent: LocalActorSystemRef | LocalActorRef<any>,
-  eventReducer: (
-    state: TState,
-    eventMessage: TEventMessage,
-    lastCombinedObject: {
-      readonly [key in keyof TStateSnapshotsObject &
-        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-    }
-  ) => TState,
-  snapshotReducer: (
-    state: TState | undefined,
-    newCombinedObject: {
-      readonly [key in keyof TStateSnapshotsObject &
-        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-    }
-  ) => TState,
-  valueSelector: (
-    state: TState,
-    lastCombinedObject: {
-      readonly [key in keyof TStateSnapshotsObject &
-        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-    }
-  ) => TOutputValue,
+  eventReducer: MaybeAsync<
+    (
+      state: TState,
+      eventMessage: TEventMessage,
+      lastCombinedObject: {
+        readonly [key in keyof TStateSnapshotsObject &
+          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+      }
+    ) => TState
+  >,
+  snapshotReducer: MaybeAsync<
+    (
+      state: TState | undefined,
+      newCombinedObject: {
+        readonly [key in keyof TStateSnapshotsObject &
+          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+      }
+    ) => TState
+  >,
+  valueSelector: MaybeAsync<
+    (
+      state: TState,
+      lastCombinedObject: {
+        readonly [key in keyof TStateSnapshotsObject &
+          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+      }
+    ) => TOutputValue
+  >,
   options?: ValueReducerOptions<TStateSnapshotsObject, TOutputValue>
 ): ValueReducer<TStateSnapshotsObject, TEventMessage, TOutputValue> =>
   spawn(
     parent,
-    (
+    async (
       state: ValueReducerState<
         TStateSnapshotsObject,
         TEventMessage,
@@ -62,11 +69,13 @@ export const spawnValueReducer = <
         TEventMessage,
         TOutputValue
       >
-    ): ValueReducerState<
-      TStateSnapshotsObject,
-      TEventMessage,
-      TOutputValue,
-      TState
+    ): Promise<
+      ValueReducerState<
+        TStateSnapshotsObject,
+        TEventMessage,
+        TOutputValue,
+        TState
+      >
     > => {
       if (
         typeof message === "object" &&
@@ -75,26 +84,28 @@ export const spawnValueReducer = <
       ) {
         switch (message.type) {
           case "snapshot":
-            const newInnerState = snapshotReducer(
+            const newInnerState = await snapshotReducer(
               state.innerState,
               message.snapshot.value
             );
 
             // Will only trigger if there are unprocessed events.
-            const newInnerStateFromUnprocessedEvents = (
-              "unprocessedEventMessages" in state
-                ? state.unprocessedEventMessages
-                : List<TEventMessage>()
-            ).reduce(
-              (innerState, eventMessage) =>
-                eventReducer(innerState, eventMessage, message.snapshot.value),
-              newInnerState
-            );
+            let loopInnerState = newInnerState;
+            if ("unprocessedEventMessages" in state) {
+              for (const eventMessage of state.unprocessedEventMessages) {
+                loopInnerState = await eventReducer(
+                  loopInnerState,
+                  eventMessage,
+                  message.snapshot.value
+                );
+              }
+            }
+            const newInnerStateFromUnprocessedEvents = loopInnerState;
 
             dispatch(state.relay, {
               type: "snapshot",
               snapshot: {
-                value: valueSelector(
+                value: await valueSelector(
                   newInnerStateFromUnprocessedEvents,
                   message.snapshot.value
                 ),
@@ -126,7 +137,7 @@ export const spawnValueReducer = <
       }
 
       // Unprocessed events doesn't exist and a combined snapshot has been observed.
-      const newInnerState = eventReducer(
+      const newInnerState = await eventReducer(
         state.innerState,
         message,
         state.lastCombinedObject
@@ -135,7 +146,7 @@ export const spawnValueReducer = <
       dispatch(state.relay, {
         type: "snapshot",
         snapshot: {
-          value: valueSelector(newInnerState, state.lastCombinedObject),
+          value: await valueSelector(newInnerState, state.lastCombinedObject),
           version: state.lastCombinedVersion,
           semanticSymbol: undefined,
         },

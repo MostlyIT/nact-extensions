@@ -4,6 +4,7 @@ import {
   LocalActorSystemRef,
   spawn,
 } from "@nact/core";
+import { MaybeAsync } from "../../../data-types/MaybeAsync";
 import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
 import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import {
@@ -45,32 +46,37 @@ export const spawnEventAuthority = <
       | UnsubscribeMessage<TStateSnapshotsObject[key]>
     >;
   },
-  eventReducer: (
-    state: TState,
-    eventMessage: TEventMessage,
-    lastCombinedObject: {
-      readonly [key in keyof TStateSnapshotsObject &
-        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-    }
-  ) => TState,
-  snapshotReducer: (
-    state: TState | undefined,
-    newCombinedObject: {
-      readonly [key in keyof TStateSnapshotsObject &
-        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-    }
-  ) => TState,
-  valueSelector: (
-    state: TState,
-    lastCombinedObject: {
-      readonly [key in keyof TStateSnapshotsObject &
-        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-    }
-  ) => TOutputValue,
-  outputEqualityComparator: (
-    previous: TOutputValue,
-    current: TOutputValue
-  ) => boolean,
+  eventReducer: MaybeAsync<
+    (
+      state: TState,
+      eventMessage: TEventMessage,
+      lastCombinedObject: {
+        readonly [key in keyof TStateSnapshotsObject &
+          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+      }
+    ) => TState
+  >,
+  snapshotReducer: MaybeAsync<
+    (
+      state: TState | undefined,
+      newCombinedObject: {
+        readonly [key in keyof TStateSnapshotsObject &
+          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+      }
+    ) => TState
+  >,
+  valueSelector: MaybeAsync<
+    (
+      state: TState,
+      lastCombinedObject: {
+        readonly [key in keyof TStateSnapshotsObject &
+          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+      }
+    ) => TOutputValue
+  >,
+  outputEqualityComparator: MaybeAsync<
+    (previous: TOutputValue, current: TOutputValue) => boolean
+  >,
   options?: EventAuthorityOptions<
     TStateSnapshotsObject,
     TOutputValue,
@@ -131,7 +137,7 @@ export const spawnEventAuthority = <
         });
         const distinct = spawnDistinct(
           context.self,
-          (
+          async (
             previous: StateSnapshot<
               TOutputValue,
               Version<
@@ -156,7 +162,7 @@ export const spawnEventAuthority = <
             >
           ) =>
             areVersionsEqual(previous.version, current.version) &&
-            outputEqualityComparator(previous.value, current.value),
+            (await outputEqualityComparator(previous.value, current.value)),
           {
             // @ts-expect-error
             initialDestination: versioner,

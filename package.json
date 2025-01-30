@@ -1,6 +1,6 @@
 {
   "name": "@mostly-it/nact-extensions",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "description": "A library with reusable logic for the actor system library @nact/core.",
   "type": "module",
   "author": "MostlyIT",
