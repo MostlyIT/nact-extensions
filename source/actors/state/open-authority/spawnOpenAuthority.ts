@@ -13,7 +13,7 @@ export const spawnOpenAuthority = <TValue, TSemanticSymbol extends symbol>(
   spawnPureEventAuthority(
     parent,
     semanticSymbol,
-    (value: TValue, event: OpenAuthorityEvent<TValue>) => {
+    async (value: TValue, event: OpenAuthorityEvent<TValue>) => {
       switch (event.type) {
         case "replace content":
           return event.value;
@@ -21,8 +21,8 @@ export const spawnOpenAuthority = <TValue, TSemanticSymbol extends symbol>(
           return event.transformer(value);
       }
     },
-    (state) => state,
-    (previous, current) => previous === current,
+    async (state) => state,
+    async (previous, current) => previous === current,
     initialValue,
     options
   ) as unknown as OpenAuthority<TValue, TSemanticSymbol>;

@@ -1,6 +1,6 @@
 import { dispatch, spawn, start } from "@nact/core";
 import { Set } from "immutable";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
@@ -10,6 +10,19 @@ import { OpenAuthority } from "./OpenAuthority";
 import { spawnOpenAuthority } from "./spawnOpenAuthority";
 
 describe("OpenAuthority", () => {
+  describe("actor", () => {
+    it("should correctly infer type from parameters", () => {
+      const system = start();
+
+      const ownSymbol = Symbol();
+      const openAuthority = spawnOpenAuthority(system, ownSymbol, 1000);
+
+      expectTypeOf(openAuthority).toMatchTypeOf<
+        OpenAuthority<number, typeof ownSymbol>
+      >();
+    });
+  });
+
   {
     const ownSourceSymbol = Symbol();
     testPublisherLike<

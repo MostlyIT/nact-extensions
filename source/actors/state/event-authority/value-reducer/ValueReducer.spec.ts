@@ -40,9 +40,10 @@ describe("ValueReducer", () => {
           boolean
         >(
           parent,
-          (state, _eventMessage, _lastCombinedObject) => !state,
-          (state, _newCombinedObject) => (state !== undefined ? state : false),
-          (state, lastCombinedObject) =>
+          async (state, _eventMessage, _lastCombinedObject) => !state,
+          async (state, _newCombinedObject) =>
+            state !== undefined ? state : false,
+          async (state, lastCombinedObject) =>
             (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
           options
         ),
@@ -115,20 +116,20 @@ describe("ValueReducer", () => {
         boolean
       >(
         system,
-        (state, eventMessage, lastCombinedObject) => {
+        async (state, eventMessage, lastCombinedObject) => {
           const stateValue: boolean = state; // Type test
           const eventMessageValue: "toggle doubling" = eventMessage; // Type test
           const sourceAValue: number = lastCombinedObject[sourceASymbol]; // Type test
           const sourceBValue: string = lastCombinedObject[sourceBSymbol]; // Type test
           return !state;
         },
-        (state, newCombinedObject) => {
+        async (state, newCombinedObject) => {
           const stateValue: boolean | undefined = state; // Type test
           const sourceAValue: number = newCombinedObject[sourceASymbol]; // Type test
           const sourceBValue: string = newCombinedObject[sourceBSymbol]; // Type test
           return state !== undefined ? state : false;
         },
-        (state, lastCombinedObject) => {
+        async (state, lastCombinedObject) => {
           const stateValue: boolean | undefined = state; // Type test
           const sourceAValue: number = lastCombinedObject[sourceASymbol]; // Type test
           const sourceBValue: string = lastCombinedObject[sourceBSymbol]; // Type test
@@ -159,9 +160,10 @@ describe("ValueReducer", () => {
         boolean
       >(
         system,
-        (state, _eventMessage, _lastCombinedObject) => !state,
-        (state, _newCombinedObject) => (state !== undefined ? state : false),
-        (state, lastCombinedObject) =>
+        async (state, _eventMessage, _lastCombinedObject) => !state,
+        async (state, _newCombinedObject) =>
+          state !== undefined ? state : false,
+        async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
         {
           initialDestination: consumer,
@@ -235,9 +237,9 @@ describe("ValueReducer", () => {
 
       const valueReducer = spawnValueReducer<{}, number, number, number>(
         system,
-        (_state, eventMessage, _lastCombinedObject) => eventMessage,
-        (state, _newCombinedObject) => state ?? 0,
-        (state, _lastCombinedObject) => state,
+        async (_state, eventMessage, _lastCombinedObject) => eventMessage,
+        async (state, _newCombinedObject) => state ?? 0,
+        async (state, _lastCombinedObject) => state,
         {
           initialDestination: consumer,
         }
@@ -312,9 +314,10 @@ describe("ValueReducer", () => {
         boolean
       >(
         system,
-        (state, _eventMessage, _lastCombinedObject) => !state,
-        (state, _newCombinedObject) => (state !== undefined ? state : false),
-        (state, lastCombinedObject) =>
+        async (state, _eventMessage, _lastCombinedObject) => !state,
+        async (state, _newCombinedObject) =>
+          state !== undefined ? state : false,
+        async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
         {
           initialDestination: consumer,
@@ -398,9 +401,10 @@ describe("ValueReducer", () => {
         boolean
       >(
         system,
-        (state, _eventMessage, _lastCombinedObject) => !state,
-        (state, _newCombinedObject) => (state !== undefined ? state : false),
-        (state, lastCombinedObject) =>
+        async (state, _eventMessage, _lastCombinedObject) => !state,
+        async (state, _newCombinedObject) =>
+          state !== undefined ? state : false,
+        async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceASymbol],
         {
           initialDestination: consumer,
@@ -474,9 +478,10 @@ describe("ValueReducer", () => {
         boolean
       >(
         system,
-        (state, _eventMessage, _lastCombinedObject) => !state,
-        (state, _newCombinedObject) => (state !== undefined ? state : false),
-        (state, lastCombinedObject) =>
+        async (state, _eventMessage, _lastCombinedObject) => !state,
+        async (state, _newCombinedObject) =>
+          state !== undefined ? state : false,
+        async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
         {
           initialDestination: consumer,
@@ -533,9 +538,10 @@ describe("ValueReducer", () => {
         boolean
       >(
         system,
-        (state, _eventMessage, _lastCombinedObject) => !state,
-        (state, _newCombinedObject) => (state !== undefined ? state : false),
-        (state, lastCombinedObject) =>
+        async (state, _eventMessage, _lastCombinedObject) => !state,
+        async (state, _newCombinedObject) =>
+          state !== undefined ? state : false,
+        async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
         {
           initialDestination: consumer,

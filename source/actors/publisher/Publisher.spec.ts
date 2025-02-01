@@ -1,6 +1,6 @@
-import { dispatch, spawn, start } from "@nact/core";
+import { dispatch, LocalActorRef, spawn, start } from "@nact/core";
 import { Set } from "immutable";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
 import { testPublisherLike } from "./__testing__/testPublisherLike";
@@ -8,6 +8,23 @@ import { Publisher } from "./Publisher";
 import { spawnPublisher } from "./spawnPublisher";
 
 describe("Publisher", () => {
+  describe("actor", () => {
+    it("should correctly infer type from parameters", () => {
+      const system = start();
+
+      const sink: LocalActorRef<SnapshotMessage<number>> = spawn(
+        system,
+        (state, _message: SnapshotMessage<number>) => state
+      );
+
+      const publisher = spawnPublisher(system, {
+        initialSubscribersSet: Set([sink]),
+      });
+
+      expectTypeOf(publisher).toMatchTypeOf<Publisher<number>>();
+    });
+  });
+
   // @ts-expect-error
   testPublisherLike<Publisher<number>, number>(
     spawnPublisher,

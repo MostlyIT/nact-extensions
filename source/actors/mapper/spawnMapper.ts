@@ -4,7 +4,6 @@ import {
   LocalActorSystemRef,
   spawn,
 } from "@nact/core";
-import { MaybeAsync } from "../../data-types/MaybeAsync";
 import { spawnRelay } from "../relay/spawnRelay";
 import { Mapper } from "./Mapper";
 import { MapperMessage } from "./MapperMessage";
@@ -13,7 +12,7 @@ import { MapperState } from "./MapperState";
 
 export const spawnMapper = <TInputSnapshot, TOutputSnapshot>(
   parent: LocalActorSystemRef | LocalActorRef<any>,
-  mappingFunction: MaybeAsync<(input: TInputSnapshot) => TOutputSnapshot>,
+  mappingFunction: (input: TInputSnapshot) => Promise<TOutputSnapshot>,
   options?: MapperOptions<TOutputSnapshot>
 ): Mapper<TInputSnapshot, TOutputSnapshot> =>
   spawn(

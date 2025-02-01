@@ -52,7 +52,7 @@ describe("ValueSelector", () => {
           undefined
         >(
           parent,
-          (inputs) => ({
+          async (inputs) => ({
             value: `${inputs[sourceASymbol]} ${inputs[sourceBSymbol]}`,
             cache: undefined,
           }),
@@ -151,7 +151,7 @@ describe("ValueSelector", () => {
         },
         string,
         null
-      >(system, (inputs, cache) => {
+      >(system, async (inputs, cache) => {
         const numValue: number = inputs[sourceASymbol]; // Type test
         const strValue: string = inputs[sourceBSymbol]; // Type test
         const symbolValue: null | undefined = cache; // Type test
@@ -180,7 +180,7 @@ describe("ValueSelector", () => {
         },
         string,
         typeof mockCache
-      >(system, (inputs) => ({
+      >(system, async (inputs) => ({
         value: `${inputs[sourceASymbol]} + ${inputs[sourceBSymbol]}`,
         cache: mockCache,
       }));
@@ -244,7 +244,7 @@ describe("ValueSelector", () => {
           >;
         },
         string
-      >(system, (inputs) => ({
+      >(system, async (inputs) => ({
         value: String(inputs[sourceASymbol]),
         cache: undefined,
       }));
@@ -300,7 +300,7 @@ describe("ValueSelector", () => {
           >;
         },
         number
-      >(system, (inputs) => ({
+      >(system, async (inputs) => ({
         value: inputs[sourceASymbol],
         cache: undefined,
       }));
@@ -364,7 +364,7 @@ describe("ValueSelector", () => {
         },
         number | null,
         number
-      >(system, (inputs, lastFoundIndex) => {
+      >(system, async (inputs, lastFoundIndex) => {
         cacheRecorder(lastFoundIndex);
 
         const list = inputs[listSymbol];

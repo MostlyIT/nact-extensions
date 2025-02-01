@@ -1,5 +1,5 @@
 import { dispatch, spawn, start } from "@nact/core";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
 import { testRelayLike } from "../relay/__testing__/testRelayLike";
@@ -7,12 +7,35 @@ import { Distinct } from "./Distinct";
 import { spawnDistinct } from "./spawnDistinct";
 
 describe("Distinct", () => {
+  describe("actor", () => {
+    it("should correctly infer type from parameters", () => {
+      const system = start();
+
+      const distinct1 = spawnDistinct(
+        system,
+        async (prev: number, curr) => prev === curr
+      );
+      const distinct2 = spawnDistinct(
+        system,
+        async (prev, curr: number) => prev === curr
+      );
+      const distinct3 = spawnDistinct(
+        system,
+        async (prev: number, curr: number) => prev === curr
+      );
+
+      expectTypeOf(distinct1).toMatchTypeOf<Distinct<number>>();
+      expectTypeOf(distinct2).toMatchTypeOf<Distinct<number>>();
+      expectTypeOf(distinct3).toMatchTypeOf<Distinct<number>>();
+    });
+  });
+
   // @ts-expect-error
   testRelayLike<Distinct<number>, number>(
     (parent, options?) =>
       spawnDistinct(
         parent,
-        (previous, current) => previous === current,
+        async (previous, current) => previous === current,
         options
       ),
     (relayLike) =>
@@ -46,7 +69,7 @@ describe("Distinct", () => {
 
       const distinct = spawnDistinct(
         system,
-        (previous, current) => previous === current,
+        async (previous, current) => previous === current,
         {
           initialDestination: consumer,
         }
@@ -90,7 +113,7 @@ describe("Distinct", () => {
 
       const distinct = spawnDistinct(
         system,
-        (previous, current) => previous === current,
+        async (previous, current) => previous === current,
         {
           initialDestination: consumer,
         }

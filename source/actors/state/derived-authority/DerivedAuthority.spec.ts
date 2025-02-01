@@ -1,5 +1,7 @@
-import { dispatch, spawn, start } from "@nact/core";
-import { describe, expect, it, vi } from "vitest";
+import { dispatch, LocalActorRef, spawn, start } from "@nact/core";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
+import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
+import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
@@ -10,6 +12,54 @@ import { DerivedAuthority } from "./DerivedAuthority";
 import { spawnDerivedAuthority } from "./spawnDerivedAuthority";
 
 describe("DerivedAuthority", () => {
+  describe("actor", () => {
+    it("should correctly infer type from parameters", () => {
+      const system = start();
+
+      type StateSnapshotA = StateSnapshot<
+        number,
+        Version<typeof sourceASymbol>,
+        typeof sourceASymbol
+      >;
+      const sourceASymbol = Symbol();
+      const sourceA: LocalActorRef<
+        SubscribeMessage<StateSnapshotA> | UnsubscribeMessage<StateSnapshotA>
+      > = spawn(system, (state, _message) => state);
+      type StateSnapshotB = StateSnapshot<
+        string,
+        Version<typeof sourceASymbol | typeof sourceBSymbol>,
+        typeof sourceBSymbol
+      >;
+      const sourceBSymbol = Symbol();
+      const sourceB: LocalActorRef<
+        SubscribeMessage<StateSnapshotB> | UnsubscribeMessage<StateSnapshotB>
+      > = spawn(system, (state, _message) => state);
+
+      type StateSnapshotsObject = {
+        readonly [sourceASymbol]: StateSnapshotA;
+        readonly [sourceBSymbol]: StateSnapshotB;
+      };
+
+      const ownSymbol = Symbol();
+      const derivedAuthority = spawnDerivedAuthority(
+        system,
+        ownSymbol,
+        {
+          [sourceASymbol]: sourceA,
+          [sourceBSymbol]: sourceB,
+        },
+        async (inputs, cache) => ({
+          value: inputs[sourceASymbol],
+          cache,
+        })
+      );
+
+      expectTypeOf(derivedAuthority).toMatchTypeOf<
+        DerivedAuthority<StateSnapshotsObject, number, typeof ownSymbol>
+      >();
+    });
+  });
+
   {
     const source = Symbol();
     const ownSource = Symbol();
@@ -111,7 +161,7 @@ describe("DerivedAuthority", () => {
         parent,
         ownSymbol,
         stateSnapshotSources,
-        (_inputs, cache) => ({ value: undefined, cache }),
+        async (_inputs, cache) => ({ value: undefined, cache }),
         options
       )
     );
@@ -247,7 +297,7 @@ describe("DerivedAuthority", () => {
           // @ts-expect-error
           [sourceSymbol]: source,
         },
-        (inputs, cache) => {
+        async (inputs, cache) => {
           const _inputValue: number = inputs[sourceSymbol]; // Type check
           const _cache: { lastValue: number } | undefined = cache; // Type check
           return {
@@ -281,7 +331,7 @@ describe("DerivedAuthority", () => {
           >
         >(system);
 
-      const selectorFn = vi.fn((inputs) => ({
+      const selectorFn = vi.fn(async (inputs) => ({
         value: `${inputs[quantitySymbol]}-${inputs[wordSymbol]}`,
         cache: undefined,
       }));
@@ -381,9 +431,9 @@ describe("DerivedAuthority", () => {
           // @ts-expect-error
           [sourceSymbol]: source,
         },
-        (inputs) => ({
+        async (inputs, cache) => ({
           value: inputs[sourceSymbol] * 2,
-          cache: undefined,
+          cache,
         })
       );
 

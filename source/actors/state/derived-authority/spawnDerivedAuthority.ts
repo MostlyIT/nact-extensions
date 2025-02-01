@@ -4,7 +4,6 @@ import {
   LocalActorSystemRef,
   spawn,
 } from "@nact/core";
-import { MaybeAsync } from "../../../data-types/MaybeAsync";
 import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
 import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import {
@@ -37,15 +36,13 @@ export const spawnDerivedAuthority = <
       | UnsubscribeMessage<TStateSnapshotsObject[key]>
     >;
   },
-  valueSelectorFunction: MaybeAsync<
-    (
-      inputs: {
-        readonly [key in keyof TStateSnapshotsObject &
-          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-      },
-      cache: TValueSelectorCache | undefined
-    ) => { value: TOutputValue; cache: TValueSelectorCache | undefined }
-  >,
+  valueSelectorFunction: (
+    inputs: {
+      readonly [key in keyof TStateSnapshotsObject &
+        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+    },
+    cache: TValueSelectorCache | undefined
+  ) => Promise<{ value: TOutputValue; cache: TValueSelectorCache | undefined }>,
   options?: DerivedAuthorityOptions<
     TStateSnapshotsObject,
     TOutputValue,

@@ -1,6 +1,6 @@
 import { dispatch, spawn, start } from "@nact/core";
 import { Set } from "immutable";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
@@ -10,6 +10,26 @@ import { PureEventAuthority } from "./PureEventAuthority";
 import { spawnPureEventAuthority } from "./spawnPureEventAuthority";
 
 describe("PureEventAuthority", () => {
+  describe("actor", () => {
+    it("should correctly infer type from parameters", () => {
+      const system = start();
+
+      const ownSymbol = Symbol();
+      const pureEventAuthority = spawnPureEventAuthority(
+        system,
+        ownSymbol,
+        async (state, _eventMessage: "toggle doubling") => !state,
+        async (state) => (state ? 2 : 1),
+        async (previous, current) => previous === current,
+        false
+      );
+
+      expectTypeOf(pureEventAuthority).toMatchTypeOf<
+        PureEventAuthority<"toggle doubling", 2 | 1, typeof ownSymbol>
+      >();
+    });
+  });
+
   {
     const ownSourceSymbol = Symbol();
     testPublisherLike<
@@ -30,9 +50,9 @@ describe("PureEventAuthority", () => {
         >(
           parent,
           ownSourceSymbol,
-          (state, _eventMessage) => state + 1,
-          (state) => state,
-          (previous, current) => previous === current,
+          async (state, _eventMessage) => state + 1,
+          async (state) => state,
+          async (previous, current) => previous === current,
           0,
           options
         ),
@@ -70,16 +90,16 @@ describe("PureEventAuthority", () => {
       >(
         system,
         ownSourceSymbol,
-        (state, eventMessage) => {
+        async (state, eventMessage) => {
           const stateValue: boolean = state; // Type test
           const eventMessageValue: "toggle doubling" = eventMessage; // Type test
           return !state;
         },
-        (state) => {
+        async (state) => {
           const stateValue: boolean = state; // Type test
           return state ? 2000 : 1000;
         },
-        (previous, current) => {
+        async (previous, current) => {
           const previousValue: number = previous; // Type test
           const currentValue: number = current; // Type test;
           return previous === current;
@@ -106,9 +126,9 @@ describe("PureEventAuthority", () => {
       >(
         system,
         ownSymbol,
-        (state, _eventMessage) => !state,
-        (state) => (state ? 2000 : 1000),
-        (previous, current) => previous === current,
+        async (state, _eventMessage) => !state,
+        async (state) => (state ? 2000 : 1000),
+        async (previous, current) => previous === current,
         false,
         {
           initialSubscribersSet: Set([consumer]),
@@ -177,9 +197,9 @@ describe("PureEventAuthority", () => {
       >(
         system,
         ownSymbol,
-        (state, _eventMessage) => !state,
-        (state) => (state ? 0 : 0), // Always returns 0 to test equality comparison
-        (previous, current) => previous === current,
+        async (state, _eventMessage) => !state,
+        async (state) => (state ? 0 : 0), // Always returns 0 to test equality comparison
+        async (previous, current) => previous === current,
         false,
         {
           initialSubscribersSet: Set([consumer]),
@@ -214,9 +234,9 @@ describe("PureEventAuthority", () => {
       >(
         system,
         ownSymbol,
-        (state, _eventMessage) => !state,
-        (state) => (state ? 2000 : 1000),
-        (previous, current) => previous === current,
+        async (state, _eventMessage) => !state,
+        async (state) => (state ? 2000 : 1000),
+        async (previous, current) => previous === current,
         false,
         {
           initialSubscribersSet: Set([consumer]),
@@ -264,9 +284,9 @@ describe("PureEventAuthority", () => {
       >(
         system,
         ownSymbol,
-        (state, _eventMessage) => !state,
-        (state) => (state ? 2000 : 1000),
-        (previous, current) => previous === current,
+        async (state, _eventMessage) => !state,
+        async (state) => (state ? 2000 : 1000),
+        async (previous, current) => previous === current,
         false,
         {
           initialSubscribersSet: Set([consumer]),
@@ -311,9 +331,9 @@ describe("PureEventAuthority", () => {
       >(
         system,
         ownSymbol,
-        (state, _eventMessage) => !state,
-        (state) => (state ? 2000 : 1000),
-        (previous, current) => previous === current,
+        async (state, _eventMessage) => !state,
+        async (state) => (state ? 2000 : 1000),
+        async (previous, current) => previous === current,
         false,
         {
           initialSubscribersSet: Set([consumer1]),

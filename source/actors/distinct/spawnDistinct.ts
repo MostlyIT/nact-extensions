@@ -4,7 +4,6 @@ import {
   LocalActorSystemRef,
   spawn,
 } from "@nact/core";
-import { MaybeAsync } from "../../data-types/MaybeAsync";
 import { spawnRelay } from "../relay/spawnRelay";
 import { Distinct } from "./Distinct";
 import { DistinctMessage } from "./DistinctMessage";
@@ -13,9 +12,10 @@ import { DistinctState } from "./DistinctState";
 
 export const spawnDistinct = <TSnapshot>(
   parent: LocalActorSystemRef | LocalActorRef<any>,
-  equalityComparator: MaybeAsync<
-    (previous: TSnapshot, current: TSnapshot) => boolean
-  >,
+  equalityComparator: (
+    previous: TSnapshot,
+    current: TSnapshot
+  ) => Promise<boolean>,
   options?: DistinctOptions<TSnapshot>
 ): Distinct<TSnapshot> =>
   spawn(

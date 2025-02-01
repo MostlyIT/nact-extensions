@@ -1,5 +1,5 @@
 import { dispatch, spawn, start } from "@nact/core";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
 import { testRelayLike } from "../relay/__testing__/testRelayLike";
@@ -7,10 +7,24 @@ import { Mapper } from "./Mapper";
 import { spawnMapper } from "./spawnMapper";
 
 describe("Mapper", () => {
+  describe("actor", () => {
+    it("should correctly infer type from parameters", () => {
+      const system = start();
+
+      const mapper1 = spawnMapper(system, async (input: number) =>
+        input.toString()
+      );
+      const mapper2 = spawnMapper(system, async (_input) => 1000);
+
+      expectTypeOf(mapper1).toMatchTypeOf<Mapper<number, string>>();
+      expectTypeOf(mapper2).toMatchTypeOf<Mapper<unknown, number>>();
+    });
+  });
+
   // @ts-expect-error
   testRelayLike<Mapper<number, string>, string>(
     (parent, options?) =>
-      spawnMapper(parent, (input) => `${2 * input}`, options),
+      spawnMapper(parent, async (input) => `${2 * input}`, options),
     (relayLike) =>
       dispatch(relayLike, {
         type: "snapshot",
@@ -40,7 +54,7 @@ describe("Mapper", () => {
         consumerFunction(message)
       );
 
-      const mapper = spawnMapper(system, (input: number) => 2 * input, {
+      const mapper = spawnMapper(system, async (input: number) => 2 * input, {
         initialDestination: consumer,
       });
 

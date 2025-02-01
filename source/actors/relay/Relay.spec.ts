@@ -1,5 +1,5 @@
-import { dispatch, spawn, start } from "@nact/core";
-import { describe, expect, it, vi } from "vitest";
+import { dispatch, LocalActorRef, spawn, start } from "@nact/core";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
 import { testRelayLike } from "./__testing__/testRelayLike";
@@ -7,6 +7,23 @@ import { Relay } from "./Relay";
 import { spawnRelay } from "./spawnRelay";
 
 describe("Relay", () => {
+  describe("actor", () => {
+    it("should correctly infer type from parameters", () => {
+      const system = start();
+
+      const sink: LocalActorRef<SnapshotMessage<number>> = spawn(
+        system,
+        (state, _message: SnapshotMessage<number>) => state
+      );
+
+      const relay = spawnRelay(system, {
+        initialDestination: sink,
+      });
+
+      expectTypeOf(relay).toMatchTypeOf<Relay<number>>();
+    });
+  });
+
   // @ts-expect-error
   testRelayLike<Relay<number>, number>(
     spawnRelay,

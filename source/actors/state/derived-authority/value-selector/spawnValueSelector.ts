@@ -4,7 +4,6 @@ import {
   LocalActorSystemRef,
   spawn,
 } from "@nact/core";
-import { MaybeAsync } from "../../../../data-types/MaybeAsync";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
@@ -26,15 +25,13 @@ export const spawnValueSelector = <
   TCache = undefined
 >(
   parent: LocalActorSystemRef | LocalActorRef<any>,
-  valueSelector: MaybeAsync<
-    (
-      inputs: {
-        readonly [key in keyof TStateSnapshotsObject &
-          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-      },
-      cache: TCache | undefined
-    ) => { value: TOutputValue; cache: TCache | undefined }
-  >,
+  valueSelector: (
+    inputs: {
+      readonly [key in keyof TStateSnapshotsObject &
+        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+    },
+    cache: TCache | undefined
+  ) => Promise<{ value: TOutputValue; cache: TCache | undefined }>,
   options?: ValueSelectorOptions<TStateSnapshotsObject, TOutputValue>
 ): ValueSelector<TStateSnapshotsObject, TOutputValue> =>
   spawn(

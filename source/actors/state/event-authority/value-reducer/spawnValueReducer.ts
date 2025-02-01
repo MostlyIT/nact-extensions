@@ -5,7 +5,6 @@ import {
   spawn,
 } from "@nact/core";
 import { List } from "immutable";
-import { MaybeAsync } from "../../../../data-types/MaybeAsync";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
@@ -25,34 +24,28 @@ export const spawnValueReducer = <
   TState
 >(
   parent: LocalActorSystemRef | LocalActorRef<any>,
-  eventReducer: MaybeAsync<
-    (
-      state: TState,
-      eventMessage: TEventMessage,
-      lastCombinedObject: {
-        readonly [key in keyof TStateSnapshotsObject &
-          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-      }
-    ) => TState
-  >,
-  snapshotReducer: MaybeAsync<
-    (
-      state: TState | undefined,
-      newCombinedObject: {
-        readonly [key in keyof TStateSnapshotsObject &
-          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-      }
-    ) => TState
-  >,
-  valueSelector: MaybeAsync<
-    (
-      state: TState,
-      lastCombinedObject: {
-        readonly [key in keyof TStateSnapshotsObject &
-          symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
-      }
-    ) => TOutputValue
-  >,
+  eventReducer: (
+    state: TState,
+    eventMessage: TEventMessage,
+    lastCombinedObject: {
+      readonly [key in keyof TStateSnapshotsObject &
+        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+    }
+  ) => Promise<TState>,
+  snapshotReducer: (
+    state: TState | undefined,
+    newCombinedObject: {
+      readonly [key in keyof TStateSnapshotsObject &
+        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+    }
+  ) => Promise<TState>,
+  valueSelector: (
+    state: TState,
+    lastCombinedObject: {
+      readonly [key in keyof TStateSnapshotsObject &
+        symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
+    }
+  ) => Promise<TOutputValue>,
   options?: ValueReducerOptions<TStateSnapshotsObject, TOutputValue>
 ): ValueReducer<TStateSnapshotsObject, TEventMessage, TOutputValue> =>
   spawn(

@@ -1,5 +1,7 @@
-import { dispatch, spawn, start } from "@nact/core";
-import { describe, expect, it, vi } from "vitest";
+import { dispatch, LocalActorRef, spawn, start } from "@nact/core";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
+import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
+import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
@@ -9,6 +11,43 @@ import { Combiner } from "./Combiner";
 import { spawnCombiner } from "./spawnCombiner";
 
 describe("Combiner", () => {
+  describe("actor", () => {
+    it("should correctly infer type from parameters", () => {
+      const system = start();
+
+      type StateSnapshotA = StateSnapshot<
+        number,
+        Version<typeof sourceASymbol>,
+        typeof sourceASymbol
+      >;
+      const sourceASymbol = Symbol();
+      const sourceA: LocalActorRef<
+        SubscribeMessage<StateSnapshotA> | UnsubscribeMessage<StateSnapshotA>
+      > = spawn(system, (state, _message) => state);
+      type StateSnapshotB = StateSnapshot<
+        string,
+        Version<typeof sourceASymbol | typeof sourceBSymbol>,
+        typeof sourceBSymbol
+      >;
+      const sourceBSymbol = Symbol();
+      const sourceB: LocalActorRef<
+        SubscribeMessage<StateSnapshotB> | UnsubscribeMessage<StateSnapshotB>
+      > = spawn(system, (state, _message) => state);
+
+      const combiner = spawnCombiner(system, {
+        [sourceASymbol]: sourceA,
+        [sourceBSymbol]: sourceB,
+      });
+
+      expectTypeOf(combiner).toMatchTypeOf<
+        Combiner<{
+          readonly [sourceASymbol]: StateSnapshotA;
+          readonly [sourceBSymbol]: StateSnapshotB;
+        }>
+      >();
+    });
+  });
+
   {
     const sourceSymbolA = Symbol();
     const sourceSymbolB = Symbol();
