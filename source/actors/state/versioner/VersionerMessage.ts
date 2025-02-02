@@ -19,5 +19,11 @@ export type VersionerMessage<
         TSemanticSymbol
       >
     >
-  | SnapshotMessage<StateSnapshot<TValue, TInputVersion, symbol | undefined>>
+  | SnapshotMessage<
+      StateSnapshot<
+        TValue,
+        Version<KeyOfVersion<TInputVersion>>,
+        symbol | undefined
+      >
+    >
   | UnsetDestinationMessage;

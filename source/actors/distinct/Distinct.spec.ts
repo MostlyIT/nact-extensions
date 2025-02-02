@@ -1,7 +1,7 @@
-import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
+import { dispatch, spawn, start } from "../../vendored/@nact/core";
 import { testRelayLike } from "../relay/__testing__/testRelayLike";
 import { Distinct } from "./Distinct";
 import { spawnDistinct } from "./spawnDistinct";
@@ -30,8 +30,7 @@ describe("Distinct", () => {
     });
   });
 
-  // @ts-expect-error
-  testRelayLike<Distinct<number>, number>(
+  testRelayLike(
     (parent, options?) =>
       spawnDistinct(
         parent,

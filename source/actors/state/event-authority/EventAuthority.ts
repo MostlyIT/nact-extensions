@@ -1,5 +1,5 @@
-import { LocalActorRef } from "@nact/core";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
+import { LocalActorRef } from "../../../vendored/@nact/core";
 import { EventAuthorityMessage } from "./EventAuthorityMessage";
 
 declare const eventAuthority: unique symbol;

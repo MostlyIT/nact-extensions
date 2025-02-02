@@ -1,8 +1,13 @@
-import { dispatch, LocalActorRef, spawn, start } from "@nact/core";
 import { Set } from "immutable";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
+import {
+  dispatch,
+  LocalActorRef,
+  spawn,
+  start,
+} from "../../vendored/@nact/core";
 import { testPublisherLike } from "./__testing__/testPublisherLike";
 import { Publisher } from "./Publisher";
 import { spawnPublisher } from "./spawnPublisher";
@@ -25,8 +30,7 @@ describe("Publisher", () => {
     });
   });
 
-  // @ts-expect-error
-  testPublisherLike<Publisher<number>, number>(
+  testPublisherLike(
     spawnPublisher,
     (publisherLike) =>
       dispatch(publisherLike, {

@@ -1,4 +1,3 @@
-import { dispatch, LocalActorRef, spawn, start } from "@nact/core";
 import { Set } from "immutable";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
@@ -7,6 +6,12 @@ import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMess
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
+import {
+  dispatch,
+  LocalActorRef,
+  spawn,
+  start,
+} from "../../../vendored/@nact/core";
 import { testPublisherLike } from "../../publisher/__testing__/testPublisherLike";
 import { spawnPublisher } from "../../publisher/spawnPublisher";
 import { testCombinerLike } from "../combiner/__testing__/testCombinerLike";
@@ -67,26 +72,7 @@ describe("EventAuthority", () => {
   {
     const sourceSymbol = Symbol();
     const ownSourceSymbol = Symbol();
-    testPublisherLike<
-      // @ts-expect-error
-      EventAuthority<
-        {
-          [sourceSymbol]: StateSnapshot<
-            number,
-            Version<typeof sourceSymbol>,
-            typeof sourceSymbol
-          >;
-        },
-        "toggle doubling",
-        number,
-        typeof ownSourceSymbol
-      >,
-      StateSnapshot<
-        number,
-        Version<typeof sourceSymbol | typeof ownSourceSymbol>,
-        typeof ownSourceSymbol
-      >
-    >(
+    testPublisherLike(
       (parent, options?) => {
         const inert =
           spawnPublisher<
@@ -99,7 +85,6 @@ describe("EventAuthority", () => {
         return spawnEventAuthority(
           parent,
           ownSourceSymbol,
-          // @ts-expect-error
           { [sourceSymbol]: inert },
           async (state, _eventMessage, _lastCombinedObject) => !state,
           async (state, _newCombinedObject) =>
@@ -218,16 +203,15 @@ describe("EventAuthority", () => {
         system,
         ownSymbol,
         {
-          // @ts-expect-error
           [numberSourceSymbol]: numberSource,
-          // @ts-expect-error
           [textSourceSymbol]: textSource,
         },
-        (state, _eventMessage, _lastCombinedObject) => !state,
-        (state, _newCombinedObject) => (state !== undefined ? state : false),
-        (state, lastCombinedObject) =>
+        async (state, _eventMessage, _lastCombinedObject) => !state,
+        async (state, _newCombinedObject) =>
+          state !== undefined ? state : false,
+        async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[numberSourceSymbol],
-        (previous, current) => previous === current
+        async (previous, current) => previous === current
       );
 
       () => {

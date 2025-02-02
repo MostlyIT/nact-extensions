@@ -1,4 +1,4 @@
-import { LocalActorRef } from "@nact/core";
+import { LocalActorRef } from "../../vendored/@nact/core";
 import { ReplayPublisherMessage } from "./ReplayPublisherMessage";
 
 declare const replayPublisher: unique symbol;

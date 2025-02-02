@@ -1,10 +1,15 @@
-import { dispatch, LocalActorRef, spawn, start } from "@nact/core";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
 import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
+import {
+  dispatch,
+  LocalActorRef,
+  spawn,
+  start,
+} from "../../../vendored/@nact/core";
 import { testRelayLike } from "../../relay/__testing__/testRelayLike";
 import { testCombinerLike } from "./__testing__/testCombinerLike";
 import { Combiner } from "./Combiner";
@@ -50,33 +55,31 @@ describe("Combiner", () => {
 
   {
     const sourceSymbolA = Symbol();
+    type StateSnapshotA = StateSnapshot<
+      number,
+      Version<typeof sourceSymbolA>,
+      typeof sourceSymbolA
+    >;
     const sourceSymbolB = Symbol();
-    testRelayLike<
-      // @ts-expect-error
-      Combiner<{
-        readonly [sourceSymbolA]: StateSnapshot<
-          number,
-          Version<typeof sourceSymbolA>,
-          typeof sourceSymbolA
-        >;
-        readonly [sourceSymbolB]: StateSnapshot<
-          string,
-          Version<typeof sourceSymbolB>,
-          typeof sourceSymbolB
-        >;
-      }>,
-      StateSnapshot<
-        {
-          readonly [sourceSymbolA]: number;
-          readonly [sourceSymbolB]: string;
-        },
-        Version<typeof sourceSymbolA | typeof sourceSymbolB>,
-        undefined
-      >
-    >(
-      (parent, options?) => {
-        const sourceA = spawn(parent, (_state, _message) => _state);
-        const sourceB = spawn(parent, (_state, _message) => _state);
+    type StateSnapshotB = StateSnapshot<
+      string,
+      Version<typeof sourceSymbolB>,
+      typeof sourceSymbolB
+    >;
+    testRelayLike(
+      (
+        parent,
+        options?
+      ): Combiner<{
+        readonly [sourceSymbolA]: StateSnapshotA;
+        readonly [sourceSymbolB]: StateSnapshotB;
+      }> => {
+        const sourceA: LocalActorRef<
+          SubscribeMessage<StateSnapshotA> | UnsubscribeMessage<StateSnapshotA>
+        > = spawn(parent, (state, _message) => state);
+        const sourceB: LocalActorRef<
+          SubscribeMessage<StateSnapshotB> | UnsubscribeMessage<StateSnapshotB>
+        > = spawn(parent, (state, _message) => state);
 
         return spawnCombiner(
           parent,

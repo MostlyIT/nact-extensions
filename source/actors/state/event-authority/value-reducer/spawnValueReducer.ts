@@ -1,14 +1,14 @@
-import {
-  dispatch,
-  LocalActorRef,
-  LocalActorSystemRef,
-  spawn,
-} from "@nact/core";
 import { List } from "immutable";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
 } from "../../../../data-types/state-snapshot/StateSnapshot";
+import {
+  dispatch,
+  LocalActorRef,
+  LocalActorSystemRef,
+  spawn,
+} from "../../../../vendored/@nact/core";
 import { spawnRelay } from "../../../relay/spawnRelay";
 import { ValueReducer } from "./ValueReducer";
 import { ValueReducerMessage } from "./ValueReducerMessage";

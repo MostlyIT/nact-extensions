@@ -1,5 +1,5 @@
-import { LocalActorRef } from "@nact/core";
 import { StateSnapshot } from "../../../../data-types/state-snapshot/StateSnapshot";
+import { LocalActorRef } from "../../../../vendored/@nact/core";
 import { ValueReducerMessage } from "./ValueReducerMessage";
 
 declare const valueReducer: unique symbol;

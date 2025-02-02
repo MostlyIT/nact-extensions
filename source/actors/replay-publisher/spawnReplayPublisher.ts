@@ -1,11 +1,11 @@
+import { List } from "immutable";
+import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import {
   dispatch,
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
-} from "@nact/core";
-import { List } from "immutable";
-import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
+} from "../../vendored/@nact/core";
 import { spawnPublisher } from "../publisher/spawnPublisher";
 import { ReplayPublisher } from "./ReplayPublisher";
 import { ReplayPublisherMessage } from "./ReplayPublisherMessage";

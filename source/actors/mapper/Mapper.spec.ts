@@ -1,7 +1,7 @@
-import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
+import { dispatch, spawn, start } from "../../vendored/@nact/core";
 import { testRelayLike } from "../relay/__testing__/testRelayLike";
 import { Mapper } from "./Mapper";
 import { spawnMapper } from "./spawnMapper";
@@ -21,10 +21,9 @@ describe("Mapper", () => {
     });
   });
 
-  // @ts-expect-error
-  testRelayLike<Mapper<number, string>, string>(
+  testRelayLike(
     (parent, options?) =>
-      spawnMapper(parent, async (input) => `${2 * input}`, options),
+      spawnMapper(parent, async (input: number) => `${2 * input}`, options),
     (relayLike) =>
       dispatch(relayLike, {
         type: "snapshot",

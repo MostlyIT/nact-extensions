@@ -1,7 +1,7 @@
-import { LocalActorRef } from "@nact/core";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
+import { LocalActorRef } from "../../../vendored/@nact/core";
 import { SemanticBranderMessage } from "./SemanticBranderMessage";
 
 declare const semanticBrander: unique symbol;

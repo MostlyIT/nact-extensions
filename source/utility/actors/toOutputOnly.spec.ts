@@ -1,4 +1,3 @@
-import { dispatch, LocalActorRef, spawn, start } from "@nact/core";
 import { describe, expect, it, vi } from "vitest";
 import { spawnPublisher } from "../../actors/publisher/spawnPublisher";
 import { spawnRelay } from "../../actors/relay/spawnRelay";
@@ -7,7 +6,13 @@ import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { SubscribeMessage } from "../../data-types/messages/SubscribeMessage";
 import { UnsetDestinationMessage } from "../../data-types/messages/UnsetDestinationMessage";
 import { UnsubscribeMessage } from "../../data-types/messages/UnsubscribeMessage";
-import { delay } from "../../utility/__testing__/delay";
+import {
+  dispatch,
+  LocalActorRef,
+  spawn,
+  start,
+} from "../../vendored/@nact/core";
+import { delay } from "../__testing__/delay";
 import { toOutputOnly } from "./toOutputOnly";
 
 describe("toOutputOnly", () => {

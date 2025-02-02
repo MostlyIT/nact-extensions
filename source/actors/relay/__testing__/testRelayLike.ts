@@ -1,15 +1,15 @@
+import { describe, expect, it, vi } from "vitest";
+import { SetDestinationMessage } from "../../../data-types/messages/SetDestinationMessage";
+import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
+import { UnsetDestinationMessage } from "../../../data-types/messages/UnsetDestinationMessage";
+import { delay } from "../../../utility/__testing__/delay";
 import {
   dispatch,
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
   start,
-} from "@nact/core";
-import { describe, expect, it, vi } from "vitest";
-import { SetDestinationMessage } from "../../../data-types/messages/SetDestinationMessage";
-import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
-import { UnsetDestinationMessage } from "../../../data-types/messages/UnsetDestinationMessage";
-import { delay } from "../../../utility/__testing__/delay";
+} from "../../../vendored/@nact/core";
 import { RelayOptions } from "../RelayOptions";
 
 export const testRelayLike = <
@@ -81,11 +81,10 @@ export const testRelayLike = <
 
       causeFirstSnapshot(relayLike);
 
-      // @ts-expect-error
       dispatch(relayLike, {
         type: "set destination",
         destination: consumer1,
-      });
+      } satisfies SetDestinationMessage<TSnapshot>);
 
       await delay(10);
       expect(consumerFunction1).not.toHaveBeenCalled();
@@ -99,7 +98,6 @@ export const testRelayLike = <
         snapshot: expectedSecondSnapshot,
       } satisfies SnapshotMessage<TSnapshot>);
 
-      // @ts-expect-error
       dispatch(relayLike, {
         type: "set destination",
         destination: consumer2,
@@ -130,7 +128,6 @@ export const testRelayLike = <
 
       const relayLike = relayConstructor(system);
 
-      // @ts-expect-error
       dispatch(relayLike, {
         type: "set destination",
         destination: consumer,
@@ -144,7 +141,6 @@ export const testRelayLike = <
         snapshot: expectedFirstSnapshot,
       } satisfies SnapshotMessage<TSnapshot>);
 
-      // @ts-expect-error
       dispatch(relayLike, {
         type: "unset destination",
       });

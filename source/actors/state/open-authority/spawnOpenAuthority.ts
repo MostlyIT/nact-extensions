@@ -1,4 +1,7 @@
-import { LocalActorRef, LocalActorSystemRef } from "@nact/core";
+import {
+  LocalActorRef,
+  LocalActorSystemRef,
+} from "../../../vendored/@nact/core";
 import { spawnPureEventAuthority } from "../pure-event-authority/spawnPureEventAuthority";
 import { OpenAuthority } from "./OpenAuthority";
 import { OpenAuthorityEvent } from "./OpenAuthorityEvent";

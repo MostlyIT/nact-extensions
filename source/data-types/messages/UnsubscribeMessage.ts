@@ -1,4 +1,4 @@
-import { Dispatchable } from "@nact/core";
+import { Dispatchable } from "../../vendored/@nact/core";
 import { SnapshotMessage } from "./SnapshotMessage";
 
 export type UnsubscribeMessage<TSnapshot> = {

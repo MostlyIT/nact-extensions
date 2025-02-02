@@ -1,9 +1,3 @@
-import {
-  dispatch,
-  LocalActorRef,
-  LocalActorSystemRef,
-  spawn,
-} from "@nact/core";
 import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
 import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import {
@@ -11,6 +5,12 @@ import {
   ValueOfStateSnapshot,
 } from "../../../data-types/state-snapshot/StateSnapshot";
 import { ownValues } from "../../../utility/ownValues";
+import {
+  dispatch,
+  LocalActorRef,
+  LocalActorSystemRef,
+  spawn,
+} from "../../../vendored/@nact/core";
 import { spawnReplayPublisher } from "../../replay-publisher/spawnReplayPublisher";
 import { spawnCombiner } from "../combiner/spawnCombiner";
 import { spawnSemanticBrander } from "../semantic-brander/spawnSemanticBrander";
@@ -81,7 +81,6 @@ export const spawnDerivedAuthority = <
       afterStop: (_state, context) => {
         if (options !== undefined && options.manageOwnSubscriptions === true) {
           for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
-            // @ts-expect-error
             dispatch(stateSnapshotSource, {
               type: "unsubscribe",
               subscriber: context.self,
@@ -92,7 +91,6 @@ export const spawnDerivedAuthority = <
       initialStateFunc: (context) => {
         if (options !== undefined && options.manageOwnSubscriptions === true) {
           for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
-            // @ts-expect-error
             dispatch(stateSnapshotSource, {
               type: "subscribe",
               subscriber: context.self,
@@ -105,7 +103,6 @@ export const spawnDerivedAuthority = <
           context.self,
           semanticSymbol,
           {
-            // @ts-expect-error
             initialDestination: replayPublisher,
           }
         );
@@ -113,12 +110,10 @@ export const spawnDerivedAuthority = <
           context.self,
           valueSelectorFunction,
           {
-            // @ts-expect-error
             initialDestination: semanticBrander,
           }
         );
         const combiner = spawnCombiner(context.self, stateSnapshotSources, {
-          // @ts-expect-error
           initialDestination: valueSelector,
           manageOwnSubscriptions: false,
         });

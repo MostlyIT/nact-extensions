@@ -20,11 +20,12 @@ export type EventAuthorityOptions<
     StateSnapshot<
       TOutputValue,
       Version<
-        KeyOfVersion<
-          VersionOfStateSnapshot<
-            TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+        | KeyOfVersion<
+            VersionOfStateSnapshot<
+              TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+            >
           >
-        >
+        | TSemanticSymbol
       >,
       TSemanticSymbol
     >

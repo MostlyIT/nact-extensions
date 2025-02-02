@@ -1,29 +1,15 @@
-import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, it, vi } from "vitest";
-import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
+import { dispatch, spawn, start } from "../../../vendored/@nact/core";
 import { testRelayLike } from "../../relay/__testing__/testRelayLike";
-import { SemanticBrander } from "./SemanticBrander";
 import { spawnSemanticBrander } from "./spawnSemanticBrander";
 
 describe("SemanticBrander", () => {
   {
     const sourceSymbol = Symbol();
     const ownSourceSymbol = Symbol();
-    testRelayLike<
-      // @ts-expect-error
-      SemanticBrander<
-        number,
-        Version<typeof sourceSymbol>,
-        typeof ownSourceSymbol
-      >,
-      StateSnapshot<
-        number,
-        Version<typeof sourceSymbol>,
-        typeof ownSourceSymbol
-      >
-    >(
+    testRelayLike(
       (parent, options?) =>
         spawnSemanticBrander(parent, ownSourceSymbol, options),
       (relayLike) =>

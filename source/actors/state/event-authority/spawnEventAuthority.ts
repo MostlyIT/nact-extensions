@@ -1,23 +1,18 @@
-import {
-  dispatch,
-  LocalActorRef,
-  LocalActorSystemRef,
-  spawn,
-} from "@nact/core";
 import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
 import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
-  VersionOfStateSnapshot,
 } from "../../../data-types/state-snapshot/StateSnapshot";
-import {
-  KeyOfVersion,
-  Version,
-} from "../../../data-types/state-snapshot/Version";
 import { ownKeys } from "../../../utility/ownKeys";
 import { ownValues } from "../../../utility/ownValues";
 import { areVersionsEqual } from "../../../utility/state-snapshot/areVersionsEqual";
+import {
+  dispatch,
+  LocalActorRef,
+  LocalActorSystemRef,
+  spawn,
+} from "../../../vendored/@nact/core";
 import { spawnDistinct } from "../../distinct/spawnDistinct";
 import { spawnReplayPublisher } from "../../replay-publisher/spawnReplayPublisher";
 import { spawnCombiner } from "../combiner/spawnCombiner";
@@ -127,7 +122,6 @@ export const spawnEventAuthority = <
       afterStop: (_state, context) => {
         if (options !== undefined && options.manageOwnSubscriptions === true) {
           for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
-            // @ts-expect-error
             dispatch(stateSnapshotSource, {
               type: "unsubscribe",
               subscriber: context.self,
@@ -138,7 +132,6 @@ export const spawnEventAuthority = <
       initialStateFunc: (context) => {
         if (options !== undefined && options.manageOwnSubscriptions === true) {
           for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
-            // @ts-expect-error
             dispatch(stateSnapshotSource, {
               type: "subscribe",
               subscriber: context.self,
@@ -148,39 +141,14 @@ export const spawnEventAuthority = <
 
         const replayPublisher = spawnReplayPublisher(context.self, 1, options);
         const versioner = spawnVersioner(context.self, semanticSymbol, {
-          // @ts-expect-error
           initialDestination: replayPublisher,
         });
         const distinct = spawnDistinct(
           context.self,
-          async (
-            previous: StateSnapshot<
-              TOutputValue,
-              Version<
-                KeyOfVersion<
-                  VersionOfStateSnapshot<
-                    TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
-                  >
-                >
-              >,
-              undefined
-            >,
-            current: StateSnapshot<
-              TOutputValue,
-              Version<
-                KeyOfVersion<
-                  VersionOfStateSnapshot<
-                    TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
-                  >
-                >
-              >,
-              undefined
-            >
-          ) =>
+          async (previous, current) =>
             areVersionsEqual(previous.version, current.version) &&
             (await outputEqualityComparator(previous.value, current.value)),
           {
-            // @ts-expect-error
             initialDestination: versioner,
           }
         );
@@ -190,12 +158,10 @@ export const spawnEventAuthority = <
           snapshotReducer,
           valueSelector,
           {
-            // @ts-expect-error
             initialDestination: distinct,
           }
         );
         const combiner = spawnCombiner(context.self, stateSnapshotSources, {
-          // @ts-expect-error
           initialDestination: valueReducer,
         });
 

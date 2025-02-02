@@ -1,10 +1,15 @@
-import { dispatch, LocalActorRef, spawn, start } from "@nact/core";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
 import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
+import {
+  dispatch,
+  LocalActorRef,
+  spawn,
+  start,
+} from "../../../vendored/@nact/core";
 import { testPublisherLike } from "../../publisher/__testing__/testPublisherLike";
 import { spawnPublisher } from "../../publisher/spawnPublisher";
 import { testCombinerLike } from "../combiner/__testing__/testCombinerLike";
@@ -63,21 +68,7 @@ describe("DerivedAuthority", () => {
   {
     const source = Symbol();
     const ownSource = Symbol();
-    testPublisherLike<
-      // @ts-expect-error
-      DerivedAuthority<
-        {
-          [source]: StateSnapshot<
-            number,
-            Version<typeof source>,
-            typeof source
-          >;
-        },
-        number,
-        typeof ownSource
-      >,
-      StateSnapshot<number, Version<typeof source>, typeof ownSource>
-    >(
+    testPublisherLike(
       (parent, options) => {
         const inert =
           spawnPublisher<
@@ -87,10 +78,9 @@ describe("DerivedAuthority", () => {
           parent,
           ownSource,
           {
-            // @ts-expect-error
             [source]: inert,
           },
-          (inputs, cache) => ({
+          async (inputs, cache) => ({
             value: 2 * inputs[source],
             cache,
           }),
@@ -195,12 +185,10 @@ describe("DerivedAuthority", () => {
         system,
         ownSymbol,
         {
-          // @ts-expect-error
           [numberSourceSymbol]: numberSource,
-          // @ts-expect-error
           [textSourceSymbol]: textSource,
         },
-        (inputs, cache) => ({ value: inputs[numberSourceSymbol], cache })
+        async (inputs, cache) => ({ value: inputs[numberSourceSymbol], cache })
       );
 
       () => {
@@ -294,7 +282,6 @@ describe("DerivedAuthority", () => {
         system,
         ownSymbol,
         {
-          // @ts-expect-error
           [sourceSymbol]: source,
         },
         async (inputs, cache) => {
@@ -340,9 +327,7 @@ describe("DerivedAuthority", () => {
         system,
         ownSymbol,
         {
-          // @ts-expect-error
           [quantitySymbol]: source1,
-          // @ts-expect-error
           [wordSymbol]: source2,
         },
         selectorFn
@@ -428,7 +413,6 @@ describe("DerivedAuthority", () => {
         system,
         ownSymbol,
         {
-          // @ts-expect-error
           [sourceSymbol]: source,
         },
         async (inputs, cache) => ({
@@ -544,10 +528,9 @@ describe("DerivedAuthority", () => {
         system,
         ownSymbol,
         {
-          // @ts-expect-error
           [sourceSymbol]: source,
         },
-        (inputs, cache) => {
+        async (inputs, cache) => {
           cacheSpy(cache);
           const newCount = (cache?.count ?? 0) + 1;
           return {
@@ -602,10 +585,9 @@ describe("DerivedAuthority", () => {
         system,
         ownSymbol,
         {
-          // @ts-expect-error
           [sourceSymbol]: source,
         },
-        (inputs) => ({
+        async (inputs) => ({
           value: 2 * inputs[sourceSymbol],
           cache: undefined,
         })
@@ -682,10 +664,9 @@ describe("DerivedAuthority", () => {
         system,
         ownSymbol,
         {
-          // @ts-expect-error
           [sourceSymbol]: source,
         },
-        (inputs) => ({
+        async (inputs) => ({
           value: 2 * inputs[sourceSymbol],
           cache: undefined,
         })
@@ -750,10 +731,9 @@ describe("DerivedAuthority", () => {
         system,
         ownSymbol,
         {
-          // @ts-expect-error
           [sourceSymbol]: source,
         },
-        (inputs) => ({
+        async (inputs) => ({
           value: inputs[sourceSymbol],
           cache: undefined,
         })
@@ -803,7 +783,6 @@ describe("DerivedAuthority", () => {
         system,
         ownSymbol,
         {
-          // @ts-expect-error
           [sourceSymbol]: source,
         },
         async (inputs) => {

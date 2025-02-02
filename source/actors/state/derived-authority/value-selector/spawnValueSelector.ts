@@ -1,13 +1,13 @@
 import {
+  StateSnapshot,
+  ValueOfStateSnapshot,
+} from "../../../../data-types/state-snapshot/StateSnapshot";
+import {
   dispatch,
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
-} from "@nact/core";
-import {
-  StateSnapshot,
-  ValueOfStateSnapshot,
-} from "../../../../data-types/state-snapshot/StateSnapshot";
+} from "../../../../vendored/@nact/core";
 import { spawnRelay } from "../../../relay/spawnRelay";
 import { ValueSelector } from "./ValueSelector";
 import { ValueSelectorMessage } from "./ValueSelectorMessage";

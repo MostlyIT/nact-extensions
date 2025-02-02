@@ -1,15 +1,16 @@
+import { describe, expect, it, vi } from "vitest";
+import { SubscribeMessage } from "../../../../data-types/messages/SubscribeMessage";
+import { UnsubscribeMessage } from "../../../../data-types/messages/UnsubscribeMessage";
+import { StateSnapshot } from "../../../../data-types/state-snapshot/StateSnapshot";
+import { Version } from "../../../../data-types/state-snapshot/Version";
+import { delay } from "../../../../utility/__testing__/delay";
 import {
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
   start,
   stop,
-} from "@nact/core";
-import { describe, expect, it, vi } from "vitest";
-import { SubscribeMessage } from "../../../../data-types/messages/SubscribeMessage";
-import { StateSnapshot } from "../../../../data-types/state-snapshot/StateSnapshot";
-import { Version } from "../../../../data-types/state-snapshot/Version";
-import { delay } from "../../../../utility/__testing__/delay";
+} from "../../../../vendored/@nact/core";
 import { CombinerOwnOptions } from "../CombinerOptions";
 
 export const testCombinerLike = <TCombinerLike extends LocalActorRef<any>>(
@@ -17,7 +18,8 @@ export const testCombinerLike = <TCombinerLike extends LocalActorRef<any>>(
     parent: LocalActorSystemRef | LocalActorRef<any>,
     stateSnapshotSources: {
       readonly [key in symbol]: LocalActorRef<
-        SubscribeMessage<StateSnapshot<any, Version<key>, key>>
+        | SubscribeMessage<StateSnapshot<any, Version<key>, key>>
+        | UnsubscribeMessage<StateSnapshot<any, Version<key>, key>>
       >;
     },
     combinerOptions?: CombinerOwnOptions

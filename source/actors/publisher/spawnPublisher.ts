@@ -1,12 +1,12 @@
+import { Set } from "immutable";
+import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import {
   dispatch,
   Dispatchable,
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
-} from "@nact/core";
-import { Set } from "immutable";
-import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
+} from "../../vendored/@nact/core";
 import { Publisher } from "./Publisher";
 import { PublisherMessage } from "./PublisherMessage";
 import { PublisherOptions } from "./PublisherOptions";

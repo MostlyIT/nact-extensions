@@ -1,8 +1,8 @@
-import { LocalActorRef } from "@nact/core";
 import { SetDestinationMessage } from "../../data-types/messages/SetDestinationMessage";
 import { SubscribeMessage } from "../../data-types/messages/SubscribeMessage";
 import { UnsetDestinationMessage } from "../../data-types/messages/UnsetDestinationMessage";
 import { UnsubscribeMessage } from "../../data-types/messages/UnsubscribeMessage";
+import { LocalActorRef } from "../../vendored/@nact/core";
 
 type SubscriptionMessage<TSnapshot> =
   | SubscribeMessage<TSnapshot>

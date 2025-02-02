@@ -1,15 +1,15 @@
+import { Set } from "immutable";
+import { describe, expect, it, vi } from "vitest";
+import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
+import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
+import { delay } from "../../../utility/__testing__/delay";
 import {
   dispatch,
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
   start,
-} from "@nact/core";
-import { Set } from "immutable";
-import { describe, expect, it, vi } from "vitest";
-import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
-import { delay } from "../../../utility/__testing__/delay";
+} from "../../../vendored/@nact/core";
 import { PublisherOptions } from "../PublisherOptions";
 
 export const testPublisherLike = <
@@ -86,7 +86,6 @@ export const testPublisherLike = <
 
       const publisherLike = publisherConstructor(system);
 
-      // @ts-expect-error
       dispatch(publisherLike, {
         type: "subscribe",
         subscriber: consumer1,
@@ -106,7 +105,6 @@ export const testPublisherLike = <
       expect(consumerFunction2).not.toHaveBeenCalled();
       expect(consumerFunction3).not.toHaveBeenCalled();
 
-      // @ts-expect-error
       dispatch(publisherLike, {
         type: "subscribe",
         subscriber: consumer2,
@@ -130,7 +128,6 @@ export const testPublisherLike = <
       });
       expect(consumerFunction3).not.toHaveBeenCalled();
 
-      // @ts-expect-error
       dispatch(publisherLike, {
         type: "subscribe",
         subscriber: consumer3,
@@ -176,7 +173,6 @@ export const testPublisherLike = <
         initialSubscribersSet: Set([consumer1]),
       });
 
-      // @ts-expect-error
       dispatch(publisherLike, {
         type: "subscribe",
         subscriber: consumer2,
@@ -200,7 +196,6 @@ export const testPublisherLike = <
         snapshot: expectedFirstSnapshot,
       });
 
-      // @ts-expect-error
       dispatch(publisherLike, {
         type: "unsubscribe",
         subscriber: consumer1,
@@ -216,7 +211,6 @@ export const testPublisherLike = <
         snapshot: expectedSecondSnapshot,
       });
 
-      // @ts-expect-error
       dispatch(publisherLike, {
         type: "unsubscribe",
         subscriber: consumer2,
@@ -259,7 +253,6 @@ export const testPublisherLike = <
       });
       expect(consumerFunction2).not.toHaveBeenCalled();
 
-      // @ts-expect-error
       dispatch(publisherLike, {
         type: "unsubscribe",
         subscriber: consumer1,
@@ -271,12 +264,10 @@ export const testPublisherLike = <
       expect(consumerFunction1).toHaveBeenCalledTimes(1);
       expect(consumerFunction2).not.toHaveBeenCalled();
 
-      // @ts-expect-error
       dispatch(publisherLike, {
         type: "unsubscribe",
         subscriber: consumer1,
       });
-      // @ts-expect-error
       dispatch(publisherLike, {
         type: "unsubscribe",
         subscriber: consumer2,

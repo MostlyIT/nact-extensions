@@ -1,31 +1,16 @@
-import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, it, vi } from "vitest";
 import { SnapshotMessage } from "../../../../data-types/messages/SnapshotMessage";
 import { StateSnapshot } from "../../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../../data-types/state-snapshot/Version";
 import { delay } from "../../../../utility/__testing__/delay";
+import { dispatch, spawn, start } from "../../../../vendored/@nact/core";
 import { testRelayLike } from "../../../relay/__testing__/testRelayLike";
 import { spawnValueReducer } from "./spawnValueReducer";
-import { ValueReducer } from "./ValueReducer";
 
 describe("ValueReducer", () => {
   {
     const sourceSymbol = Symbol();
-    testRelayLike<
-      // @ts-expect-error
-      ValueReducer<
-        {
-          [sourceSymbol]: StateSnapshot<
-            number,
-            Version<typeof sourceSymbol>,
-            typeof sourceSymbol
-          >;
-        },
-        "toggle doubling",
-        number
-      >,
-      StateSnapshot<number, Version<typeof sourceSymbol>, undefined>
-    >(
+    testRelayLike(
       (parent, options?) =>
         spawnValueReducer<
           {

@@ -1,10 +1,10 @@
-import { dispatch, spawn, start } from "@nact/core";
 import { Set } from "immutable";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
+import { dispatch, spawn, start } from "../../../vendored/@nact/core";
 import { testPublisherLike } from "../../publisher/__testing__/testPublisherLike";
 import { PureEventAuthority } from "./PureEventAuthority";
 import { spawnPureEventAuthority } from "./spawnPureEventAuthority";
@@ -32,15 +32,7 @@ describe("PureEventAuthority", () => {
 
   {
     const ownSourceSymbol = Symbol();
-    testPublisherLike<
-      // @ts-expect-error
-      PureEventAuthority<"increment", number, typeof ownSourceSymbol>,
-      StateSnapshot<
-        number,
-        Version<typeof ownSourceSymbol>,
-        typeof ownSourceSymbol
-      >
-    >(
+    testPublisherLike(
       (parent, options?) =>
         spawnPureEventAuthority<
           "increment",

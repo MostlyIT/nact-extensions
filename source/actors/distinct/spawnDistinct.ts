@@ -3,7 +3,7 @@ import {
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
-} from "@nact/core";
+} from "../../vendored/@nact/core";
 import { spawnRelay } from "../relay/spawnRelay";
 import { Distinct } from "./Distinct";
 import { DistinctMessage } from "./DistinctMessage";

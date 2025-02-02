@@ -36,7 +36,7 @@ export type EventAuthorityState<
           >
         >
       >,
-      undefined
+      any
     >
   >;
   readonly versioner: Versioner<
@@ -54,11 +54,12 @@ export type EventAuthorityState<
     StateSnapshot<
       TOutputValue,
       Version<
-        KeyOfVersion<
-          VersionOfStateSnapshot<
-            TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+        | KeyOfVersion<
+            VersionOfStateSnapshot<
+              TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+            >
           >
-        >
+        | TSemanticSymbol
       >,
       TSemanticSymbol
     >

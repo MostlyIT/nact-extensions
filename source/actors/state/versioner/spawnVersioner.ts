@@ -1,10 +1,10 @@
+import { Version } from "../../../data-types/state-snapshot/Version";
 import {
   dispatch,
   LocalActorRef,
   LocalActorSystemRef,
   spawn,
-} from "@nact/core";
-import { Version } from "../../../data-types/state-snapshot/Version";
+} from "../../../vendored/@nact/core";
 import { spawnRelay } from "../../relay/spawnRelay";
 import { Versioner } from "./Versioner";
 import { VersionerMessage } from "./VersionerMessage";

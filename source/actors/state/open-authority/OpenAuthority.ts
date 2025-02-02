@@ -1,4 +1,4 @@
-import { LocalActorRef } from "@nact/core";
+import { LocalActorRef } from "../../../vendored/@nact/core";
 import { OpenAuthorityMessage } from "./OpenAuthorityMessage";
 
 declare const openAuthority: unique symbol;

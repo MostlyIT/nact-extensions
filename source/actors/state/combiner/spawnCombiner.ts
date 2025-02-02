@@ -1,9 +1,3 @@
-import {
-  dispatch,
-  LocalActorRef,
-  LocalActorSystemRef,
-  spawn,
-} from "@nact/core";
 import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
 import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
 import {
@@ -18,6 +12,12 @@ import {
 import { mapValues } from "../../../utility/mapValues";
 import { ownValues } from "../../../utility/ownValues";
 import { combineVersions } from "../../../utility/state-snapshot/combineVersions";
+import {
+  dispatch,
+  LocalActorRef,
+  LocalActorSystemRef,
+  spawn,
+} from "../../../vendored/@nact/core";
 import { spawnRelay } from "../../relay/spawnRelay";
 import { Combiner } from "./Combiner";
 import { CombinerMessage } from "./CombinerMessage";
@@ -117,7 +117,6 @@ export const spawnCombiner = <
       afterStop: (_state, context) => {
         if (options !== undefined && options.manageOwnSubscriptions === true) {
           for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
-            // @ts-expect-error
             dispatch(stateSnapshotSource, {
               type: "unsubscribe",
               subscriber: context.self,
@@ -130,7 +129,6 @@ export const spawnCombiner = <
       ): CombinerState<TStateSnapshotsObject, typeof unsetSymbol> => {
         if (options !== undefined && options.manageOwnSubscriptions === true) {
           for (const stateSnapshotSource of ownValues(stateSnapshotSources)) {
-            // @ts-expect-error
             dispatch(stateSnapshotSource, {
               type: "subscribe",
               subscriber: context.self,

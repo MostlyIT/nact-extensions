@@ -1,7 +1,12 @@
-import { dispatch, LocalActorRef, spawn, start } from "@nact/core";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { delay } from "../../utility/__testing__/delay";
+import {
+  dispatch,
+  LocalActorRef,
+  spawn,
+  start,
+} from "../../vendored/@nact/core";
 import { testRelayLike } from "./__testing__/testRelayLike";
 import { Relay } from "./Relay";
 import { spawnRelay } from "./spawnRelay";
@@ -24,8 +29,7 @@ describe("Relay", () => {
     });
   });
 
-  // @ts-expect-error
-  testRelayLike<Relay<number>, number>(
+  testRelayLike(
     spawnRelay,
     (relayLike) =>
       dispatch(relayLike, {

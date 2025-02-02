@@ -1,4 +1,4 @@
-import { LocalActorRef } from "@nact/core";
+import { LocalActorRef } from "../../vendored/@nact/core";
 import { PublisherMessage } from "./PublisherMessage";
 
 declare const publisher: unique symbol;

@@ -1,39 +1,16 @@
-import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, it, vi } from "vitest";
 import { StateSnapshot } from "../../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../../data-types/state-snapshot/Version";
 import { delay } from "../../../../utility/__testing__/delay";
+import { dispatch, spawn, start } from "../../../../vendored/@nact/core";
 import { testRelayLike } from "../../../relay/__testing__/testRelayLike";
 import { spawnValueSelector } from "./spawnValueSelector";
-import { ValueSelector } from "./ValueSelector";
 
 describe("ValueSelector", () => {
   {
     const sourceASymbol = Symbol();
     const sourceBSymbol = Symbol();
-    testRelayLike<
-      // @ts-expect-error
-      ValueSelector<
-        {
-          [sourceASymbol]: StateSnapshot<
-            number,
-            Version<typeof sourceASymbol>,
-            typeof sourceASymbol
-          >;
-          [sourceBSymbol]: StateSnapshot<
-            string,
-            Version<typeof sourceBSymbol>,
-            typeof sourceBSymbol
-          >;
-        },
-        string
-      >,
-      StateSnapshot<
-        string,
-        Version<typeof sourceASymbol | typeof sourceBSymbol>,
-        undefined
-      >
-    >(
+    testRelayLike(
       (parent, options?) =>
         spawnValueSelector<
           {

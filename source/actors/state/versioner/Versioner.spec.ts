@@ -1,26 +1,21 @@
-import { dispatch, spawn, start } from "@nact/core";
 import { describe, expect, it, vi } from "vitest";
-import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
+import { dispatch, spawn, start } from "../../../vendored/@nact/core";
 import { testRelayLike } from "../../relay/__testing__/testRelayLike";
 import { spawnVersioner } from "./spawnVersioner";
-import { Versioner } from "./Versioner";
 
 describe("Versioner", () => {
   {
     const sourceSymbol = Symbol();
     const ownSourceSymbol = Symbol();
-    testRelayLike<
-      // @ts-expect-error
-      Versioner<number, Version<typeof sourceSymbol>, typeof ownSourceSymbol>,
-      StateSnapshot<
-        number,
-        Version<typeof sourceSymbol | typeof ownSourceSymbol>,
-        typeof ownSourceSymbol
-      >
-    >(
-      (parent, options?) => spawnVersioner(parent, ownSourceSymbol, options),
+    testRelayLike(
+      (parent, options?) =>
+        spawnVersioner<
+          number,
+          Version<typeof sourceSymbol>,
+          typeof ownSourceSymbol
+        >(parent, ownSourceSymbol, options),
       (relayLike) =>
         dispatch(relayLike, {
           type: "snapshot",

@@ -1,4 +1,4 @@
-import { LocalActorRef } from "@nact/core";
+import { LocalActorRef } from "../../vendored/@nact/core";
 import { MapperMessage } from "./MapperMessage";
 
 declare const mapper: unique symbol;
