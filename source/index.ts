@@ -38,6 +38,11 @@ export * from "./actors/state/event-authority/EventAuthorityMessage";
 export * from "./actors/state/event-authority/EventAuthorityOptions";
 export * from "./actors/state/event-authority/spawnEventAuthority";
 
+export * from "./actors/state/list-selection-authority/ListSelectionAuthority";
+export * from "./actors/state/list-selection-authority/ListSelectionAuthorityMessage";
+export * from "./actors/state/list-selection-authority/ListSelectionAuthorityOptions";
+export * from "./actors/state/list-selection-authority/spawnListSelectionAuthority";
+
 export * from "./actors/state/open-authority/OpenAuthority";
 export * from "./actors/state/open-authority/OpenAuthorityMessage";
 export * from "./actors/state/open-authority/OpenAuthorityOptions";
@@ -59,6 +64,7 @@ export * from "./actors/state/versioner/VersionerMessage";
 export * from "./actors/state/versioner/VersionerOptions";
 
 export * from "./data-types/messages/ReplaceContentMessage";
+export * from "./data-types/messages/SelectValueMessage";
 export * from "./data-types/messages/SetDestinationMessage";
 export * from "./data-types/messages/SnapshotMessage";
 export * from "./data-types/messages/SubscribeMessage";
