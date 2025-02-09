@@ -24,11 +24,12 @@ export type EventAuthorityMessage<
       StateSnapshot<
         TOutputValue,
         Version<
-          KeyOfVersion<
-            VersionOfStateSnapshot<
-              TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+          | KeyOfVersion<
+              VersionOfStateSnapshot<
+                TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+              >
             >
-          >
+          | TSemanticSymbol
         >,
         TSemanticSymbol
       >
@@ -37,11 +38,12 @@ export type EventAuthorityMessage<
       StateSnapshot<
         TOutputValue,
         Version<
-          KeyOfVersion<
-            VersionOfStateSnapshot<
-              TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+          | KeyOfVersion<
+              VersionOfStateSnapshot<
+                TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+              >
             >
-          >
+          | TSemanticSymbol
         >,
         TSemanticSymbol
       >
