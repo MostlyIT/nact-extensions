@@ -1,8 +1,7 @@
 import { Set } from "immutable";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
-import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
+import { SubscriptionMessage } from "../../../data-types/messages/SubscriptionMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
@@ -29,9 +28,10 @@ describe("EventAuthority", () => {
         typeof sourceASymbol
       >;
       const sourceASymbol = Symbol();
-      const sourceA: LocalActorRef<
-        SubscribeMessage<StateSnapshotA> | UnsubscribeMessage<StateSnapshotA>
-      > = spawn(system, (state, _message) => state);
+      const sourceA: LocalActorRef<SubscriptionMessage<StateSnapshotA>> = spawn(
+        system,
+        (state, _message) => state
+      );
 
       const ownSymbol = Symbol();
       const eventAuthority = spawnEventAuthority(

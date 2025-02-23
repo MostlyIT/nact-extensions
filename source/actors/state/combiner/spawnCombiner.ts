@@ -1,5 +1,4 @@
-import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
+import { SubscriptionMessage } from "../../../data-types/messages/SubscriptionMessage";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
@@ -34,8 +33,7 @@ export const spawnCombiner = <
   parent: LocalActorSystemRef | LocalActorRef<any>,
   stateSnapshotSources: {
     readonly [key in keyof TStateSnapshotsObject & symbol]: LocalActorRef<
-      | SubscribeMessage<TStateSnapshotsObject[key]>
-      | UnsubscribeMessage<TStateSnapshotsObject[key]>
+      SubscriptionMessage<TStateSnapshotsObject[key]>
     >;
   },
   options?: CombinerOptions<TStateSnapshotsObject>

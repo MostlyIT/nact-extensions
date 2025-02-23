@@ -1,6 +1,5 @@
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
-import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
+import { SubscriptionMessage } from "../../../data-types/messages/SubscriptionMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { delay } from "../../../utility/__testing__/delay";
@@ -27,18 +26,20 @@ describe("DerivedAuthority", () => {
         typeof sourceASymbol
       >;
       const sourceASymbol = Symbol();
-      const sourceA: LocalActorRef<
-        SubscribeMessage<StateSnapshotA> | UnsubscribeMessage<StateSnapshotA>
-      > = spawn(system, (state, _message) => state);
+      const sourceA: LocalActorRef<SubscriptionMessage<StateSnapshotA>> = spawn(
+        system,
+        (state, _message) => state
+      );
       type StateSnapshotB = StateSnapshot<
         string,
         Version<typeof sourceASymbol | typeof sourceBSymbol>,
         typeof sourceBSymbol
       >;
       const sourceBSymbol = Symbol();
-      const sourceB: LocalActorRef<
-        SubscribeMessage<StateSnapshotB> | UnsubscribeMessage<StateSnapshotB>
-      > = spawn(system, (state, _message) => state);
+      const sourceB: LocalActorRef<SubscriptionMessage<StateSnapshotB>> = spawn(
+        system,
+        (state, _message) => state
+      );
 
       type StateSnapshotsObject = {
         readonly [sourceASymbol]: StateSnapshotA;

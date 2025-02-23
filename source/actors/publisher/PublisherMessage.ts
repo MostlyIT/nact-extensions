@@ -1,8 +1,6 @@
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
-import { SubscribeMessage } from "../../data-types/messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../data-types/messages/UnsubscribeMessage";
+import { SubscriptionMessage } from "../../data-types/messages/SubscriptionMessage";
 
 export type PublisherMessage<TSnapshot> =
   | SnapshotMessage<TSnapshot>
-  | SubscribeMessage<TSnapshot>
-  | UnsubscribeMessage<TSnapshot>;
+  | SubscriptionMessage<TSnapshot>;

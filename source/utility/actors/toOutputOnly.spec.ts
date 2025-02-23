@@ -3,11 +3,11 @@ import { spawnPublisher } from "../../actors/publisher/spawnPublisher";
 import { spawnRelay } from "../../actors/relay/spawnRelay";
 import { SetDestinationMessage } from "../../data-types/messages/SetDestinationMessage";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
-import { SubscribeMessage } from "../../data-types/messages/SubscribeMessage";
+import { SubscriptionMessage } from "../../data-types/messages/SubscriptionMessage";
 import { UnsetDestinationMessage } from "../../data-types/messages/UnsetDestinationMessage";
-import { UnsubscribeMessage } from "../../data-types/messages/UnsubscribeMessage";
 import {
   dispatch,
+  Dispatchable,
   LocalActorRef,
   spawn,
   start,
@@ -88,7 +88,15 @@ describe("toOutputOnly", () => {
 
       const subscribeOnlyActor = spawn(
         system,
-        (state: undefined, message: SubscribeMessage<number> | 1000) => {
+        (
+          state: undefined,
+          message:
+            | {
+                readonly type: "subscribe";
+                readonly subscriber: Dispatchable<SnapshotMessage<number>>;
+              }
+            | 1000
+        ) => {
           console.log(message);
           return state;
         }
@@ -97,7 +105,15 @@ describe("toOutputOnly", () => {
 
       const unsubscribeOnlyActor = spawn(
         system,
-        (state: undefined, message: UnsubscribeMessage<number> | 1000) => {
+        (
+          state: undefined,
+          message:
+            | {
+                readonly type: "unsubscribe";
+                readonly subscriber: Dispatchable<SnapshotMessage<number>>;
+              }
+            | 1000
+        ) => {
           console.log(message);
           return state;
         }
@@ -203,9 +219,8 @@ describe("toOutputOnly", () => {
 
       const outputOnlyPublisher = toOutputOnly(publisher);
 
-      const _test: LocalActorRef<
-        SubscribeMessage<number> | UnsubscribeMessage<number>
-      > = outputOnlyPublisher;
+      const _test: LocalActorRef<SubscriptionMessage<number>> =
+        outputOnlyPublisher;
     });
 
     it("should infer correct types for relay actors", () => {

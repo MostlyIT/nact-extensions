@@ -1,8 +1,7 @@
 import { List } from "immutable";
 import { SelectValueMessage } from "../../../data-types/messages/SelectValueMessage";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
-import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
+import { SubscriptionMessage } from "../../../data-types/messages/SubscriptionMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import {
   KeyOfVersion,
@@ -19,14 +18,7 @@ export type ListSelectionAuthorityMessage<
       StateSnapshot<List<TListValue> | null, TListVersion, TListSemanticSymbol>
     >
   | SelectValueMessage<TListValue | null>
-  | SubscribeMessage<
-      StateSnapshot<
-        TListValue | null,
-        Version<KeyOfVersion<TListVersion> | TSemanticSymbol>,
-        TSemanticSymbol
-      >
-    >
-  | UnsubscribeMessage<
+  | SubscriptionMessage<
       StateSnapshot<
         TListValue | null,
         Version<KeyOfVersion<TListVersion> | TSemanticSymbol>,

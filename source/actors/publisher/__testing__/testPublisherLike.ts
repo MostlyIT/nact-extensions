@@ -1,7 +1,6 @@
 import { Set } from "immutable";
 import { describe, expect, it, vi } from "vitest";
-import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
+import { SubscriptionMessage } from "../../../data-types/messages/SubscriptionMessage";
 import { delay } from "../../../utility/__testing__/delay";
 import {
   dispatch,
@@ -13,9 +12,7 @@ import {
 import { PublisherOptions } from "../PublisherOptions";
 
 export const testPublisherLike = <
-  TPublisherLike extends LocalActorRef<
-    SubscribeMessage<TSnapshot> | UnsubscribeMessage<TSnapshot>
-  >,
+  TPublisherLike extends LocalActorRef<SubscriptionMessage<TSnapshot>>,
   TSnapshot
 >(
   publisherConstructor: (

@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { SubscribeMessage } from "../../../../data-types/messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../../../data-types/messages/UnsubscribeMessage";
+import { SubscriptionMessage } from "../../../../data-types/messages/SubscriptionMessage";
 import { StateSnapshot } from "../../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../../data-types/state-snapshot/Version";
 import { delay } from "../../../../utility/__testing__/delay";
@@ -17,10 +16,9 @@ export const testCombinerLike = <TCombinerLike extends LocalActorRef<any>>(
   combinerConstructor: (
     parent: LocalActorSystemRef | LocalActorRef<any>,
     stateSnapshotSources: {
-      readonly [key in symbol]: LocalActorRef<
-        | SubscribeMessage<StateSnapshot<any, Version<key>, key>>
-        | UnsubscribeMessage<StateSnapshot<any, Version<key>, key>>
-      >;
+      readonly [key in symbol]: LocalActorRef<SubscriptionMessage<
+        StateSnapshot<any, Version<key>, key>
+      >>;
     },
     combinerOptions?: CombinerOwnOptions
   ) => TCombinerLike

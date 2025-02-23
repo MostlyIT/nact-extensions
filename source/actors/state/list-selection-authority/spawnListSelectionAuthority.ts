@@ -1,7 +1,6 @@
 import { List } from "immutable";
 import { SelectValueMessage } from "../../../data-types/messages/SelectValueMessage";
-import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
+import { SubscriptionMessage } from "../../../data-types/messages/SubscriptionMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import { Version } from "../../../data-types/state-snapshot/Version";
 import { ownValues } from "../../../utility";
@@ -24,20 +23,13 @@ export const spawnListSelectionAuthority = <
   semanticSymbol: TSemanticSymbol,
   listAuthorityObject: {
     readonly [key in TListSemanticSymbol]: LocalActorRef<
-      | SubscribeMessage<
-          StateSnapshot<
-            List<TListValue> | null,
-            TListVersion,
-            TListSemanticSymbol
-          >
+      SubscriptionMessage<
+        StateSnapshot<
+          List<TListValue> | null,
+          TListVersion,
+          TListSemanticSymbol
         >
-      | UnsubscribeMessage<
-          StateSnapshot<
-            List<TListValue> | null,
-            TListVersion,
-            TListSemanticSymbol
-          >
-        >
+      >
     >;
   },
   options?: ListSelectionAuthorityOptions<

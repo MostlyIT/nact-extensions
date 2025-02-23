@@ -1,17 +1,10 @@
 import { SetDestinationMessage } from "../../data-types/messages/SetDestinationMessage";
-import { SubscribeMessage } from "../../data-types/messages/SubscribeMessage";
+import {
+  SnapshotOfSubscriptionMessage,
+  SubscriptionMessage,
+} from "../../data-types/messages/SubscriptionMessage";
 import { UnsetDestinationMessage } from "../../data-types/messages/UnsetDestinationMessage";
-import { UnsubscribeMessage } from "../../data-types/messages/UnsubscribeMessage";
 import { LocalActorRef } from "../../vendored/@nact/core";
-
-type SubscriptionMessage<TSnapshot> =
-  | SubscribeMessage<TSnapshot>
-  | UnsubscribeMessage<TSnapshot>;
-
-type SnapshotOfSubscriptionMessage<TSubscribeMessage> =
-  TSubscribeMessage extends SubscriptionMessage<infer TSnapshot>
-    ? TSnapshot
-    : never;
 
 type DestinationMessage<TSnapshot> =
   | SetDestinationMessage<TSnapshot>

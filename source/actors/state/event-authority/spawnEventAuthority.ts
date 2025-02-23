@@ -1,5 +1,4 @@
-import { SubscribeMessage } from "../../../data-types/messages/SubscribeMessage";
-import { UnsubscribeMessage } from "../../../data-types/messages/UnsubscribeMessage";
+import { SubscriptionMessage } from "../../../data-types/messages/SubscriptionMessage";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
@@ -36,10 +35,8 @@ export const spawnEventAuthority = <
   parent: LocalActorSystemRef | LocalActorRef<any>,
   semanticSymbol: TSemanticSymbol,
   stateSnapshotSources: {
-    readonly [key in keyof TStateSnapshotsObject & symbol]: LocalActorRef<
-      | SubscribeMessage<TStateSnapshotsObject[key]>
-      | UnsubscribeMessage<TStateSnapshotsObject[key]>
-    >;
+    readonly [key in keyof TStateSnapshotsObject &
+      symbol]: LocalActorRef<SubscriptionMessage<TStateSnapshotsObject[key]>>;
   },
   eventReducer: (
     state: TState,
