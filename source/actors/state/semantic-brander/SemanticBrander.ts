@@ -4,8 +4,6 @@ import { Version } from "../../../data-types/state-snapshot/Version";
 import { LocalActorRef } from "../../../vendored/@nact/core";
 import { SemanticBranderMessage } from "./SemanticBranderMessage";
 
-declare const semanticBrander: unique symbol;
-
 /**
  * An actor that relays state snapshots after branding them with its semantic symbol.
  */
@@ -13,9 +11,7 @@ export type SemanticBrander<
   TValue,
   TVersion extends Version<any>,
   TSemanticSymbol extends symbol
-> = { [semanticBrander]: true } & LocalActorRef<
-  SemanticBranderMessage<TValue, TVersion, TSemanticSymbol>
->;
+> = LocalActorRef<SemanticBranderMessage<TValue, TVersion, TSemanticSymbol>>;
 
 // Basic
 
