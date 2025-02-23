@@ -1,6 +1,5 @@
-import { SetDestinationMessage } from "../../../../data-types/messages/SetDestinationMessage";
+import { DestinationMessage } from "../../../../data-types/messages/DestinationMessage";
 import { SnapshotMessage } from "../../../../data-types/messages/SnapshotMessage";
-import { UnsetDestinationMessage } from "../../../../data-types/messages/UnsetDestinationMessage";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
@@ -19,7 +18,7 @@ export type ValueReducerMessage<
   TOutputValue
 > =
   | TEventMessage
-  | SetDestinationMessage<
+  | DestinationMessage<
       StateSnapshot<
         TOutputValue,
         Version<
@@ -47,5 +46,4 @@ export type ValueReducerMessage<
         >,
         undefined
       >
-    >
-  | UnsetDestinationMessage;
+    >;

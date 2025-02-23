@@ -63,13 +63,12 @@ export * from "./actors/state/versioner/Versioner";
 export * from "./actors/state/versioner/VersionerMessage";
 export * from "./actors/state/versioner/VersionerOptions";
 
+export * from "./data-types/messages/DestinationMessage";
 export * from "./data-types/messages/ReplaceContentMessage";
 export * from "./data-types/messages/SelectValueMessage";
-export * from "./data-types/messages/SetDestinationMessage";
 export * from "./data-types/messages/SnapshotMessage";
 export * from "./data-types/messages/SubscriptionMessage";
 export * from "./data-types/messages/TransformContentMessage";
-export * from "./data-types/messages/UnsetDestinationMessage";
 
 export * from "./data-types/state-snapshot/StateSnapshot";
 export * from "./data-types/state-snapshot/Version";

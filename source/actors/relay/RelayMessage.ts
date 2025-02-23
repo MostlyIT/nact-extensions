@@ -1,8 +1,6 @@
-import { SetDestinationMessage } from "../../data-types/messages/SetDestinationMessage";
+import { DestinationMessage } from "../../data-types/messages/DestinationMessage";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
-import { UnsetDestinationMessage } from "../../data-types/messages/UnsetDestinationMessage";
 
 export type RelayMessage<TSnapshot> =
-  | SetDestinationMessage<TSnapshot>
-  | SnapshotMessage<TSnapshot>
-  | UnsetDestinationMessage;
+  | DestinationMessage<TSnapshot>
+  | SnapshotMessage<TSnapshot>;

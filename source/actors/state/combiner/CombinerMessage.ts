@@ -1,6 +1,5 @@
-import { SetDestinationMessage } from "../../../data-types/messages/SetDestinationMessage";
+import { DestinationMessage } from "../../../data-types/messages/DestinationMessage";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
-import { UnsetDestinationMessage } from "../../../data-types/messages/UnsetDestinationMessage";
 import {
   StateSnapshot,
   ValueOfStateSnapshot,
@@ -16,7 +15,7 @@ export type CombinerMessage<
     readonly [key in symbol]: StateSnapshot<any, any, key>;
   }
 > =
-  | SetDestinationMessage<
+  | DestinationMessage<
       StateSnapshot<
         {
           readonly [key in keyof TStateSnapshotsObject &
@@ -32,5 +31,6 @@ export type CombinerMessage<
         undefined
       >
     >
-  | SnapshotMessage<TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]>
-  | UnsetDestinationMessage;
+  | SnapshotMessage<
+      TStateSnapshotsObject[keyof TStateSnapshotsObject & symbol]
+    >;

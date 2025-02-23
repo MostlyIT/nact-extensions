@@ -1,6 +1,5 @@
-import { SetDestinationMessage } from "../../../data-types/messages/SetDestinationMessage";
+import { DestinationMessage } from "../../../data-types/messages/DestinationMessage";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
-import { UnsetDestinationMessage } from "../../../data-types/messages/UnsetDestinationMessage";
 import { StateSnapshot } from "../../../data-types/state-snapshot/StateSnapshot";
 import {
   KeyOfVersion,
@@ -12,7 +11,7 @@ export type VersionerMessage<
   TInputVersion extends Version<any>,
   TSemanticSymbol extends symbol
 > =
-  | SetDestinationMessage<
+  | DestinationMessage<
       StateSnapshot<
         TValue,
         Version<KeyOfVersion<TInputVersion> | TSemanticSymbol>,
@@ -25,5 +24,4 @@ export type VersionerMessage<
         Version<KeyOfVersion<TInputVersion>>,
         symbol | undefined
       >
-    >
-  | UnsetDestinationMessage;
+    >;

@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { SetDestinationMessage } from "../../../data-types/messages/SetDestinationMessage";
+import { DestinationMessage } from "../../../data-types/messages/DestinationMessage";
 import { SnapshotMessage } from "../../../data-types/messages/SnapshotMessage";
-import { UnsetDestinationMessage } from "../../../data-types/messages/UnsetDestinationMessage";
 import { delay } from "../../../utility/__testing__/delay";
 import {
   dispatch,
@@ -13,9 +12,7 @@ import {
 import { RelayOptions } from "../RelayOptions";
 
 export const testRelayLike = <
-  TRelayLike extends LocalActorRef<
-    SetDestinationMessage<TSnapshot> | UnsetDestinationMessage
-  >,
+  TRelayLike extends LocalActorRef<DestinationMessage<TSnapshot>>,
   TSnapshot
 >(
   relayConstructor: (
@@ -84,7 +81,7 @@ export const testRelayLike = <
       dispatch(relayLike, {
         type: "set destination",
         destination: consumer1,
-      } satisfies SetDestinationMessage<TSnapshot>);
+      } satisfies DestinationMessage<TSnapshot>);
 
       await delay(10);
       expect(consumerFunction1).not.toHaveBeenCalled();

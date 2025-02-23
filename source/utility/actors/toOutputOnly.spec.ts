@@ -1,10 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { spawnPublisher } from "../../actors/publisher/spawnPublisher";
 import { spawnRelay } from "../../actors/relay/spawnRelay";
-import { SetDestinationMessage } from "../../data-types/messages/SetDestinationMessage";
+import { DestinationMessage } from "../../data-types/messages/DestinationMessage";
 import { SnapshotMessage } from "../../data-types/messages/SnapshotMessage";
 import { SubscriptionMessage } from "../../data-types/messages/SubscriptionMessage";
-import { UnsetDestinationMessage } from "../../data-types/messages/UnsetDestinationMessage";
 import {
   dispatch,
   Dispatchable,
@@ -193,7 +192,15 @@ describe("toOutputOnly", () => {
 
       const setDestinationOnlyActor = spawn(
         system,
-        (state: undefined, message: SetDestinationMessage<number> | 1000) => {
+        (
+          state: undefined,
+          message:
+            | {
+                readonly type: "set destination";
+                readonly destination: Dispatchable<SnapshotMessage<number>>;
+              }
+            | 1000
+        ) => {
           console.log(message);
           return state;
         }
@@ -202,7 +209,14 @@ describe("toOutputOnly", () => {
 
       const unsetDestinationOnlyActor = spawn(
         system,
-        (state: undefined, message: UnsetDestinationMessage | 1000) => {
+        (
+          state: undefined,
+          message:
+            | {
+                readonly type: "unset destination";
+              }
+            | 1000
+        ) => {
           console.log(message);
           return state;
         }
@@ -230,9 +244,7 @@ describe("toOutputOnly", () => {
 
       const outputOnlyRelay = toOutputOnly(relay);
 
-      const _test: LocalActorRef<
-        SetDestinationMessage<number> | UnsetDestinationMessage
-      > = outputOnlyRelay;
+      const _test: LocalActorRef<DestinationMessage<number>> = outputOnlyRelay;
     });
   });
 });

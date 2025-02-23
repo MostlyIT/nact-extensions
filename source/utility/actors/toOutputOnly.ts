@@ -1,17 +1,15 @@
-import { SetDestinationMessage } from "../../data-types/messages/SetDestinationMessage";
+import {
+  DestinationMessage,
+  SnapshotOfDestinationMessage,
+} from "../../data-types/messages/DestinationMessage";
 import {
   SnapshotOfSubscriptionMessage,
   SubscriptionMessage,
 } from "../../data-types/messages/SubscriptionMessage";
-import { UnsetDestinationMessage } from "../../data-types/messages/UnsetDestinationMessage";
 import { LocalActorRef } from "../../vendored/@nact/core";
 
-type DestinationMessage<TSnapshot> =
-  | SetDestinationMessage<TSnapshot>
-  | UnsetDestinationMessage;
-
-type SnapshotOfSetDestinationMessage<TMessage> =
-  TMessage extends SetDestinationMessage<infer TSnapshot> ? TSnapshot : never;
+// type SnapshotOfSetDestinationMessage<TMessage> =
+//   TMessage extends SetDestinationMessage<infer TSnapshot> ? TSnapshot : never;
 
 type OutputOnlyActor<TActor extends LocalActorRef<any>> =
   TActor extends LocalActorRef<infer TMessage>
@@ -21,7 +19,7 @@ type OutputOnlyActor<TActor extends LocalActorRef<any>> =
         >
       : DestinationMessage<any> extends TMessage
       ? LocalActorRef<
-          DestinationMessage<SnapshotOfSetDestinationMessage<TMessage>>
+          DestinationMessage<SnapshotOfDestinationMessage<TMessage>>
         >
       : never
     : never;
