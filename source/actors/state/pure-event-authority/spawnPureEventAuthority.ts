@@ -28,9 +28,10 @@ export const spawnPureEventAuthority = <
     semanticSymbol,
     {},
     eventReducer,
-    async () => initialState,
+    async (state, _newCombinedObject) => state,
     valueSelector,
     outputEqualityComparator,
+    initialState,
     options
   ) as unknown as PureEventAuthority<
     TEventMessage,

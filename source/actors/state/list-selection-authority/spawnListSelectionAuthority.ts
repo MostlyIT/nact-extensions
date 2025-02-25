@@ -86,14 +86,6 @@ export const spawnListSelectionAuthority = <
       } satisfies ListSelectionAuthorityState<TListValue>;
     },
     async (state, newCombinedObject) => {
-      if (state === undefined) {
-        return {
-          selectedValue: null,
-        } satisfies ListSelectionAuthorityState<TListValue>;
-      }
-
-      // State is initialized and value could have been selected previously.
-
       if (state.selectedValue === null) {
         return state;
       }
@@ -124,5 +116,8 @@ export const spawnListSelectionAuthority = <
     },
     async (state, _lastCombinedObject) => state.selectedValue,
     async (previous, current) => previous === current,
+    {
+      selectedValue: null,
+    },
     options
   );

@@ -45,11 +45,11 @@ describe("EventAuthority", () => {
           _eventMessage: "toggle doubling",
           _lastCombinedObject
         ) => !state,
-        async (state, _newCombinedObject) =>
-          state !== undefined ? state : false,
+        async (state, _newCombinedObject) => state,
         async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceASymbol],
-        async (previous, current) => previous === current
+        async (previous, current) => previous === current,
+        false
       );
 
       expectTypeOf(eventAuthority).toMatchTypeOf<
@@ -87,11 +87,11 @@ describe("EventAuthority", () => {
           ownSourceSymbol,
           { [sourceSymbol]: inert },
           async (state, _eventMessage, _lastCombinedObject) => !state,
-          async (state, _newCombinedObject) =>
-            state !== undefined ? state : false,
+          async (state, _newCombinedObject) => state,
           async (state, lastCombinedObject) =>
             (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
           async (previous, current) => previous === current,
+          false,
           options
         );
       },
@@ -148,9 +148,10 @@ describe("EventAuthority", () => {
         ownSymbol,
         stateSnapshotSources,
         async (state, _eventMessage, _lastCombinedObject) => state,
-        async (_state, _newCombinedObject) => undefined,
+        async (state, _newCombinedObject) => state,
         async (state) => state,
         async (previous, current) => previous === current,
+        undefined,
         options
       )
     );
@@ -207,11 +208,11 @@ describe("EventAuthority", () => {
           [textSourceSymbol]: textSource,
         },
         async (state, _eventMessage, _lastCombinedObject) => !state,
-        async (state, _newCombinedObject) =>
-          state !== undefined ? state : false,
+        async (state, _newCombinedObject) => state,
         async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[numberSourceSymbol],
-        async (previous, current) => previous === current
+        async (previous, current) => previous === current,
+        false
       );
 
       () => {
@@ -320,7 +321,7 @@ describe("EventAuthority", () => {
           const stateValue: boolean | undefined = state; // Type test
           const sourceAValue: number = newCombinedObject[sourceASymbol]; // Type test
           const sourceBValue: string = newCombinedObject[sourceBSymbol]; // Type test
-          return state !== undefined ? state : false;
+          return state;
         },
         async (state, lastCombinedObject) => {
           const stateValue: boolean = state; // Type test
@@ -332,7 +333,8 @@ describe("EventAuthority", () => {
           const previousValue: number = previous; // Type test
           const currentValue: number = current; // Type test;
           return previous === current;
-        }
+        },
+        false
       );
     });
 
@@ -366,11 +368,11 @@ describe("EventAuthority", () => {
         ownSourceSymbol,
         { [sourceSymbol]: source },
         async (state, _eventMessage, _lastCombinedObject) => !state,
-        async (state, _newCombinedObject) =>
-          state !== undefined ? state : false,
+        async (state, _newCombinedObject) => state,
         async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
         async (previous, current) => previous === current,
+        false,
         {
           initialSubscribersSet: Set([consumer]),
         }
@@ -452,9 +454,10 @@ describe("EventAuthority", () => {
         ownSourceSymbol,
         {},
         async (_state, eventMessage, _lastCombinedObject) => eventMessage,
-        async (state, _newCombinedObject) => state ?? 0,
+        async (state, _newCombinedObject) => state,
         async (state, _lastCombinedObject) => state,
         async (previous, current) => previous === current,
+        0,
         {
           initialSubscribersSet: Set([consumer]),
         }
@@ -541,11 +544,11 @@ describe("EventAuthority", () => {
         ownSymbol,
         { [sourceASymbol]: sourceA, [sourceBSymbol]: sourceB },
         async (state, _eventMessage, _lastCombinedObject) => !state,
-        async (state, _newCombinedObject) =>
-          state !== undefined ? state : false,
+        async (state, _newCombinedObject) => state,
         async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceASymbol],
         async (previous, current) => previous === current,
+        false,
         {
           initialSubscribersSet: Set([consumer]),
         }
@@ -654,11 +657,11 @@ describe("EventAuthority", () => {
         ownSymbol,
         { [sourceSymbol]: source },
         async (state, _eventMessage, _lastCombinedObject) => !state,
-        async (state, _newCombinedObject) =>
-          state !== undefined ? state : false,
+        async (state, _newCombinedObject) => state,
         async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
         async (previous, current) => previous === current,
+        false,
         {
           initialSubscribersSet: Set([consumer]),
         }
@@ -725,11 +728,11 @@ describe("EventAuthority", () => {
           [sourceBSymbol]: sourceB,
         },
         async (state, _eventMessage, _lastCombinedObject) => !state,
-        async (state, _newCombinedObject) =>
-          state !== undefined ? state : false,
+        async (state, _newCombinedObject) => state,
         async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceASymbol],
         async (previous, current) => previous === current,
+        false,
         {
           initialSubscribersSet: Set([consumer]),
         }
@@ -831,11 +834,11 @@ describe("EventAuthority", () => {
         ownSymbol,
         { [sourceSymbol]: source },
         async (state, _eventMessage, _lastCombinedObject) => !state,
-        async (state, _newCombinedObject) =>
-          state !== undefined ? state : false,
+        async (state, _newCombinedObject) => state,
         async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
         async (previous, current) => previous === current,
+        false,
         {
           initialSubscribersSet: Set([consumer]),
         }
@@ -903,11 +906,11 @@ describe("EventAuthority", () => {
         ownSymbol,
         { [sourceSymbol]: source },
         async (state, _eventMessage, _lastCombinedObject) => !state,
-        async (state, _newCombinedObject) =>
-          state !== undefined ? state : false,
+        async (state, _newCombinedObject) => state,
         async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
         async (previous, current) => previous === current,
+        false,
         {
           initialSubscribersSet: Set([consumer]),
         }
@@ -974,11 +977,11 @@ describe("EventAuthority", () => {
         ownSymbol,
         { [sourceASymbol]: sourceA, [sourceBSymbol]: sourceB },
         async (state, _eventMessage, _lastCombinedObject) => !state,
-        async (state, _newCombinedObject) =>
-          state !== undefined ? state : false,
+        async (state, _newCombinedObject) => state,
         async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceASymbol],
         async (previous, current) => previous === current,
+        false,
         {
           initialSubscribersSet: Set([consumer]),
         }
@@ -1052,11 +1055,11 @@ describe("EventAuthority", () => {
         ownSymbol,
         { [sourceSymbol]: source },
         async (state, _eventMessage, _lastCombinedObject) => !state,
-        async (state, _newCombinedObject) =>
-          state !== undefined ? state : false,
+        async (state, _newCombinedObject) => state,
         async (state, lastCombinedObject) =>
           (state ? 2 : 1) * lastCombinedObject[sourceSymbol],
         async (previous, current) => previous === current,
+        false,
         {
           initialSubscribersSet: Set([consumer1]),
         }
@@ -1149,7 +1152,7 @@ describe("EventAuthority", () => {
         },
         async (state, _newCombinedObject) => {
           await delay(2);
-          return state !== undefined ? state : false;
+          return state;
         },
         async (state, lastCombinedObject) => {
           await delay(2);
@@ -1159,6 +1162,7 @@ describe("EventAuthority", () => {
           await delay(2);
           return previous === current;
         },
+        false,
         {
           initialSubscribersSet: Set([consumer]),
         }
@@ -1264,7 +1268,7 @@ describe("EventAuthority", () => {
         },
         async (state, _newCombinedObject) => {
           await delay(2);
-          return state !== undefined ? state : false;
+          return state;
         },
         async (state, lastCombinedObject) => {
           await delay(2);
@@ -1274,6 +1278,7 @@ describe("EventAuthority", () => {
           await delay(2);
           return previous === current;
         },
+        false,
         {
           initialSubscribersSet: Set([consumer]),
         }

@@ -18,6 +18,7 @@ export type ValueReducerState<
   TOutputValue,
   TState
 > = {
+  readonly innerState: TState;
   readonly relay: Relay<
     StateSnapshot<
       TOutputValue,
@@ -33,7 +34,6 @@ export type ValueReducerState<
   >;
 } & (
   | {
-      readonly innerState: TState;
       readonly lastCombinedObject: {
         readonly [key in keyof TStateSnapshotsObject &
           symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
@@ -47,7 +47,6 @@ export type ValueReducerState<
       >;
     }
   | {
-      readonly innerState: TState | undefined;
       readonly unprocessedEventMessages: List<TEventMessage>;
     }
 );

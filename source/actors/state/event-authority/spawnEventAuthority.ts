@@ -35,8 +35,9 @@ export const spawnEventAuthority = <
   parent: LocalActorSystemRef | LocalActorRef<any>,
   semanticSymbol: TSemanticSymbol,
   stateSnapshotSources: {
-    readonly [key in keyof TStateSnapshotsObject &
-      symbol]: LocalActorRef<SubscriptionMessage<TStateSnapshotsObject[key]>>;
+    readonly [key in keyof TStateSnapshotsObject & symbol]: LocalActorRef<
+      SubscriptionMessage<TStateSnapshotsObject[key]>
+    >;
   },
   eventReducer: (
     state: TState,
@@ -47,7 +48,7 @@ export const spawnEventAuthority = <
     }
   ) => Promise<TState>,
   snapshotReducer: (
-    state: TState | undefined,
+    state: TState,
     newCombinedObject: {
       readonly [key in keyof TStateSnapshotsObject &
         symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
@@ -64,6 +65,7 @@ export const spawnEventAuthority = <
     previous: TOutputValue,
     current: TOutputValue
   ) => Promise<boolean>,
+  initialState: TState,
   options?: EventAuthorityOptions<
     TStateSnapshotsObject,
     TOutputValue,
@@ -154,6 +156,7 @@ export const spawnEventAuthority = <
           eventReducer,
           snapshotReducer,
           valueSelector,
+          initialState,
           {
             initialDestination: distinct,
           }

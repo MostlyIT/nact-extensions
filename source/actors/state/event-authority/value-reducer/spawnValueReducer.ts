@@ -33,7 +33,7 @@ export const spawnValueReducer = <
     }
   ) => Promise<TState>,
   snapshotReducer: (
-    state: TState | undefined,
+    state: TState,
     newCombinedObject: {
       readonly [key in keyof TStateSnapshotsObject &
         symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
@@ -46,6 +46,7 @@ export const spawnValueReducer = <
         symbol]: ValueOfStateSnapshot<TStateSnapshotsObject[key]>;
     }
   ) => Promise<TOutputValue>,
+  initialState: TState,
   options?: ValueReducerOptions<TStateSnapshotsObject, TOutputValue>
 ): ValueReducer<TStateSnapshotsObject, TEventMessage, TOutputValue> =>
   spawn(
@@ -152,7 +153,7 @@ export const spawnValueReducer = <
     },
     {
       initialStateFunc: (context) => ({
-        innerState: undefined,
+        innerState: initialState,
         relay: spawnRelay(context.self, options),
         unprocessedEventMessages: List<TEventMessage>(),
       }),
