@@ -58,6 +58,11 @@ export * from "./actors/state/semantic-brander/SemanticBranderMessage";
 export * from "./actors/state/semantic-brander/SemanticBranderOptions";
 export * from "./actors/state/semantic-brander/spawnSemanticBrander";
 
+export * from "./actors/state/state-dependent/spawnStateDependent";
+export * from "./actors/state/state-dependent/StateDependent";
+export * from "./actors/state/state-dependent/StateDependentMessage";
+export * from "./actors/state/state-dependent/StateDependentOptions";
+
 export * from "./actors/state/versioner/spawnVersioner";
 export * from "./actors/state/versioner/Versioner";
 export * from "./actors/state/versioner/VersionerMessage";

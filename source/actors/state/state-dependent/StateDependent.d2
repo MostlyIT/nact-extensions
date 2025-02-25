@@ -1,0 +1,35 @@
+classes: {
+  composition: {
+    style.stroke-dash: 3
+  }
+}
+
+# Input messages
+Events: {
+  shape: page
+  style.multiple: true
+}
+Events -> StateDependent.EventProcessor
+StateSnapshots: StateSnapshots\n+ semantic information\n+ version {
+  shape: page
+  style.multiple: true
+}
+StateSnapshots -> StateDependent.Combiner
+
+# Main actor
+StateDependent: {
+  class: composition
+
+  # Internal actors
+  Combiner
+  EventProcessor
+
+  CombinedStateSnapshot: CombinedStateSnapshot\n+ version {
+    shape: page
+  }
+  Combiner -> CombinedStateSnapshot -> EventProcessor
+}
+
+# Output messages
+
+# Environment actors
