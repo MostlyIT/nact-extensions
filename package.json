@@ -25,7 +25,7 @@
     "!__testing__"
   ],
   "dependencies": {
-    "immutable": "^5.0.3"
+    "immutable": "^5.1.4"
   },
   "peerDependencies": {
     "typescript": ">=5.0.0"
@@ -34,7 +34,7 @@
     "test": "tsc && vitest --run"
   },
   "devDependencies": {
-    "typescript": "5.7.3",
-    "vitest": "3.0.5"
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
   }
 }
